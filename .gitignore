@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+.env
+.env.*
+work/
+dist/
+*.zip
+*.pptx
+*.drawio
+*.ico

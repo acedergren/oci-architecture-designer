@@ -1,0 +1,4980 @@
+{
+  "metadata_only": true,
+  "assets": [
+    {
+      "file_name": "OCI Architecture Diagram Toolkit v24.2.drawio",
+      "size_bytes": 4676230,
+      "sha256": "b544991da988625e147dbeb7623bacc1be96699e2415d7f4d548f0d2a532d59e",
+      "kind": "drawio",
+      "entries": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-197",
+          "label": "Instance Pools",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-198",
+          "label": "OCI Functions",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-199",
+          "label": "Virtual Machine",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-200",
+          "label": "Virtual Machine (generic use)",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-201",
+          "label": "Virtual Machine Application",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-202",
+          "label": "Virtual Machine GPU",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-203",
+          "label": "Burstable VM",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-204",
+          "label": "Flex VM",
+          "cell_count": 20
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-205",
+          "label": "Autoscaling",
+          "cell_count": 37
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-497",
+          "label": "Block Storage",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-498",
+          "label": "Block Storage Multiple",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-499",
+          "label": "Back Up/ Restore",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-500",
+          "label": "Block Storage Cloning",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-501",
+          "label": "File Storage",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-502",
+          "label": "File Storage",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-503",
+          "label": "File Storage Clone",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-504",
+          "label": "File Storage Replica",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-505",
+          "label": "File Storage Replication Process",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-506",
+          "label": "File Storage Snapshots",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-507",
+          "label": "File Storage Mount Target",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-509",
+          "label": "OCI Object Storage Buckets",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-510",
+          "label": "Storage Gateway",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-511",
+          "label": "Elastic Performance",
+          "cell_count": 25
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-512",
+          "label": "Local Storage",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-513",
+          "label": "Persistent Volume",
+          "cell_count": 6
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-834",
+          "label": "Load Balancer",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-835",
+          "label": "Flexible Load Balancer",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-836",
+          "label": "DNS",
+          "cell_count": 7
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-837",
+          "label": "Customer Premises Equipment",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-838",
+          "label": "BYOIP",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-840",
+          "label": "IP Pools",
+          "cell_count": 22
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-841",
+          "label": "VTAP",
+          "cell_count": 25
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-842",
+          "label": "CDN",
+          "cell_count": 17
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-843",
+          "label": "On-premises data center",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-844",
+          "label": "Backbone",
+          "cell_count": 7
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-846",
+          "label": "Network Switch",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-845",
+          "label": "Network Switch",
+          "cell_count": 3
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-847",
+          "label": "VNIC",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-849",
+          "label": "VCN (Region Identifier)",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-850",
+          "label": "Route Table",
+          "cell_count": 28
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-851",
+          "label": "Route Table and Security List",
+          "cell_count": 24
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-852",
+          "label": "DRG",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-853",
+          "label": "Service Gateway",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-854",
+          "label": "Internet Gateway",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-855",
+          "label": "NAT Gateway",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-856",
+          "label": "Local Peering Gateway",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3623",
+          "label": "Application Performance Monitoring",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3624",
+          "label": "Logging",
+          "cell_count": 28
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3625",
+          "label": "Search",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3626",
+          "label": "Auditing",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3627",
+          "label": "Monitoring",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3628",
+          "label": "Alarms",
+          "cell_count": 20
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3629",
+          "label": "Health Checks",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3630",
+          "label": "Logging Analytics",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3631",
+          "label": "Events",
+          "cell_count": 7
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3632",
+          "label": "Operations Insights",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3633",
+          "label": "VCN Flow Logs",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3634",
+          "label": "OCI Queue",
+          "cell_count": 20
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3635",
+          "label": "Workflow",
+          "cell_count": 7
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3636",
+          "label": "Fullstack Disaster Recovery",
+          "cell_count": 17
+        },
+        {
+          "page": "Icons",
+          "cell_id": "2EUykjZCh5ycC5aEEUrk-34",
+          "label": "Marketplace",
+          "cell_count": 7
+        }
+      ]
+    },
+    {
+      "file_name": "OCI Library.xml",
+      "size_bytes": 1472484,
+      "sha256": "e098244928cdd5257c1bc4696cf9f46fd289b4195208d699e5392bf79de69555",
+      "kind": "library",
+      "entries": [
+        {
+          "entry_index": 0,
+          "title": "Compute - Bare Metal Compute"
+        },
+        {
+          "entry_index": 1,
+          "title": "Compute - Instance Pools"
+        },
+        {
+          "entry_index": 2,
+          "title": "Compute - Functions"
+        },
+        {
+          "entry_index": 3,
+          "title": "Compute - Virtual Machine VM"
+        },
+        {
+          "entry_index": 4,
+          "title": "Compute - Autoscaling"
+        },
+        {
+          "entry_index": 5,
+          "title": "Compute - Flex Virtual Machine Flex VM"
+        },
+        {
+          "entry_index": 6,
+          "title": "Compute - Burstable Virtual Machine Burstable VM"
+        },
+        {
+          "entry_index": 7,
+          "title": "Storage - Block Storage"
+        },
+        {
+          "entry_index": 8,
+          "title": "Storage - Back up Restore"
+        },
+        {
+          "entry_index": 9,
+          "title": "Storage - Block Storage Cloning"
+        },
+        {
+          "entry_index": 10,
+          "title": "Storage - File Storage"
+        },
+        {
+          "entry_index": 11,
+          "title": "Storage - Object Storage"
+        },
+        {
+          "entry_index": 12,
+          "title": "Storage - Buckets"
+        },
+        {
+          "entry_index": 13,
+          "title": "Storage - Service Gateway"
+        },
+        {
+          "entry_index": 14,
+          "title": "Storage - Elastic Performance"
+        },
+        {
+          "entry_index": 15,
+          "title": "Storage - Local Storage"
+        },
+        {
+          "entry_index": 16,
+          "title": "Storage - Persistent Volume"
+        },
+        {
+          "entry_index": 17,
+          "title": "Networking - Virtual Cloud Network VCN"
+        },
+        {
+          "entry_index": 18,
+          "title": "Networking - Load Balancer"
+        },
+        {
+          "entry_index": 19,
+          "title": "Networking - Flexible Load Balancer"
+        },
+        {
+          "entry_index": 20,
+          "title": "Networking - DNS"
+        },
+        {
+          "entry_index": 21,
+          "title": "Networking - Customer Premises Equipment CPE"
+        },
+        {
+          "entry_index": 22,
+          "title": "Networking - BYOIP"
+        },
+        {
+          "entry_index": 23,
+          "title": "Networking - IP Pools"
+        },
+        {
+          "entry_index": 24,
+          "title": "Networking - VTAP"
+        },
+        {
+          "entry_index": 25,
+          "title": "Networking - CDN"
+        },
+        {
+          "entry_index": 26,
+          "title": "Networking - Customer Data Center"
+        },
+        {
+          "entry_index": 27,
+          "title": "Networking - Backbone"
+        },
+        {
+          "entry_index": 28,
+          "title": "Networking - Network Switch"
+        },
+        {
+          "entry_index": 29,
+          "title": "Networking - Route Table"
+        },
+        {
+          "entry_index": 30,
+          "title": "Networking - Dynamic Routing Gateway DRG"
+        },
+        {
+          "entry_index": 31,
+          "title": "Networking - Service Gateway"
+        },
+        {
+          "entry_index": 32,
+          "title": "Networking - Internet Gateway"
+        },
+        {
+          "entry_index": 33,
+          "title": "Networking - NAT Gateway"
+        },
+        {
+          "entry_index": 34,
+          "title": "Networking - Remote Peering Gateway"
+        },
+        {
+          "entry_index": 35,
+          "title": "Database"
+        },
+        {
+          "entry_index": 36,
+          "title": "Database - Database System"
+        },
+        {
+          "entry_index": 37,
+          "title": "Database - Autonomous DB"
+        },
+        {
+          "entry_index": 38,
+          "title": "Database - ADB-D"
+        },
+        {
+          "entry_index": 39,
+          "title": "Database - Autonomous Data Warehouse ADW"
+        },
+        {
+          "entry_index": 40,
+          "title": "Database - ADW-D"
+        },
+        {
+          "entry_index": 41,
+          "title": "Database - Autonomous Transaction Processing ATP"
+        },
+        {
+          "entry_index": 42,
+          "title": "Database - ATP-D"
+        },
+        {
+          "entry_index": 43,
+          "title": "Database - Exadata"
+        },
+        {
+          "entry_index": 44,
+          "title": "Database - Exadata C@C"
+        },
+        {
+          "entry_index": 45,
+          "title": "Database - Data Safe"
+        },
+        {
+          "entry_index": 46,
+          "title": "Database - NoSQL"
+        },
+        {
+          "entry_index": 47,
+          "title": "Database - MySQL"
+        },
+        {
+          "entry_index": 48,
+          "title": "Database - RAC"
+        },
+        {
+          "entry_index": 49,
+          "title": "Database - OpenSearch"
+        },
+        {
+          "entry_index": 50,
+          "title": "Database - GoldenGate On-Premises"
+        },
+        {
+          "entry_index": 51,
+          "title": "Database - GoldenGate"
+        },
+        {
+          "entry_index": 52,
+          "title": "Database - GoldenGate Director"
+        },
+        {
+          "entry_index": 53,
+          "title": "Database - GoldenGate Studio"
+        },
+        {
+          "entry_index": 54,
+          "title": "Database - GoldenGate Application Adapter"
+        },
+        {
+          "entry_index": 55,
+          "title": "Database - GoldenGate Plug-in"
+        },
+        {
+          "entry_index": 56,
+          "title": "Database - GoldenGate Stream Analytics"
+        },
+        {
+          "entry_index": 57,
+          "title": "Database - GoldenGate Veridata"
+        },
+        {
+          "entry_index": 58,
+          "title": "Database - GoldenGate Monitor"
+        },
+        {
+          "entry_index": 59,
+          "title": "Database - GoldenGate HP Non-Stop Guardian"
+        },
+        {
+          "entry_index": 60,
+          "title": "Analytics and AI"
+        },
+        {
+          "entry_index": 61,
+          "title": "Analytics and AI - Big Data"
+        },
+        {
+          "entry_index": 62,
+          "title": "Analytics and AI -&nbsp;Data Catalog"
+        },
+        {
+          "entry_index": 63,
+          "title": "Analytics and AI -&nbsp;Data Integration"
+        },
+        {
+          "entry_index": 64,
+          "title": "Analytics and AI -&nbsp;Data Flow"
+        },
+        {
+          "entry_index": 65,
+          "title": "Analytics and AI - Streaming"
+        },
+        {
+          "entry_index": 66,
+          "title": "Analytics and AI - Service Connector Hub"
+        },
+        {
+          "entry_index": 67,
+          "title": "Analytics and AI - Machine Learning"
+        },
+        {
+          "entry_index": 68,
+          "title": "Analytics and AI - Data Science"
+        },
+        {
+          "entry_index": 69,
+          "title": "Analytics and AI - Artificial Intelligence"
+        },
+        {
+          "entry_index": 70,
+          "title": "Analytics and AI - Digital Assistant"
+        },
+        {
+          "entry_index": 71,
+          "title": "Analytics and AI - Essbase"
+        },
+        {
+          "entry_index": 72,
+          "title": "Analytics and AI - Message Listener"
+        },
+        {
+          "entry_index": 73,
+          "title": "Analytics and AI - Message Producer"
+        },
+        {
+          "entry_index": 74,
+          "title": "Developer Services - Container Engine for Kubernetes"
+        },
+        {
+          "entry_index": 75,
+          "title": "Developer Services - Container Registry"
+        },
+        {
+          "entry_index": 76,
+          "title": "Developer Services - Service Mesh"
+        },
+        {
+          "entry_index": 77,
+          "title": "Developer Services - APEX"
+        },
+        {
+          "entry_index": 78,
+          "title": "Developer Services - Private Endpoint IP"
+        },
+        {
+          "entry_index": 79,
+          "title": "Developer Services - API Gateway"
+        },
+        {
+          "entry_index": 80,
+          "title": "Developer Services - API Service"
+        },
+        {
+          "entry_index": 81,
+          "title": "Developer Services - Integrations"
+        },
+        {
+          "entry_index": 82,
+          "title": "Developer Services - Notifications"
+        },
+        {
+          "entry_index": 83,
+          "title": "Developer Services - Email Delivery"
+        },
+        {
+          "entry_index": 84,
+          "title": "Developer Services - Visual Builder"
+        },
+        {
+          "entry_index": 85,
+          "title": "Developer Services - DevOps"
+        },
+        {
+          "entry_index": 86,
+          "title": "Developer Services - Resource Manager"
+        },
+        {
+          "entry_index": 87,
+          "title": "Developer Services - Content Management"
+        },
+        {
+          "entry_index": 88,
+          "title": "Developer Services - Jet"
+        },
+        {
+          "entry_index": 89,
+          "title": "Identity and Security - User"
+        },
+        {
+          "entry_index": 90,
+          "title": "Identity and Security - User"
+        },
+        {
+          "entry_index": 91,
+          "title": "Identity and Security - User"
+        },
+        {
+          "entry_index": 92,
+          "title": "Identity and Security - User Group"
+        },
+        {
+          "entry_index": 93,
+          "title": "Identity and Security - User Group"
+        },
+        {
+          "entry_index": 94,
+          "title": "Identity and Security - User Group"
+        },
+        {
+          "entry_index": 95,
+          "title": "Identity and Security - Policies"
+        },
+        {
+          "entry_index": 96,
+          "title": "Identity and Security - Compartments"
+        },
+        {
+          "entry_index": 97,
+          "title": "Identity and Security - Cloud Guard"
+        },
+        {
+          "entry_index": 98,
+          "title": "Identity and Security - Maximum Security Zone"
+        },
+        {
+          "entry_index": 99,
+          "title": "Identity and Security - Identity"
+        },
+        {
+          "entry_index": 100,
+          "title": "Identity and Security - Threat Intelligence"
+        },
+        {
+          "entry_index": 101,
+          "title": "Identity and Security - Firewall"
+        },
+        {
+          "entry_index": 102,
+          "title": "Identity and Security - WAF"
+        },
+        {
+          "entry_index": 103,
+          "title": "Identity and Security - Certificates"
+        },
+        {
+          "entry_index": 104,
+          "title": "Identity and Security - Vulnerability Scanning"
+        },
+        {
+          "entry_index": 105,
+          "title": "Identity and Security - Vault"
+        },
+        {
+          "entry_index": 106,
+          "title": "Identity and Security - Bastion"
+        },
+        {
+          "entry_index": 107,
+          "title": "Identity and Security - IAM Identity and Access Management"
+        },
+        {
+          "entry_index": 108,
+          "title": "Identity and Security - Security Lists"
+        },
+        {
+          "entry_index": 109,
+          "title": "Identity and Security - DDoS Protection"
+        },
+        {
+          "entry_index": 110,
+          "title": "Identity and Security - Key Vault"
+        },
+        {
+          "entry_index": 111,
+          "title": "Identity and Security - Key Management"
+        },
+        {
+          "entry_index": 112,
+          "title": "Identity and Security - Encryption"
+        },
+        {
+          "entry_index": 113,
+          "title": "Identity and Security - Threat Defense"
+        },
+        {
+          "entry_index": 114,
+          "title": "Identity and Security - NSG"
+        },
+        {
+          "entry_index": 115,
+          "title": "Identity and Security - Active Directory"
+        },
+        {
+          "entry_index": 116,
+          "title": "Observability and Management - Application Performance Management"
+        },
+        {
+          "entry_index": 117,
+          "title": "Observability and Management - Logging"
+        },
+        {
+          "entry_index": 118,
+          "title": "Observability and Management - Search"
+        },
+        {
+          "entry_index": 119,
+          "title": "Observability and Management - Auditing"
+        },
+        {
+          "entry_index": 120,
+          "title": "Observability and Management - Monitoring"
+        },
+        {
+          "entry_index": 121,
+          "title": "Observability and Management - Alarms"
+        },
+        {
+          "entry_index": 122,
+          "title": "Observability and Management - Health Checks"
+        },
+        {
+          "entry_index": 123,
+          "title": "Observability and Management - Logging Analytics"
+        },
+        {
+          "entry_index": 124,
+          "title": "Observability and Management -&nbsp;Events"
+        },
+        {
+          "entry_index": 125,
+          "title": "Observability and Management - Operations Insights"
+        },
+        {
+          "entry_index": 126,
+          "title": "Observability and Management - VCN Flow Logs"
+        },
+        {
+          "entry_index": 127,
+          "title": "Observability and Management - Queuing"
+        },
+        {
+          "entry_index": 128,
+          "title": "Observability and Management - Workflow"
+        },
+        {
+          "entry_index": 129,
+          "title": "Migration - Roving Edge Infrastructure"
+        },
+        {
+          "entry_index": 130,
+          "title": "Migration - Dedicated Region"
+        },
+        {
+          "entry_index": 131,
+          "title": "Governance and Administration - Cloud Advisor"
+        },
+        {
+          "entry_index": 132,
+          "title": "Governance and Administration - Organization"
+        },
+        {
+          "entry_index": 133,
+          "title": "Governance and Administration - License Manager"
+        },
+        {
+          "entry_index": 134,
+          "title": "Governance and Administration - Oracle Cloud Identifier"
+        },
+        {
+          "entry_index": 135,
+          "title": "Governance and Administration - Tagging"
+        },
+        {
+          "entry_index": 136,
+          "title": "Marketplace"
+        },
+        {
+          "entry_index": 137,
+          "title": "Applications - HCM"
+        },
+        {
+          "entry_index": 138,
+          "title": "Applications - ERP"
+        },
+        {
+          "entry_index": 139,
+          "title": "Applications - E-Business Suite"
+        },
+        {
+          "entry_index": 140,
+          "title": "Applications - Supply Chain Planning"
+        },
+        {
+          "entry_index": 141,
+          "title": "Applications - Innovation Management"
+        },
+        {
+          "entry_index": 142,
+          "title": "Applications - Project Financial Management"
+        },
+        {
+          "entry_index": 143,
+          "title": "Applications - Inventory Management"
+        },
+        {
+          "entry_index": 144,
+          "title": "Applications - Product Master Data Management"
+        },
+        {
+          "entry_index": 145,
+          "title": "Applications - BI Cloud Connector"
+        },
+        {
+          "entry_index": 146,
+          "title": "Applications - OCO Subnet"
+        },
+        {
+          "entry_index": 147,
+          "title": "Applications - Engagement"
+        },
+        {
+          "entry_index": 148,
+          "title": "Applications - Order Management"
+        },
+        {
+          "entry_index": 149,
+          "title": "Applications - Procurement"
+        },
+        {
+          "entry_index": 150,
+          "title": "Applications - CPQ"
+        },
+        {
+          "entry_index": 151,
+          "title": "Applications - Manufacturing"
+        },
+        {
+          "entry_index": 152,
+          "title": "Applications - Project Management"
+        },
+        {
+          "entry_index": 153,
+          "title": "Applications - Financials"
+        },
+        {
+          "entry_index": 154,
+          "title": "Applications - Healthcare"
+        },
+        {
+          "entry_index": 155,
+          "title": "Applications - EPM"
+        },
+        {
+          "entry_index": 156,
+          "title": "Applications - Fusion"
+        },
+        {
+          "entry_index": 157,
+          "title": "Cloud"
+        },
+        {
+          "entry_index": 158,
+          "title": "Database Management"
+        },
+        {
+          "entry_index": 159,
+          "title": "Media Flow"
+        },
+        {
+          "entry_index": 160,
+          "title": "Digital Media"
+        },
+        {
+          "entry_index": 161,
+          "title": "Media Streams"
+        },
+        {
+          "entry_index": 162,
+          "title": "Container"
+        },
+        {
+          "entry_index": 163,
+          "title": "Logical - Grouping - Oracle Cloud"
+        },
+        {
+          "entry_index": 164,
+          "title": "Logical - Grouping - Internet"
+        },
+        {
+          "entry_index": 165,
+          "title": "Logical - Grouping - On-Premises"
+        },
+        {
+          "entry_index": 166,
+          "title": "Logical - Grouping - 3rd Party Cloud"
+        },
+        {
+          "entry_index": 167,
+          "title": "Logical - Grouping - Other Group"
+        },
+        {
+          "entry_index": 168,
+          "title": "Logical - Components - OCI Component"
+        },
+        {
+          "entry_index": 169,
+          "title": "Logical - Components - Oracle On-Premises Component"
+        },
+        {
+          "entry_index": 170,
+          "title": "Logical - Components -3rd Party Non- OCI"
+        },
+        {
+          "entry_index": 171,
+          "title": "Logical - Components - Atomic"
+        },
+        {
+          "entry_index": 172,
+          "title": "Logical - Components - Collapsed Composite"
+        },
+        {
+          "entry_index": 173,
+          "title": "Logical - Components - Expanded Composite"
+        },
+        {
+          "entry_index": 174,
+          "title": "Logical - Component Drill Downs - Collapsed Expanded"
+        },
+        {
+          "entry_index": 175,
+          "title": "Logical - Component Drill Downs - Collapsed Expanded example part 1"
+        },
+        {
+          "entry_index": 176,
+          "title": "Logical - Component Drill Downs - Collapsed Expanded left right"
+        },
+        {
+          "entry_index": 177,
+          "title": "Logical - Component Drill Downs - Collapsed Expanded botttom up"
+        },
+        {
+          "entry_index": 178,
+          "title": "Logical - Component Drill Downs - Collapsed Expanded - top down"
+        },
+        {
+          "entry_index": 179,
+          "title": "Logical - Connectors - User Interaction"
+        },
+        {
+          "entry_index": 180,
+          "title": "Logical - Connectors - Dataflow"
+        },
+        {
+          "entry_index": 181,
+          "title": "Logical - Connectors - User Interaction - Labeled vertical"
+        },
+        {
+          "entry_index": 182,
+          "title": "Logical - Connectors - Dataflow - Labeled vertical"
+        },
+        {
+          "entry_index": 183,
+          "title": "Logical - Connectors - User Interaction - Labeled horizontal"
+        },
+        {
+          "entry_index": 184,
+          "title": "Logical - Connectors - Dataflow - Labeled horizontal"
+        },
+        {
+          "entry_index": 185,
+          "title": "Logical - Connector Labels - User Interaction - Number"
+        },
+        {
+          "entry_index": 186,
+          "title": "Logical - Connector Labels - Dataflow - Number"
+        },
+        {
+          "entry_index": 187,
+          "title": "Logical - Connector Labels - User Interaction - Number and Text - vertical"
+        },
+        {
+          "entry_index": 188,
+          "title": "Logical - Connector Labels - Dataflow - Number and Text - vertical"
+        },
+        {
+          "entry_index": 189,
+          "title": "Logical - Connector Labels - User Interaction - Number and Text - horizontal"
+        },
+        {
+          "entry_index": 190,
+          "title": "Logical - Connector Labels - Dataflow - Number and Text - horizontal"
+        },
+        {
+          "entry_index": 191,
+          "title": "Logical - Location Canvas - Full - Horizontal"
+        },
+        {
+          "entry_index": 192,
+          "title": "Logical - Location Canvas - Full - Vertical"
+        },
+        {
+          "entry_index": 193,
+          "title": "Logical - Location Canvas - On-Premises- Horizontal"
+        },
+        {
+          "entry_index": 194,
+          "title": "Logical - Location Canvas - On-Premises- Vertical"
+        },
+        {
+          "entry_index": 195,
+          "title": "Logical - Example - Components with Groups"
+        },
+        {
+          "entry_index": 196,
+          "title": "Logical - Example - On-Premises Components with Groups"
+        },
+        {
+          "entry_index": 197,
+          "title": "Physical - Grouping - VCN"
+        },
+        {
+          "entry_index": 198,
+          "title": "Physical - Grouping - Subnet"
+        },
+        {
+          "entry_index": 199,
+          "title": "Physical - Grouping - Compartment"
+        },
+        {
+          "entry_index": 200,
+          "title": "Physical - Grouping - Tenancy"
+        },
+        {
+          "entry_index": 201,
+          "title": "Physical - Grouping - Tier"
+        },
+        {
+          "entry_index": 202,
+          "title": "Physical - Grouping - OCI Region"
+        },
+        {
+          "entry_index": 203,
+          "title": "Physical - Grouping - Availability Domain"
+        },
+        {
+          "entry_index": 204,
+          "title": "Physical - Grouping - Fault Domain"
+        },
+        {
+          "entry_index": 205,
+          "title": "Physical - Grouping - User Group"
+        },
+        {
+          "entry_index": 206,
+          "title": "Physical - Connector"
+        },
+        {
+          "entry_index": 207,
+          "title": "Physical - Connector - Labeled - Vertical"
+        },
+        {
+          "entry_index": 208,
+          "title": "Physical - Connector - Labeled - Horizontal"
+        },
+        {
+          "entry_index": 209,
+          "title": "Physical - Special Connectors - FastConnect - Vertical"
+        },
+        {
+          "entry_index": 210,
+          "title": "Physical - Special Connectors - FastConnect - Horizontal"
+        },
+        {
+          "entry_index": 211,
+          "title": "Physical - Special Connectors - Site-to-site-VPN - Vertical"
+        },
+        {
+          "entry_index": 212,
+          "title": ""
+        },
+        {
+          "entry_index": 213,
+          "title": "Physical - Special Connectors - Remote Peering - Vertical"
+        },
+        {
+          "entry_index": 214,
+          "title": "Physical - Special Connectors - Remote Peering - Horizontal"
+        },
+        {
+          "entry_index": 215,
+          "title": "Physical - Templates - vertical"
+        },
+        {
+          "entry_index": 216,
+          "title": "Physical - Templates - horizontal"
+        },
+        {
+          "entry_index": 217,
+          "title": "Physical - Templates - horizontal - with FastConnect"
+        },
+        {
+          "entry_index": 218,
+          "title": "Physical - Example - 1"
+        },
+        {
+          "entry_index": 219,
+          "title": "Physical - Example - 2"
+        },
+        {
+          "entry_index": 220,
+          "title": "Physical - Example - 3"
+        },
+        {
+          "entry_index": 221,
+          "title": "Physical - Example - 4"
+        },
+        {
+          "entry_index": 222,
+          "title": "Physical - Example - 5"
+        },
+        {
+          "entry_index": 223,
+          "title": "Physical - Example - 6"
+        }
+      ]
+    },
+    {
+      "file_name": "OCI_Icons.pptx",
+      "size_bytes": 3949330,
+      "sha256": "e18615d90fbb38a3354e3a55d7d8baca59f6ba20de1af0a384addba73ede57ea",
+      "kind": "pptx",
+      "entries": [
+        {
+          "slide_number": 7,
+          "part": "ppt/slides/slide7.xml",
+          "shape_id": "51",
+          "label": "Neutral 1 RGB: 245/244/242 HEX: #F5F4F2 Neutral 3 RGB: 158/152/146 HEX: #9E9892 Bark RGB: 49/45/42 HEX: #312D2A Air RGB: 252/251/250 HEX: #FCFBFA",
+          "element_count": 157
+        },
+        {
+          "slide_number": 8,
+          "part": "ppt/slides/slide8.xml",
+          "shape_id": "51",
+          "label": "Color: Ivy RGB: 117/156/108 HEX: #759C6C Air RGB: 252/251/250 HEX: #FCFBFA Bark RGB: 49/45/42 HEX: #312D2A Oracle Red (O-Red) RGB: 199/70/52 HEX: #C74634",
+          "element_count": 232
+        },
+        {
+          "slide_number": 8,
+          "part": "ppt/slides/slide8.xml",
+          "shape_id": "53",
+          "label": "Ivy RGB: 117/156/108 HEX: #759C6C Air RGB: 252/251/250 HEX: #FCFBFA Bark RGB: 49/45/42 HEX: #312D2A Oracle Red (O-Red) RGB: 199/70/52 HEX: #C74634",
+          "element_count": 160
+        },
+        {
+          "slide_number": 9,
+          "part": "ppt/slides/slide9.xml",
+          "shape_id": "60",
+          "label": "Analytics Integration Data Warehouse EBS",
+          "element_count": 291
+        },
+        {
+          "slide_number": 9,
+          "part": "ppt/slides/slide9.xml",
+          "shape_id": "12",
+          "label": "EBS on Compute DBCS Compute File Storage EBS Drill-down Expansion",
+          "element_count": 790
+        },
+        {
+          "slide_number": 9,
+          "part": "ppt/slides/slide9.xml",
+          "shape_id": "6",
+          "label": "Color: Ivy @ 50% Transparency Ivy RGB: 117/156/108 HEX: #759C6C",
+          "element_count": 137
+        },
+        {
+          "slide_number": 9,
+          "part": "ppt/slides/slide9.xml",
+          "shape_id": "13",
+          "label": "EBS on Compute DBCS Compute File Storage EBS",
+          "element_count": 765
+        },
+        {
+          "slide_number": 10,
+          "part": "ppt/slides/slide10.xml",
+          "shape_id": "87",
+          "label": "Color: Bark RGB: 49/45/42 HEX: #312D2A",
+          "element_count": 107
+        },
+        {
+          "slide_number": 10,
+          "part": "ppt/slides/slide10.xml",
+          "shape_id": "5",
+          "label": "Arrowhead:",
+          "element_count": 88
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "43",
+          "label": "Dataflow",
+          "element_count": 70
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "46",
+          "label": "Connector Label Connector Label Connector Label Connector Label",
+          "element_count": 293
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "47",
+          "label": "Connector Label",
+          "element_count": 73
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "48",
+          "label": "Connector Label Connector Label Connector Label",
+          "element_count": 209
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "49",
+          "label": "Connector Label",
+          "element_count": 66
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "50",
+          "label": "Connector Label",
+          "element_count": 66
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "51",
+          "label": "Connector Label",
+          "element_count": 66
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "60",
+          "label": "Connector Label Connector Label Connector Label Connector Label",
+          "element_count": 293
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "61",
+          "label": "Connector Label",
+          "element_count": 73
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "62",
+          "label": "Connector Label Connector Label Connector Label",
+          "element_count": 209
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "63",
+          "label": "Connector Label",
+          "element_count": 66
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "64",
+          "label": "Connector Label",
+          "element_count": 66
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "65",
+          "label": "Connector Label",
+          "element_count": 66
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "111",
+          "label": "User Interaction",
+          "element_count": 79
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "10",
+          "label": "Color: Neutral 4 RGB: 112/115/110 HEX: #70736E Air RGB: 252/251/250 HEX: #FCFBFA Bark RGB: 49/45/42 HEX: #312D2A Sienna RGB: 174/86/44 HEX: #AE562C",
+          "element_count": 227
+        },
+        {
+          "slide_number": 11,
+          "part": "ppt/slides/slide11.xml",
+          "shape_id": "137",
+          "label": "Neutral 4 RGB: 112/115/110 HEX: #70736E Air RGB: 252/251/250 HEX: #FCFBFA Bark RGB: 49/45/42 HEX: #312D2A Sienna RGB: 174/86/44 HEX: #AE562C",
+          "element_count": 155
+        },
+        {
+          "slide_number": 12,
+          "part": "ppt/slides/slide12.xml",
+          "shape_id": "11",
+          "label": "OCI Region On-Premises Internet 3rd Party Cloud",
+          "element_count": 183
+        },
+        {
+          "slide_number": 14,
+          "part": "ppt/slides/slide14.xml",
+          "shape_id": "23",
+          "label": "User",
+          "element_count": 68
+        },
+        {
+          "slide_number": 14,
+          "part": "ppt/slides/slide14.xml",
+          "shape_id": "28",
+          "label": "User",
+          "element_count": 68
+        },
+        {
+          "slide_number": 15,
+          "part": "ppt/slides/slide15.xml",
+          "shape_id": "23",
+          "label": "User",
+          "element_count": 68
+        },
+        {
+          "slide_number": 15,
+          "part": "ppt/slides/slide15.xml",
+          "shape_id": "28",
+          "label": "ser",
+          "element_count": 68
+        },
+        {
+          "slide_number": 16,
+          "part": "ppt/slides/slide16.xml",
+          "shape_id": "11",
+          "label": "Tip! Additional annotations or notes can be ordered or not. A sequel of events is depicted by numbers, while an unordered list of notes is depicted by letters.",
+          "element_count": 65
+        },
+        {
+          "slide_number": 18,
+          "part": "ppt/slides/slide18.xml",
+          "shape_id": "43",
+          "label": "VCN",
+          "element_count": 80
+        },
+        {
+          "slide_number": 19,
+          "part": "ppt/slides/slide19.xml",
+          "shape_id": "16",
+          "label": "Optional",
+          "element_count": 158
+        },
+        {
+          "slide_number": 19,
+          "part": "ppt/slides/slide19.xml",
+          "shape_id": "20",
+          "label": "Oracle Services Network",
+          "element_count": 2313
+        },
+        {
+          "slide_number": 19,
+          "part": "ppt/slides/slide19.xml",
+          "shape_id": "37",
+          "label": "Metro Area or Realm",
+          "element_count": 232
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "49",
+          "label": "Bare Metal Compute Database",
+          "element_count": 183
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "50",
+          "label": "Bare Metal Compute",
+          "element_count": 75
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "82",
+          "label": "Database",
+          "element_count": 64
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "104",
+          "label": "Color: Bark RGB: 49/45/42 HEX: #312D2A",
+          "element_count": 107
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "108",
+          "label": "Arrowhead:",
+          "element_count": 88
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "122",
+          "label": "Bare Metal Compute Database Database",
+          "element_count": 289
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "55",
+          "label": "Bare Metal Compute",
+          "element_count": 75
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "112",
+          "label": "Database",
+          "element_count": 64
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "115",
+          "label": "Database",
+          "element_count": 64
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "94",
+          "label": "Bare Metal Compute",
+          "element_count": 78
+        },
+        {
+          "slide_number": 20,
+          "part": "ppt/slides/slide20.xml",
+          "shape_id": "100",
+          "label": "Database",
+          "element_count": 67
+        },
+        {
+          "slide_number": 21,
+          "part": "ppt/slides/slide21.xml",
+          "shape_id": "48",
+          "label": "Color: Bark RGB: 49/45/42 HEX: #312D2A",
+          "element_count": 107
+        },
+        {
+          "slide_number": 21,
+          "part": "ppt/slides/slide21.xml",
+          "shape_id": "9",
+          "label": "Remote Peering",
+          "element_count": 98
+        },
+        {
+          "slide_number": 21,
+          "part": "ppt/slides/slide21.xml",
+          "shape_id": "75",
+          "label": "Remote Peering",
+          "element_count": 56
+        },
+        {
+          "slide_number": 21,
+          "part": "ppt/slides/slide21.xml",
+          "shape_id": "12",
+          "label": "FastConnect",
+          "element_count": 104
+        },
+        {
+          "slide_number": 21,
+          "part": "ppt/slides/slide21.xml",
+          "shape_id": "3",
+          "label": "FastConnect",
+          "element_count": 61
+        },
+        {
+          "slide_number": 21,
+          "part": "ppt/slides/slide21.xml",
+          "shape_id": "4",
+          "label": "Local Peering",
+          "element_count": 71
+        },
+        {
+          "slide_number": 21,
+          "part": "ppt/slides/slide21.xml",
+          "shape_id": "132",
+          "label": "Site-to-Site VPN or FastConnect",
+          "element_count": 83
+        },
+        {
+          "slide_number": 21,
+          "part": "ppt/slides/slide21.xml",
+          "shape_id": "10",
+          "label": "Site-to-Site VPN",
+          "element_count": 1204
+        },
+        {
+          "slide_number": 21,
+          "part": "ppt/slides/slide21.xml",
+          "shape_id": "147",
+          "label": "Site-to-Site VPN",
+          "element_count": 1162
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "83",
+          "label": "DRG",
+          "element_count": 58
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "42",
+          "label": "DRG",
+          "element_count": 58
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "249",
+          "label": "Remote Peering",
+          "element_count": 56
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "48",
+          "label": "DRG",
+          "element_count": 58
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "9",
+          "label": "CPE",
+          "element_count": 63
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "237",
+          "label": "Ocean RGB: 44/89/103 HEX: #2C5967 Sienna RGB: 174/86/44 HEX: #AE562C Air RGB: 252/251/250 HEX: #FCFBFA Bark RGB: 49/45/42 HEX: #312D2A Color:",
+          "element_count": 216
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "184",
+          "label": "DRG",
+          "element_count": 58
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "198",
+          "label": "CPE",
+          "element_count": 63
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "137",
+          "label": "LPG",
+          "element_count": 438
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "119",
+          "label": "LPG",
+          "element_count": 438
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "43",
+          "label": "Site-to-Site VPN or FastConnect",
+          "element_count": 83
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "208",
+          "label": "CPE",
+          "element_count": 63
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "214",
+          "label": "DRG",
+          "element_count": 58
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "28",
+          "label": "Site-to-Site VPN",
+          "element_count": 1162
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "19",
+          "label": "Do use Shift + Scale",
+          "element_count": 174
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "25",
+          "label": "Do not rotate or flip",
+          "element_count": 109
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "30",
+          "label": "Do not embellish",
+          "element_count": 107
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "35",
+          "label": "Do not add effects",
+          "element_count": 115
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "40",
+          "label": "Do not skew",
+          "element_count": 109
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "45",
+          "label": "Ocean on dark background color",
+          "element_count": 132
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "50",
+          "label": "Do not use unapproved colors",
+          "element_count": 88
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "54",
+          "label": "Do not use more than one color on a single icon",
+          "element_count": 99
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "59",
+          "label": "Sienna",
+          "element_count": 60
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "62",
+          "label": "Ocean",
+          "element_count": 209
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "66",
+          "label": "Do not use icons without labels",
+          "element_count": 142
+        },
+        {
+          "slide_number": 23,
+          "part": "ppt/slides/slide23.xml",
+          "shape_id": "73",
+          "label": "Ocean RGB: 44/89/103 HEX: #2C5967 Sienna RGB: 174/86/44 HEX: #AE562C Color:",
+          "element_count": 142
+        },
+        {
+          "slide_number": 24,
+          "part": "ppt/slides/slide24.xml",
+          "shape_id": "9",
+          "label": "OCI Region On-Premises Internet 3rd Party Cloud",
+          "element_count": 189
+        },
+        {
+          "slide_number": 25,
+          "part": "ppt/slides/slide25.xml",
+          "shape_id": "2",
+          "label": "OCI Region On-Premises Internet 3rd Party Cloud",
+          "element_count": 190
+        },
+        {
+          "slide_number": 27,
+          "part": "ppt/slides/slide27.xml",
+          "shape_id": "14",
+          "label": "Customer Premises Equipment",
+          "element_count": 1188
+        },
+        {
+          "slide_number": 27,
+          "part": "ppt/slides/slide27.xml",
+          "shape_id": "30",
+          "label": "Customer Premises Equipment",
+          "element_count": 106
+        },
+        {
+          "slide_number": 27,
+          "part": "ppt/slides/slide27.xml",
+          "shape_id": "11",
+          "label": "DRG",
+          "element_count": 886
+        },
+        {
+          "slide_number": 28,
+          "part": "ppt/slides/slide28.xml",
+          "shape_id": "7",
+          "label": "Subnet A 00.0.00.0/00 Subnet A 00.0.00.0/00",
+          "element_count": 131
+        },
+        {
+          "slide_number": 28,
+          "part": "ppt/slides/slide28.xml",
+          "shape_id": "26",
+          "label": "DRG",
+          "element_count": 886
+        },
+        {
+          "slide_number": 28,
+          "part": "ppt/slides/slide28.xml",
+          "shape_id": "38",
+          "label": "Customer Premises Equipment",
+          "element_count": 1188
+        },
+        {
+          "slide_number": 28,
+          "part": "ppt/slides/slide28.xml",
+          "shape_id": "40",
+          "label": "Customer Premises Equipment",
+          "element_count": 106
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "87",
+          "label": "Auditing",
+          "element_count": 67
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "90",
+          "label": "Identity & Access Management",
+          "element_count": 76
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "113",
+          "label": "Virtual Machine",
+          "element_count": 88
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "124",
+          "label": "Object Storage",
+          "element_count": 67
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "147",
+          "label": "Database System",
+          "element_count": 643
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "6",
+          "label": "DRG Customer Premises Equipment Site-to-Site VPN",
+          "element_count": 3327
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "91",
+          "label": "DRG",
+          "element_count": 886
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "110",
+          "label": "Customer Premises Equipment",
+          "element_count": 1188
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "128",
+          "label": "Customer Premises Equipment",
+          "element_count": 106
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "166",
+          "label": "Site-to-Site VPN",
+          "element_count": 1207
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "118",
+          "label": "Load Balancer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "141",
+          "label": "Database System",
+          "element_count": 643
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "112",
+          "label": "Virtual Machine",
+          "element_count": 86
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "133",
+          "label": "Service Gateway",
+          "element_count": 1851
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "138",
+          "label": "Service Gateway",
+          "element_count": 76
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "57",
+          "label": "Virtual Machine",
+          "element_count": 83
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "58",
+          "label": "Virtual Machine",
+          "element_count": 85
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "53",
+          "label": "Load Balancer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "44",
+          "label": "Auditing",
+          "element_count": 64
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "47",
+          "label": "Identity & Access Management",
+          "element_count": 73
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "86",
+          "label": "Database System",
+          "element_count": 643
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "92",
+          "label": "Database System",
+          "element_count": 643
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "73",
+          "label": "DRG",
+          "element_count": 886
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "76",
+          "label": "Customer Premises Equipment",
+          "element_count": 1188
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "112",
+          "label": "Customer Premises Equipment",
+          "element_count": 106
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "2",
+          "label": "Site-to-Site VPN",
+          "element_count": 1207
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "131",
+          "label": "Service Gateway",
+          "element_count": 1851
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "133",
+          "label": "Service Gateway",
+          "element_count": 76
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "50",
+          "label": "Object Storage",
+          "element_count": 64
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "151",
+          "label": "Tip! If you use annotation such as A, B, C, etc. explain what it means in the text body or a legend. A B C",
+          "element_count": 219
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "42",
+          "label": "Object Storage",
+          "element_count": 64
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "52",
+          "label": "LB INFO",
+          "element_count": 67
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "59",
+          "label": "LUNATST",
+          "element_count": 67
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "60",
+          "label": "MIZARTST",
+          "element_count": 67
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "58",
+          "label": "SG-0",
+          "element_count": 61
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "69",
+          "label": "Policies",
+          "element_count": 65
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "72",
+          "label": "IDCS",
+          "element_count": 63
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "77",
+          "label": "Auditing",
+          "element_count": 65
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "80",
+          "label": "Logging",
+          "element_count": 65
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "108",
+          "label": "Kuber_Test",
+          "element_count": 66
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "119",
+          "label": "LB WEBF",
+          "element_count": 67
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "123",
+          "label": "LUNAPRD",
+          "element_count": 67
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "126",
+          "label": "MIZARPRD",
+          "element_count": 67
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "129",
+          "label": "Kuber_Prod",
+          "element_count": 66
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "83",
+          "label": "SG-1",
+          "element_count": 61
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "86",
+          "label": "SG-2",
+          "element_count": 61
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "90",
+          "label": "Object Storage",
+          "element_count": 75
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "132",
+          "label": "Public Load Balancer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "142",
+          "label": "WAF",
+          "element_count": 68
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "26",
+          "label": "Admins",
+          "element_count": 63
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "155",
+          "label": "Site-to-Site VPN",
+          "element_count": 1162
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "55",
+          "label": "Bastion Service",
+          "element_count": 64
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "46",
+          "label": "DRG",
+          "element_count": 61
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "138",
+          "label": "Groups",
+          "element_count": 63
+        },
+        {
+          "slide_number": 32,
+          "part": "ppt/slides/slide32.xml",
+          "shape_id": "52",
+          "label": "Public Load Balancer",
+          "element_count": 67
+        },
+        {
+          "slide_number": 32,
+          "part": "ppt/slides/slide32.xml",
+          "shape_id": "99",
+          "label": "Container Registry",
+          "element_count": 77
+        },
+        {
+          "slide_number": 32,
+          "part": "ppt/slides/slide32.xml",
+          "shape_id": "97",
+          "label": "Database System",
+          "element_count": 634
+        },
+        {
+          "slide_number": 32,
+          "part": "ppt/slides/slide32.xml",
+          "shape_id": "11",
+          "label": "Microservices",
+          "element_count": 65
+        },
+        {
+          "slide_number": 32,
+          "part": "ppt/slides/slide32.xml",
+          "shape_id": "102",
+          "label": "User",
+          "element_count": 65
+        },
+        {
+          "slide_number": 32,
+          "part": "ppt/slides/slide32.xml",
+          "shape_id": "123",
+          "label": "Microservices",
+          "element_count": 65
+        },
+        {
+          "slide_number": 32,
+          "part": "ppt/slides/slide32.xml",
+          "shape_id": "126",
+          "label": "Microservices",
+          "element_count": 65
+        },
+        {
+          "slide_number": 32,
+          "part": "ppt/slides/slide32.xml",
+          "shape_id": "4",
+          "label": "OCI Compute",
+          "element_count": 988
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1524",
+          "label": "OCI Compute",
+          "element_count": 988
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1538",
+          "label": "Instance Pools",
+          "element_count": 1153
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1552",
+          "label": "Instance Pools",
+          "element_count": 78
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1555",
+          "label": "OCI Functions",
+          "element_count": 970
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1569",
+          "label": "Virtual Machine",
+          "element_count": 1267
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1584",
+          "label": "Virtual Machine",
+          "element_count": 78
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1587",
+          "label": "Autoscaling",
+          "element_count": 2803
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1627",
+          "label": "Flex VM",
+          "element_count": 2091
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1648",
+          "label": "Burstable VM",
+          "element_count": 4064
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1662",
+          "label": "Virtual Machine GPU",
+          "element_count": 1940
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1681",
+          "label": "Virtual Machine GPU",
+          "element_count": 109
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1685",
+          "label": "Virtual Machine Application",
+          "element_count": 1618
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1701",
+          "label": "Virtual Machine Application",
+          "element_count": 109
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1705",
+          "label": "Virtual Machine generic",
+          "element_count": 1054
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1713",
+          "label": "Virtual Machine generic",
+          "element_count": 109
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "10",
+          "label": "Block Storage",
+          "element_count": 965
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "25",
+          "label": "Block Storage Multiple",
+          "element_count": 1622
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "53",
+          "label": "Block Storage Multiple",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "59",
+          "label": "Back Up/ Restore",
+          "element_count": 1107
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "75",
+          "label": "Back Up/ Restore",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "78",
+          "label": "Block Storage Cloning",
+          "element_count": 1669
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "101",
+          "label": "Block Storage Cloning",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "104",
+          "label": "File Storage",
+          "element_count": 807
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "115",
+          "label": "File Storage Cloning Process",
+          "element_count": 1414
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "130",
+          "label": "File Storage Cloning Process",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "133",
+          "label": "File Storage Clone",
+          "element_count": 1175
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "145",
+          "label": "File Storage Clone",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "148",
+          "label": "File Storage Replica",
+          "element_count": 1224
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "301",
+          "label": "File Storage Replica",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "304",
+          "label": "File Storage Replication Process",
+          "element_count": 2071
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "353",
+          "label": "File Storage Replication Process",
+          "element_count": 109
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "357",
+          "label": "File Storage Snapshots",
+          "element_count": 1580
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "374",
+          "label": "File Storage Snapshots",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "377",
+          "label": "File Storage Mount Target",
+          "element_count": 1839
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "668",
+          "label": "File Storage Mount Target",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "673",
+          "label": "OCI Object Storage",
+          "element_count": 899
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "684",
+          "label": "OCI Object Storage",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "687",
+          "label": "OCI Object Storage Buckets",
+          "element_count": 1269
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "699",
+          "label": "OCI Object Storage Buckets",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "702",
+          "label": "Storage Gateway",
+          "element_count": 1307
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "715",
+          "label": "Storage Gateway",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "718",
+          "label": "Elastic Performance",
+          "element_count": 3039
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "751",
+          "label": "Elastic Performance",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "754",
+          "label": "Local Storage",
+          "element_count": 1901
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "767",
+          "label": "Local Storage",
+          "element_count": 78
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "770",
+          "label": "Persistent Volume",
+          "element_count": 669
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "775",
+          "label": "Persistent Volume",
+          "element_count": 78
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "15",
+          "label": "Load Balancer",
+          "element_count": 1514
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "21",
+          "label": "Load Balancer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "24",
+          "label": "Flexible Load Balancer",
+          "element_count": 2000
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "34",
+          "label": "Flexible Load Balancer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "39",
+          "label": "DNS",
+          "element_count": 789
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "46",
+          "label": "Customer Premises Equipment",
+          "element_count": 1190
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "57",
+          "label": "Customer Premises Equipment",
+          "element_count": 109
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "61",
+          "label": "BYOIP",
+          "element_count": 1549
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "116",
+          "label": "IP Pools",
+          "element_count": 1957
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "294",
+          "label": "VTAP",
+          "element_count": 3148
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "353",
+          "label": "CDN",
+          "element_count": 1386
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "502",
+          "label": "On-premises data center",
+          "element_count": 1479
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "551",
+          "label": "On-premises data center",
+          "element_count": 78
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "554",
+          "label": "Backbone",
+          "element_count": 1153
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "561",
+          "label": "Network Switch",
+          "element_count": 1016
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "570",
+          "label": "Network Switch",
+          "element_count": 78
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "573",
+          "label": "VNIC",
+          "element_count": 2386
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "425",
+          "label": "VCN (Region Identifier)",
+          "element_count": 2566
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "430",
+          "label": "VCN (Region Identifier)",
+          "element_count": 76
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "433",
+          "label": "Route Table",
+          "element_count": 2135
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "462",
+          "label": "Route Table",
+          "element_count": 76
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "465",
+          "label": "Route Table and Security List",
+          "element_count": 1904
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "487",
+          "label": "Route Table and Security List",
+          "element_count": 106
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "491",
+          "label": "DRG",
+          "element_count": 866
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "550",
+          "label": "Service Gateway",
+          "element_count": 1850
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "715",
+          "label": "Service Gateway",
+          "element_count": 76
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "718",
+          "label": "Internet Gateway",
+          "element_count": 4409
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "729",
+          "label": "Internet Gateway",
+          "element_count": 76
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "732",
+          "label": "NAT Gateway",
+          "element_count": 2529
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "740",
+          "label": "NAT Gateway",
+          "element_count": 76
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "753",
+          "label": "Local Peering Gateway",
+          "element_count": 546
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "761",
+          "label": "Local Peering Gateway",
+          "element_count": 76
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "764",
+          "label": "Oracle Services Network",
+          "element_count": 2261
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "770",
+          "label": "Oracle Services Network",
+          "element_count": 106
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "774",
+          "label": "Network Performance Inspector",
+          "element_count": 2947
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "786",
+          "label": "Network Performance Inspector",
+          "element_count": 106
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "2",
+          "label": "Inter-Region Latency",
+          "element_count": 2322
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "4",
+          "label": "Inter-Region Latency",
+          "element_count": 78
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "27",
+          "label": "Network Path Analyzer",
+          "element_count": 6106
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "30",
+          "label": "Network Path Analyzer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "141",
+          "label": "Network Visualizer",
+          "element_count": 3488
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "143",
+          "label": "Network Visualizer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "11",
+          "label": "Oracle Base Database",
+          "element_count": 1863
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "17",
+          "label": "Oracle Base Database",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "21",
+          "label": "Database",
+          "element_count": 633
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "27",
+          "label": "Oracle Autonomous Database",
+          "element_count": 1670
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "34",
+          "label": "Oracle Autonomous Database",
+          "element_count": 109
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "45",
+          "label": "OCI Migrate Autonomous Database",
+          "element_count": 2600
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "82",
+          "label": "OCI Migrate Autonomous Database",
+          "element_count": 109
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "86",
+          "label": "Oracle Autonomous Data Warehouse",
+          "element_count": 3977
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "1926",
+          "label": "Oracle Autonomous Data Warehouse",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "1929",
+          "label": "ADW-D",
+          "element_count": 2428
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "1948",
+          "label": "Oracle Autonomous Transaction Processing ATP",
+          "element_count": 3003
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "291",
+          "label": "Oracle Autonomous Transaction Processing ATP",
+          "element_count": 109
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2082",
+          "label": "ATP-D",
+          "element_count": 3613
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "488",
+          "label": "Oracle Exadata Database Service",
+          "element_count": 2050
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "496",
+          "label": "Oracle Exadata Database Service",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "499",
+          "label": "Oracle Compute Cloud@Customer",
+          "element_count": 4598
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "591",
+          "label": "Oracle Compute Cloud@Customer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2",
+          "label": "Exadata Cloud@Customer",
+          "element_count": 4357
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "610",
+          "label": "Exadata Cloud@Customer",
+          "element_count": 86
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "613",
+          "label": "Exadata Fleet Update",
+          "element_count": 2300
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "635",
+          "label": "Exadata Fleet Update",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2337",
+          "label": "ADB-D",
+          "element_count": 2700
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "666",
+          "label": "ADB Exadata Cloud@Customer",
+          "element_count": 7270
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2460",
+          "label": "ADB Exadata Cloud@Customer",
+          "element_count": 86
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2463",
+          "label": "Data Safe",
+          "element_count": 1925
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "746",
+          "label": "NoSQL Database",
+          "element_count": 1383
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2469",
+          "label": "NoSQL Database",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2472",
+          "label": "MySQL Database System",
+          "element_count": 3400
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2665",
+          "label": "MySQL Database System",
+          "element_count": 109
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2669",
+          "label": "RAC",
+          "element_count": 2664
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "1074",
+          "label": "OpenSearch",
+          "element_count": 4334
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2747",
+          "label": "Database Management",
+          "element_count": 2195
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2763",
+          "label": "Database Management",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2766",
+          "label": "Data Guard",
+          "element_count": 1273
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2776",
+          "label": "Data Guard",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2779",
+          "label": "Data Guard Recovery",
+          "element_count": 2834
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2808",
+          "label": "Data Guard Recovery",
+          "element_count": 109
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2812",
+          "label": "MySQL HeatWave",
+          "element_count": 2632
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2823",
+          "label": "MySQL HeatWave",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2826",
+          "label": "Data Lakehouse",
+          "element_count": 3771
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2837",
+          "label": "Data Lakehouse",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2840",
+          "label": "Data Lake",
+          "element_count": 966
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2848",
+          "label": "Oracle REST Data Services",
+          "element_count": 1162
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2857",
+          "label": "Oracle REST Data Services",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2860",
+          "label": "Database Flashback",
+          "element_count": 3341
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2892",
+          "label": "Database Flashback",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2895",
+          "label": "Migration Workbench",
+          "element_count": 3686
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2923",
+          "label": "Migration Workbench",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2926",
+          "label": "Estate Explorer",
+          "element_count": 1890
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2936",
+          "label": "Estate Explorer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2939",
+          "label": "Oracle Database Migration Service",
+          "element_count": 3876
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2960",
+          "label": "Oracle Database Migration Service",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2963",
+          "label": "OCI Database with PostgreSQL",
+          "element_count": 1805
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2974",
+          "label": "OCI Database with PostgreSQL",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2979",
+          "label": "GoldenGate On-Premises",
+          "element_count": 3418
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2986",
+          "label": "GoldenGate On-Premises",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "2989",
+          "label": "GoldenGate",
+          "element_count": 4056
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3001",
+          "label": "GoldenGate Director",
+          "element_count": 4383
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3011",
+          "label": "GoldenGate Director",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3014",
+          "label": "GoldenGate Studio",
+          "element_count": 4945
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3036",
+          "label": "GoldenGate Studio",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3039",
+          "label": "GoldenGate Application Adapter",
+          "element_count": 4138
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3049",
+          "label": "GoldenGate Application Adapter",
+          "element_count": 109
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3053",
+          "label": "GoldenGate Plug-in",
+          "element_count": 6738
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3073",
+          "label": "GoldenGate Plug-in",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3076",
+          "label": "GoldenGate Stream Analytics",
+          "element_count": 5746
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3090",
+          "label": "GoldenGate Stream Analytics",
+          "element_count": 109
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3094",
+          "label": "GoldenGate Veridata",
+          "element_count": 4891
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3104",
+          "label": "GoldenGate Veridata",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3107",
+          "label": "GoldenGate Monitor",
+          "element_count": 3851
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3117",
+          "label": "GoldenGate Monitor",
+          "element_count": 78
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3120",
+          "label": "GoldenGate HP Non-Stop Guardian",
+          "element_count": 5100
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3133",
+          "label": "GoldenGate HP Non-Stop Guardian",
+          "element_count": 109
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3137",
+          "label": "GoldenGate Free",
+          "element_count": 8409
+        },
+        {
+          "slide_number": 37,
+          "part": "ppt/slides/slide37.xml",
+          "shape_id": "3161",
+          "label": "GoldenGate Free",
+          "element_count": 86
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "18",
+          "label": "Oracle Analytics Cloud",
+          "element_count": 1750
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "54",
+          "label": "Oracle Analytics Cloud",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "75",
+          "label": "Big Data",
+          "element_count": 2131
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "101",
+          "label": "Data Catalog",
+          "element_count": 1856
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "232",
+          "label": "OCI Data Integration",
+          "element_count": 2202
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "248",
+          "label": "OCI Data Integration",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "251",
+          "label": "Data Flow",
+          "element_count": 1208
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "357",
+          "label": "OCI Streaming",
+          "element_count": 2195
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "424",
+          "label": "Service Connector Hub",
+          "element_count": 3658
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "429",
+          "label": "Service Connector Hub",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "432",
+          "label": "OCI Data Science",
+          "element_count": 1899
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "451",
+          "label": "OCI Data Science",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "519",
+          "label": "Machine Learning",
+          "element_count": 2248
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "531",
+          "label": "Machine Learning",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "534",
+          "label": "Artificial Intelligence",
+          "element_count": 2125
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "539",
+          "label": "Artificial Intelligence",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "542",
+          "label": "Digital Assistant",
+          "element_count": 1832
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "554",
+          "label": "Digital Assistant",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "557",
+          "label": "Document Understanding",
+          "element_count": 2778
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "576",
+          "label": "Document Understanding",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "581",
+          "label": "Essbase",
+          "element_count": 1249
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "597",
+          "label": "Message Listener",
+          "element_count": 1894
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "610",
+          "label": "Message Listener",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "613",
+          "label": "Message Producer",
+          "element_count": 1795
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "622",
+          "label": "Message Producer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "625",
+          "label": "Forecasting",
+          "element_count": 4189
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "646",
+          "label": "OCI Generative AI",
+          "element_count": 1957
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "656",
+          "label": "OCI Generative AI",
+          "element_count": 78
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "659",
+          "label": "OCI Language",
+          "element_count": 2527
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "678",
+          "label": "OCI Generative AI",
+          "element_count": 1910
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "689",
+          "label": "OCI Speech",
+          "element_count": 2706
+        },
+        {
+          "slide_number": 38,
+          "part": "ppt/slides/slide38.xml",
+          "shape_id": "707",
+          "label": "OCI Vision",
+          "element_count": 1236
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "86",
+          "label": "OCI Container Engine for Kubernetes",
+          "element_count": 1124
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "191",
+          "label": "OCI Container Engine for Kubernetes",
+          "element_count": 78
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "219",
+          "label": "OCI Container Registry",
+          "element_count": 1013
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "287",
+          "label": "OCI Container Registry",
+          "element_count": 78
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "418",
+          "label": "Container",
+          "element_count": 1534
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "434",
+          "label": "Multiple Containers",
+          "element_count": 1845
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "545",
+          "label": "Multiple Containers",
+          "element_count": 78
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "548",
+          "label": "Container Instances",
+          "element_count": 1740
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "652",
+          "label": "Container Instances",
+          "element_count": 78
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "655",
+          "label": "Service Mesh",
+          "element_count": 2993
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "666",
+          "label": "APEX",
+          "element_count": 1427
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "873",
+          "label": "Private Endpoint IP",
+          "element_count": 1086
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "880",
+          "label": "Private Endpoint IP",
+          "element_count": 78
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "883",
+          "label": "API Gateway",
+          "element_count": 1243
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "919",
+          "label": "API Service",
+          "element_count": 1379
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "925",
+          "label": "Integration",
+          "element_count": 2642
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "934",
+          "label": "Notifications",
+          "element_count": 3328
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "973",
+          "label": "Visual Builder",
+          "element_count": 4269
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "986",
+          "label": "DevOps",
+          "element_count": 3747
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "998",
+          "label": "Content Management",
+          "element_count": 1086
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1005",
+          "label": "Content Management",
+          "element_count": 78
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1008",
+          "label": "Resource Manager",
+          "element_count": 3294
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1032",
+          "label": "Resource Manager",
+          "element_count": 78
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1035",
+          "label": "Email Delivery",
+          "element_count": 1592
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1048",
+          "label": "Jet",
+          "element_count": 721
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1056",
+          "label": "Logic Flow",
+          "element_count": 1516
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1065",
+          "label": "Application Dependency Management",
+          "element_count": 1792
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1076",
+          "label": "Application Dependency Management",
+          "element_count": 109
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1080",
+          "label": "OKE Virtual Node",
+          "element_count": 1663
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1096",
+          "label": "OKE Virtual Node",
+          "element_count": 78
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1099",
+          "label": "OCI Process Automation",
+          "element_count": 2760
+        },
+        {
+          "slide_number": 39,
+          "part": "ppt/slides/slide39.xml",
+          "shape_id": "1117",
+          "label": "OCI Process Automation",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "9",
+          "label": "Oracle Identity Cloud Service",
+          "element_count": 1845
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "34",
+          "label": "Oracle Identity Cloud Service",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "37",
+          "label": "IAM",
+          "element_count": 1224
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "54",
+          "label": "User",
+          "element_count": 965
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "60",
+          "label": "User",
+          "element_count": 986
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "105",
+          "label": "User",
+          "element_count": 1392
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "112",
+          "label": "User Group",
+          "element_count": 2549
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "125",
+          "label": "User Group",
+          "element_count": 2451
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "140",
+          "label": "User Group",
+          "element_count": 2635
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "154",
+          "label": "Policies",
+          "element_count": 1900
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "323",
+          "label": "Compartments",
+          "element_count": 1106
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "333",
+          "label": "Cloud Guard",
+          "element_count": 1107
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "381",
+          "label": "Maximum Security Zone",
+          "element_count": 2299
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "588",
+          "label": "Maximum Security Zone",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "603",
+          "label": "Threat Intelligence",
+          "element_count": 1525
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "659",
+          "label": "Threat Intelligence",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "663",
+          "label": "Firewall",
+          "element_count": 3164
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "671",
+          "label": "WAF",
+          "element_count": 1412
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "776",
+          "label": "Certificates",
+          "element_count": 1703
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "787",
+          "label": "Vulnerability Scanning",
+          "element_count": 1166
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "798",
+          "label": "Vulnerability Scanning",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "833",
+          "label": "Vault",
+          "element_count": 1738
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "847",
+          "label": "Bastion",
+          "element_count": 2819
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "888",
+          "label": "Security Lists",
+          "element_count": 1046
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "901",
+          "label": "Security Lists",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "904",
+          "label": "DDoS Protection",
+          "element_count": 2000
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "926",
+          "label": "DDoS Protection",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "929",
+          "label": "Key Vault",
+          "element_count": 1437
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "943",
+          "label": "Key Vault",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "948",
+          "label": "Key Management",
+          "element_count": 733
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "956",
+          "label": "Key Management",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "959",
+          "label": "Encryption",
+          "element_count": 788
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "968",
+          "label": "Threat Defense",
+          "element_count": 1736
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "981",
+          "label": "Threat Defense",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "984",
+          "label": "NSG",
+          "element_count": 599
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "990",
+          "label": "Active Directory",
+          "element_count": 2885
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "996",
+          "label": "Active Directory",
+          "element_count": 78
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "999",
+          "label": "Security Lists",
+          "element_count": 1046
+        },
+        {
+          "slide_number": 40,
+          "part": "ppt/slides/slide40.xml",
+          "shape_id": "1012",
+          "label": "Security Lists",
+          "element_count": 78
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "12",
+          "label": "Application Performance Monitoring",
+          "element_count": 2038
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "20",
+          "label": "Application Performance Monitoring",
+          "element_count": 109
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "31",
+          "label": "Logging",
+          "element_count": 2924
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "525",
+          "label": "Search",
+          "element_count": 2002
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "110",
+          "label": "Auditing",
+          "element_count": 804
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "557",
+          "label": "Monitoring",
+          "element_count": 897
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "566",
+          "label": "Alarms",
+          "element_count": 1922
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "147",
+          "label": "Health Checks",
+          "element_count": 1386
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "190",
+          "label": "Health Checks",
+          "element_count": 78
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "577",
+          "label": "Logging Analytics",
+          "element_count": 2102
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "589",
+          "label": "Logging Analytics",
+          "element_count": 78
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "592",
+          "label": "Events",
+          "element_count": 1477
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "599",
+          "label": "Operations Insights",
+          "element_count": 1808
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "605",
+          "label": "Operations Insights",
+          "element_count": 78
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "608",
+          "label": "VCN Flow Logs",
+          "element_count": 2372
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "617",
+          "label": "VCN Flow Logs",
+          "element_count": 78
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "620",
+          "label": "OCI Queue",
+          "element_count": 2096
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "640",
+          "label": "Workflow",
+          "element_count": 1602
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "647",
+          "label": "Full Stack Disaster Recovery",
+          "element_count": 2731
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "660",
+          "label": "Full Stack Disaster Recovery",
+          "element_count": 109
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "9",
+          "label": "Roving Edge Service",
+          "element_count": 2907
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "84",
+          "label": "Roving Edge Service",
+          "element_count": 78
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "87",
+          "label": "Roving Edge Device (RED)",
+          "element_count": 2550
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "107",
+          "label": "Roving Edge Device (RED)",
+          "element_count": 78
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "111",
+          "label": "Roving Edge Ultra",
+          "element_count": 2688
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "129",
+          "label": "Roving Edge Ultra",
+          "element_count": 78
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "132",
+          "label": "Roving Edge Infrastructure",
+          "element_count": 2653
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "145",
+          "label": "Roving Edge Infrastructure",
+          "element_count": 78
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "148",
+          "label": "Dedicated Region",
+          "element_count": 3075
+        },
+        {
+          "slide_number": 42,
+          "part": "ppt/slides/slide42.xml",
+          "shape_id": "166",
+          "label": "Dedicated Region",
+          "element_count": 78
+        },
+        {
+          "slide_number": 43,
+          "part": "ppt/slides/slide43.xml",
+          "shape_id": "9",
+          "label": "Data Transfer",
+          "element_count": 957
+        },
+        {
+          "slide_number": 43,
+          "part": "ppt/slides/slide43.xml",
+          "shape_id": "15",
+          "label": "Data Transfer",
+          "element_count": 78
+        },
+        {
+          "slide_number": 43,
+          "part": "ppt/slides/slide43.xml",
+          "shape_id": "18",
+          "label": "Database Migration",
+          "element_count": 2133
+        },
+        {
+          "slide_number": 43,
+          "part": "ppt/slides/slide43.xml",
+          "shape_id": "100",
+          "label": "Database Migration",
+          "element_count": 78
+        },
+        {
+          "slide_number": 43,
+          "part": "ppt/slides/slide43.xml",
+          "shape_id": "2",
+          "label": "Oracle Cloud Migration Advisor",
+          "element_count": 2877
+        },
+        {
+          "slide_number": 43,
+          "part": "ppt/slides/slide43.xml",
+          "shape_id": "5",
+          "label": "Oracle Cloud Migration Advisor",
+          "element_count": 78
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "9",
+          "label": "Cloud Advisor",
+          "element_count": 2429
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "24",
+          "label": "Cloud Advisor",
+          "element_count": 78
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "27",
+          "label": "Organization",
+          "element_count": 1789
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "243",
+          "label": "License Manager",
+          "element_count": 2088
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "306",
+          "label": "License Manager",
+          "element_count": 78
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "309",
+          "label": "Oracle Cloud Identifier",
+          "element_count": 1209
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "97",
+          "label": "Oracle Cloud Identifier",
+          "element_count": 78
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "100",
+          "label": "Tagging",
+          "element_count": 868
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "112",
+          "label": "Cloud Migrations",
+          "element_count": 1683
+        },
+        {
+          "slide_number": 44,
+          "part": "ppt/slides/slide44.xml",
+          "shape_id": "126",
+          "label": "Cloud Migrations",
+          "element_count": 78
+        },
+        {
+          "slide_number": 45,
+          "part": "ppt/slides/slide45.xml",
+          "shape_id": "7",
+          "label": "Marketplace",
+          "element_count": 1191
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "391",
+          "label": "HCM",
+          "element_count": 2774
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "735",
+          "label": "Oracle SOA Suite",
+          "element_count": 2773
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "840",
+          "label": "Oracle SOA Suite",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "843",
+          "label": "ERP",
+          "element_count": 1753
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "854",
+          "label": "E-Business Suite",
+          "element_count": 2897
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "926",
+          "label": "E-Business Suite",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "929",
+          "label": "Supply Chain Planning",
+          "element_count": 3152
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "940",
+          "label": "Supply Chain Planning",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "943",
+          "label": "Innovation Management",
+          "element_count": 2196
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "954",
+          "label": "Innovation Management",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "957",
+          "label": "Project Financial Managment",
+          "element_count": 2049
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "965",
+          "label": "Project Financial Managment",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "968",
+          "label": "Inventory Management",
+          "element_count": 2505
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "984",
+          "label": "Inventory Management",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "987",
+          "label": "Product Master Data Management",
+          "element_count": 1779
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "994",
+          "label": "Product Master Data Management",
+          "element_count": 109
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "998",
+          "label": "BI Cloud Connector",
+          "element_count": 2012
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1009",
+          "label": "BI Cloud Connector",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1012",
+          "label": "Cloud Operations",
+          "element_count": 1682
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1017",
+          "label": "Cloud Operations",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1020",
+          "label": "Engagement",
+          "element_count": 2807
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1052",
+          "label": "Order Management",
+          "element_count": 2103
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1061",
+          "label": "Order Management",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1064",
+          "label": "Procurement",
+          "element_count": 3043
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1077",
+          "label": "CPQ",
+          "element_count": 2410
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1088",
+          "label": "Manufacturing",
+          "element_count": 2993
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1103",
+          "label": "Project Management",
+          "element_count": 1752
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1110",
+          "label": "Project Management",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1113",
+          "label": "Financials",
+          "element_count": 2195
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1132",
+          "label": "Healthcare",
+          "element_count": 2055
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1143",
+          "label": "EPM",
+          "element_count": 2921
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1169",
+          "label": "Fusion",
+          "element_count": 1233
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1175",
+          "label": "CRM",
+          "element_count": 1223
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1190",
+          "label": "Media Flow",
+          "element_count": 2585
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1201",
+          "label": "Media Flow",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1204",
+          "label": "Digital Media",
+          "element_count": 1293
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1213",
+          "label": "Digital Media",
+          "element_count": 78
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1216",
+          "label": "Media Streams",
+          "element_count": 1925
+        },
+        {
+          "slide_number": 46,
+          "part": "ppt/slides/slide46.xml",
+          "shape_id": "1232",
+          "label": "Media Streams",
+          "element_count": 78
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "863",
+          "label": "Cloud Native Environment",
+          "element_count": 3733
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "884",
+          "label": "Cloud Native Environment",
+          "element_count": 78
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "887",
+          "label": "Private Cloud",
+          "element_count": 2783
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "918",
+          "label": "Private Cloud",
+          "element_count": 78
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "921",
+          "label": "Transaction Manager",
+          "element_count": 1805
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "935",
+          "label": "Transaction Manager",
+          "element_count": 78
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "938",
+          "label": "Data Integrator",
+          "element_count": 1962
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "947",
+          "label": "Data Integrator",
+          "element_count": 78
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "950",
+          "label": "Blockchain",
+          "element_count": 2082
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "956",
+          "label": "Remote Agent",
+          "element_count": 1976
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "965",
+          "label": "Remote Agent",
+          "element_count": 78
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "968",
+          "label": "IoT",
+          "element_count": 1838
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "974",
+          "label": "OCI Multicloud",
+          "element_count": 2985
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "1003",
+          "label": "Other Oracle Cloud Service",
+          "element_count": 1151
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "1008",
+          "label": "Other Oracle Cloud Service",
+          "element_count": 78
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "1011",
+          "label": "Internet",
+          "element_count": 2786
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "1020",
+          "label": "Content Delivery Network Service",
+          "element_count": 3896
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "1045",
+          "label": "Content Delivery Network Service",
+          "element_count": 78
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "1048",
+          "label": "Zero Data Loss Recovery Appliance",
+          "element_count": 1454
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "1066",
+          "label": "Zero Data Loss Recovery Appliance",
+          "element_count": 78
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "1069",
+          "label": "Cross Domain",
+          "element_count": 2562
+        },
+        {
+          "slide_number": 47,
+          "part": "ppt/slides/slide47.xml",
+          "shape_id": "1092",
+          "label": "Cross Domain",
+          "element_count": 78
+        }
+      ]
+    }
+  ]
+}

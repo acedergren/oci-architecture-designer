@@ -1,0 +1,1287 @@
+{
+  "partial_mapping": true,
+  "artwork_included": false,
+  "source_hashes": {
+    "drawio": "b544991da988625e147dbeb7623bacc1be96699e2415d7f4d548f0d2a532d59e",
+    "library": "e098244928cdd5257c1bc4696cf9f46fd289b4195208d699e5392bf79de69555",
+    "pptx": "e18615d90fbb38a3354e3a55d7d8baca59f6ba20de1af0a384addba73ede57ea"
+  },
+  "mappings": [
+    {
+      "service_meaning": "Compute instance pool",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-197",
+          "label": "Instance Pools"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1538",
+          "label": "Instance Pools"
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1552",
+          "label": "Instance Pools"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "OCI Functions",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-198",
+          "label": "OCI Functions"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1555",
+          "label": "OCI Functions"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Compute virtual machine",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-199",
+          "label": "Virtual Machine"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "113",
+          "label": "Virtual Machine"
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "112",
+          "label": "Virtual Machine"
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "57",
+          "label": "Virtual Machine"
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "58",
+          "label": "Virtual Machine"
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1569",
+          "label": "Virtual Machine"
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1584",
+          "label": "Virtual Machine"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Generic virtual machine",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-200",
+          "label": "Virtual Machine (generic use)"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1705",
+          "label": "Virtual Machine generic"
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1713",
+          "label": "Virtual Machine generic"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Application virtual machine",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-201",
+          "label": "Virtual Machine Application"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1685",
+          "label": "Virtual Machine Application"
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1701",
+          "label": "Virtual Machine Application"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "GPU virtual machine",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-202",
+          "label": "Virtual Machine GPU"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1662",
+          "label": "Virtual Machine GPU"
+        },
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1681",
+          "label": "Virtual Machine GPU"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Burstable virtual machine",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-203",
+          "label": "Burstable VM"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1648",
+          "label": "Burstable VM"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Flex virtual machine",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-204",
+          "label": "Flex VM"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1627",
+          "label": "Flex VM"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Autoscaling",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-205",
+          "label": "Autoscaling"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 34,
+          "part": "ppt/slides/slide34.xml",
+          "shape_id": "1587",
+          "label": "Autoscaling"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Block Storage",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-497",
+          "label": "Block Storage"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "10",
+          "label": "Block Storage"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Multiple block volumes",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-498",
+          "label": "Block Storage Multiple"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "25",
+          "label": "Block Storage Multiple"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "53",
+          "label": "Block Storage Multiple"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Block backup and restore",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-499",
+          "label": "Back Up/ Restore"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "59",
+          "label": "Back Up/ Restore"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "75",
+          "label": "Back Up/ Restore"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Block cloning",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-500",
+          "label": "Block Storage Cloning"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "78",
+          "label": "Block Storage Cloning"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "101",
+          "label": "Block Storage Cloning"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "File Storage",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-501",
+          "label": "File Storage"
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-502",
+          "label": "File Storage"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "104",
+          "label": "File Storage"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "File clone",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-503",
+          "label": "File Storage Clone"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "133",
+          "label": "File Storage Clone"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "145",
+          "label": "File Storage Clone"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "File replica",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-504",
+          "label": "File Storage Replica"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "148",
+          "label": "File Storage Replica"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "301",
+          "label": "File Storage Replica"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "File replication",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-505",
+          "label": "File Storage Replication Process"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "304",
+          "label": "File Storage Replication Process"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "353",
+          "label": "File Storage Replication Process"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "File snapshots",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-506",
+          "label": "File Storage Snapshots"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "357",
+          "label": "File Storage Snapshots"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "374",
+          "label": "File Storage Snapshots"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "File mount target",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-507",
+          "label": "File Storage Mount Target"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "377",
+          "label": "File Storage Mount Target"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "668",
+          "label": "File Storage Mount Target"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Object Storage buckets",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-509",
+          "label": "OCI Object Storage Buckets"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "687",
+          "label": "OCI Object Storage Buckets"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "699",
+          "label": "OCI Object Storage Buckets"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Storage Gateway",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-510",
+          "label": "Storage Gateway"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "702",
+          "label": "Storage Gateway"
+        },
+        {
+          "slide_number": 35,
+          "part": "ppt/slides/slide35.xml",
+          "shape_id": "715",
+          "label": "Storage Gateway"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Load Balancer",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-834",
+          "label": "Load Balancer"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "118",
+          "label": "Load Balancer"
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "53",
+          "label": "Load Balancer"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "15",
+          "label": "Load Balancer"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "21",
+          "label": "Load Balancer"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Flexible Load Balancer",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-835",
+          "label": "Flexible Load Balancer"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "24",
+          "label": "Flexible Load Balancer"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "34",
+          "label": "Flexible Load Balancer"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "DNS",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-836",
+          "label": "DNS"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "39",
+          "label": "DNS"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Customer Premises Equipment",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-837",
+          "label": "Customer Premises Equipment"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 27,
+          "part": "ppt/slides/slide27.xml",
+          "shape_id": "14",
+          "label": "Customer Premises Equipment"
+        },
+        {
+          "slide_number": 27,
+          "part": "ppt/slides/slide27.xml",
+          "shape_id": "30",
+          "label": "Customer Premises Equipment"
+        },
+        {
+          "slide_number": 28,
+          "part": "ppt/slides/slide28.xml",
+          "shape_id": "38",
+          "label": "Customer Premises Equipment"
+        },
+        {
+          "slide_number": 28,
+          "part": "ppt/slides/slide28.xml",
+          "shape_id": "40",
+          "label": "Customer Premises Equipment"
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "110",
+          "label": "Customer Premises Equipment"
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "128",
+          "label": "Customer Premises Equipment"
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "76",
+          "label": "Customer Premises Equipment"
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "112",
+          "label": "Customer Premises Equipment"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "46",
+          "label": "Customer Premises Equipment"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "57",
+          "label": "Customer Premises Equipment"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "VNIC",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-847",
+          "label": "VNIC"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "573",
+          "label": "VNIC"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "VCN identifier",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-849",
+          "label": "VCN (Region Identifier)"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "425",
+          "label": "VCN (Region Identifier)"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "430",
+          "label": "VCN (Region Identifier)"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Route table",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-850",
+          "label": "Route Table"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "433",
+          "label": "Route Table"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "462",
+          "label": "Route Table"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Combined route table and security list label",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-851",
+          "label": "Route Table and Security List"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "465",
+          "label": "Route Table and Security List"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "487",
+          "label": "Route Table and Security List"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Dynamic Routing Gateway",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-852",
+          "label": "DRG"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "83",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "42",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "48",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "184",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 22,
+          "part": "ppt/slides/slide22.xml",
+          "shape_id": "214",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 27,
+          "part": "ppt/slides/slide27.xml",
+          "shape_id": "11",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 28,
+          "part": "ppt/slides/slide28.xml",
+          "shape_id": "26",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "91",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "73",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "46",
+          "label": "DRG"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "491",
+          "label": "DRG"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Service Gateway",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-853",
+          "label": "Service Gateway"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "133",
+          "label": "Service Gateway"
+        },
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "138",
+          "label": "Service Gateway"
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "131",
+          "label": "Service Gateway"
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "133",
+          "label": "Service Gateway"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "550",
+          "label": "Service Gateway"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "715",
+          "label": "Service Gateway"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Internet Gateway",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-854",
+          "label": "Internet Gateway"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "718",
+          "label": "Internet Gateway"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "729",
+          "label": "Internet Gateway"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "NAT Gateway",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-855",
+          "label": "NAT Gateway"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "732",
+          "label": "NAT Gateway"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "740",
+          "label": "NAT Gateway"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Local Peering Gateway",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-856",
+          "label": "Local Peering Gateway"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "753",
+          "label": "Local Peering Gateway"
+        },
+        {
+          "slide_number": 36,
+          "part": "ppt/slides/slide36.xml",
+          "shape_id": "761",
+          "label": "Local Peering Gateway"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Application Performance Monitoring",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3623",
+          "label": "Application Performance Monitoring"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "12",
+          "label": "Application Performance Monitoring"
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "20",
+          "label": "Application Performance Monitoring"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Logging",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3624",
+          "label": "Logging"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "80",
+          "label": "Logging"
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "31",
+          "label": "Logging"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Audit",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3626",
+          "label": "Auditing"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 29,
+          "part": "ppt/slides/slide29.xml",
+          "shape_id": "87",
+          "label": "Auditing"
+        },
+        {
+          "slide_number": 30,
+          "part": "ppt/slides/slide30.xml",
+          "shape_id": "44",
+          "label": "Auditing"
+        },
+        {
+          "slide_number": 31,
+          "part": "ppt/slides/slide31.xml",
+          "shape_id": "77",
+          "label": "Auditing"
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "110",
+          "label": "Auditing"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Monitoring",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3627",
+          "label": "Monitoring"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "557",
+          "label": "Monitoring"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Alarms",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3628",
+          "label": "Alarms"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "566",
+          "label": "Alarms"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Health Checks",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3629",
+          "label": "Health Checks"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "147",
+          "label": "Health Checks"
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "190",
+          "label": "Health Checks"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Logging Analytics",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3630",
+          "label": "Logging Analytics"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "577",
+          "label": "Logging Analytics"
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "589",
+          "label": "Logging Analytics"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Events",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3631",
+          "label": "Events"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "592",
+          "label": "Events"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Operations Insights",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3632",
+          "label": "Operations Insights"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "599",
+          "label": "Operations Insights"
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "605",
+          "label": "Operations Insights"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "VCN Flow Logs",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3633",
+          "label": "VCN Flow Logs"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "608",
+          "label": "VCN Flow Logs"
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "617",
+          "label": "VCN Flow Logs"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "OCI Queue",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3634",
+          "label": "OCI Queue"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "620",
+          "label": "OCI Queue"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Full Stack Disaster Recovery",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3636",
+          "label": "Fullstack Disaster Recovery"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "647",
+          "label": "Full Stack Disaster Recovery"
+        },
+        {
+          "slide_number": 41,
+          "part": "ppt/slides/slide41.xml",
+          "shape_id": "660",
+          "label": "Full Stack Disaster Recovery"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Marketplace",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "2EUykjZCh5ycC5aEEUrk-34",
+          "label": "Marketplace"
+        }
+      ],
+      "powerpoint_candidates": [
+        {
+          "slide_number": 45,
+          "part": "ppt/slides/slide45.xml",
+          "shape_id": "7",
+          "label": "Marketplace"
+        }
+      ],
+      "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    }
+  ]
+}

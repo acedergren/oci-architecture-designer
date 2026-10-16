@@ -1,0 +1,49 @@
+{
+  "retrieved_date": "2026-10-16",
+  "source_page": "https://docs.oracle.com/en-us/iaas/Content/General/Reference/graphicsfordiagrams.htm",
+  "downloads": {
+    "powerpoint": "https://docs.oracle.com/iaas/Content/Resources/Assets/OCI_Icons.pptx",
+    "drawio": "https://docs.oracle.com/iaas/Content/Resources/Assets/OCI-Style-Guide-for-Drawio.zip"
+  },
+  "http_last_modified": "Mon, 29 Apr 2024 22:11:18 GMT",
+  "stencils_bundled": false,
+  "bundling_blocker": "Redistribution permission for the full toolkit through this plugin was not verified. General Oracle materials terms restrict redistribution; the inspected files contain no separate redistribution license. No additional user contract rights were assumed.",
+  "rights_sources": [
+    "https://www.oracle.com/legal/terms/",
+    "https://docs.oracle.com/en-us/iaas/Content/legalnotices.htm"
+  ],
+  "files": [
+    {
+      "name": "OCI_Icons.pptx",
+      "bytes": 3949330,
+      "sha256": "e18615d90fbb38a3354e3a55d7d8baca59f6ba20de1af0a384addba73ede57ea",
+      "bundled": false
+    },
+    {
+      "name": "OCI-Style-Guide-for-Drawio.zip",
+      "bytes": 6997183,
+      "sha256": "8e20646de88b6197f7b2ce941219fdb61e88b2b6276e3e7b5e0ce046445174e8",
+      "bundled": false
+    },
+    {
+      "name": "OCI Library.xml",
+      "bytes": 1472484,
+      "sha256": "e098244928cdd5257c1bc4696cf9f46fd289b4195208d699e5392bf79de69555",
+      "bundled": false
+    },
+    {
+      "name": "Read-ME.drawio",
+      "bytes": 3131773,
+      "sha256": "551bbe30b82f45ce368b2b421bbe9643565e747f574cc410bbe294dc3b2793af",
+      "bundled": false
+    },
+    {
+      "name": "OCI Architecture Diagram Toolkit v24.2.drawio",
+      "bytes": 4676230,
+      "sha256": "b544991da988625e147dbeb7623bacc1be96699e2415d7f4d548f0d2a532d59e",
+      "bundled": false
+    }
+  ],
+  "version_note": "PPTX cover: v24.1 January 2024. Draw.io filename: v24.2; internal Start here text: v24.1 March 2024. Not a 2026 refresh.",
+  "archive_limit_note": "No overall archive size limit was stated in the available creator workflow; actual upload acceptance is separately verified."
+}

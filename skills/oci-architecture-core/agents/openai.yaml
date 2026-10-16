@@ -1,0 +1,6 @@
+interface:
+  display_name: "OCI Architecture Core"
+  short_description: "Shared OCI semantics and official icon constraints"
+  default_prompt: "Use $oci-architecture-core to help create or review an OCI architecture deliverable using official assets."
+policy:
+  allow_implicit_invocation: true

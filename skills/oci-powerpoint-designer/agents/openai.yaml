@@ -1,0 +1,6 @@
+interface:
+  display_name: "OCI PowerPoint Designer"
+  short_description: "Editable OCI architecture slides with official styling"
+  default_prompt: "Use $oci-powerpoint-designer to help create or review an OCI architecture deliverable using official assets."
+policy:
+  allow_implicit_invocation: true

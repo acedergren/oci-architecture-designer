@@ -1,0 +1,34 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "author": {
+    "name": "Alexander Cedergren"
+  },
+  "description": "Create and review editable OCI draw.io diagrams and PowerPoint architecture slides using verified official Oracle assets supplied by the user. Official stencil binaries are not bundled because redistribution permission was not verified.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "capabilities": [],
+        "category": "Productivity",
+        "defaultPrompt": [
+          "Create an editable OCI architecture diagram using official Oracle toolkits I provide.",
+          "Create a PowerPoint OCI architecture slide and validate its topology and layout.",
+          "Review this OCI diagram for service icon, boundary, routing, and readability errors."
+        ],
+        "developerName": "Alexander Cedergren",
+        "displayName": "OCI Architecture Designer",
+        "longDescription": "Four automatically discoverable skills provide shared OCI semantics, native editable draw.io diagrams, editable PowerPoint architecture slides, and separate topology and visual QA. Includes official download provenance, checksums, and verified icon locators. Oracle stencil and template binaries are not bundled; provide the official toolkits for icon-based output. No MCP server or Oracle endorsement is implied.",
+        "shortDescription": "Editable OCI architecture"
+      }
+    }
+  },
+  "keywords": [
+    "OCI",
+    "Oracle Cloud Infrastructure",
+    "architecture",
+    "draw.io",
+    "PowerPoint",
+    "official-icons"
+  ],
+  "name": "oci-architecture-designer",
+  "version": "0.1.1"
+}

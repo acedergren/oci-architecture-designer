@@ -1,0 +1,12 @@
+# Styling from the inspected official toolkit
+
+Use actual source shapes and template styling as the authority. Pinned references: `OCI_Icons.pptx` slides 5, 7–12, 18–25; Draw.io Start here, Logical, Physical, and Icons pages. These compact rules describe relevant conventions, not replacement artwork.
+
+- Preserve official icon geometry and aspect ratio; never rotate, flip, skew, embellish, add shadows/3D, or invent pictograms. Keep the identification label and approved source color variant. Do not relabel an unrelated icon to stand for a new product.
+- Icon colors use the source Ocean/Sienna variants. Oracle's palette lists Ocean `#2C5967`, Sienna `#AE562C`, Bark `#312D2A`, Air `#FCFBFA`, Neutral 1 `#F5F4F2`, Neutral 2 `#DFDCD8`, Neutral 3 `#9E9892`, Neutral 4 `#70736E`, Ivy `#759C6C`, and Oracle Red `#C74634`. Copy the supplied shapes rather than globally recoloring their internals; actual source encodings may differ slightly.
+- Use the provided Oracle Sans when legitimately available; otherwise Arial, Calibri, or equivalent sans serif. Do not bundle fonts without rights. Pink Courier New in the toolkit is instructional markup, not output styling.
+- Connectors use Bark, approximately 1pt or application equivalent, and open arrowheads for directional flow. Copy provided boundary and connector samples. Logical dataflow is solid and logical user interaction dashed; distinguish any additional semantics explicitly in a legend rather than assuming one line pattern means the same thing everywhere.
+- Preserve the source's distinct geographic, network, compartment, and other grouping treatments. Resize containers for content; do not squeeze icons or clip labels. Let scope determine placement even when an old example's geometry is misleading.
+- Align icons consistently, keep connector elbows and attachment points clear, and place labels on horizontal segments where possible. Avoid connectors through labels. Use meaningful legends for annotations.
+- Inspect at actual delivery size. Source templates use small labels, so scale the full composition or split into a detail view if necessary for the requested audience. Preserve the visual hierarchy and avoid forcing every component onto one slide.
+- Existing diagrams retain their unrelated styling. Record any intentional departure from source conventions; never claim Oracle brand compliance solely because a palette was used.
