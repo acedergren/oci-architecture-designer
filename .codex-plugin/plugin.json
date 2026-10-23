@@ -3,18 +3,19 @@
     "capabilities": [],
     "category": "Productivity",
     "defaultPrompt": [
-      "Create an editable OCI architecture diagram using official Oracle toolkits I provide.",
+      "Create an editable OCI architecture diagram using verified official Oracle toolkits.",
       "Create a PowerPoint OCI architecture slide and validate its topology and layout.",
       "Review this OCI diagram for service icon, boundary, routing, and readability errors."
     ],
     "developerName": "Alexander Cedergren",
     "displayName": "OCI Architecture Designer",
-    "longDescription": "Four automatically discoverable skills provide shared OCI semantics, native editable draw.io diagrams, editable PowerPoint architecture slides, and separate topology and visual QA. Includes official download provenance, checksums, and verified icon locators. Oracle stencil and template binaries are not bundled; provide the official toolkits for icon-based output. No MCP server or Oracle endorsement is implied.",
-    "shortDescription": "Editable OCI architecture"
+    "longDescription": "Four discoverable skills share OCI semantics, create native editable Draw.io and PowerPoint architectures, and report topology, asset, file and visual checks separately. Standard-library helpers provide verified official downloads, selective metadata lookup and structural validators. Oracle toolkit binaries are not bundled. No MCP server or Oracle endorsement is implied.",
+    "shortDescription": "Editable OCI architecture",
+    "websiteURL": "https://github.com/acedergren/oci-architecture-designer"
   },
   "name": "oci-architecture-designer",
-  "version": "0.1.1",
-  "description": "Create and review editable OCI draw.io diagrams and PowerPoint architecture slides using verified official Oracle assets supplied by the user. Official stencil binaries are not bundled because redistribution permission was not verified.",
+  "version": "0.1.3",
+  "description": "Create and review editable OCI draw.io and PowerPoint architectures using verified official toolkits fetched at runtime or supplied locally. Toolkit binaries are not bundled.",
   "author": {
     "name": "Alexander Cedergren"
   },

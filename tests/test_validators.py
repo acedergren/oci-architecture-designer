@@ -100,6 +100,13 @@ class Pptx(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertEqual(json.loads(result.stdout)['file_integrity'], 'FAIL')
 
+    def test_undeclared_markup_compatibility_prefix_fails(self):
+        parts = presentation_parts()
+        parts['ppt/slides/slide1.xml'] = parts['ppt/slides/slide1.xml'].replace(
+            '</p:spTree>', '<mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">'
+            '<mc:Choice Requires="p14"/><mc:Fallback/></mc:AlternateContent></p:spTree>')
+        self.assertEqual(self.run_check(parts)['file_integrity'], 'FAIL')
+
 
 if __name__ == '__main__':
     unittest.main()

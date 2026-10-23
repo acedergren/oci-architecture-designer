@@ -22,6 +22,8 @@ Clone a suitable source template preserving slide size, masters/layouts, colors,
 
 Use native text, boundaries and attached connectors. Keep the same stable model IDs, services, counts, scope and flows as the .drawio view; put detail on another slide instead of dropping a route. Preserve unrelated slides and the user's design during edits.
 
+Attach connectors to actual shape connection sites inside a copied group; a group ID alone can parse correctly without following group movement in PowerPoint. Preserve namespace bindings used in markup-compatibility Requires/Ignorable attributes when copying XML. Keep OPC content-type and relationship roots in their original default namespaces for renderer compatibility.
+
 ## Verify
 
 Run `python3 validate_pptx.py /path/to/result.pptx`. JSON reports internal package/shape/connector checks, slide order and external relationships separately; exit 0/1 indicates structural pass/failure. External links are not fetched. This is not full OOXML schema validation and does not prove rendering or editability.

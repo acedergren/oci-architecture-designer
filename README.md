@@ -1,65 +1,89 @@
 # OCI Architecture Designer
 
-A skills-only plugin for creating and reviewing editable Oracle Cloud Infrastructure architecture diagrams and PowerPoint slides.
+Four discoverable skills create and review editable OCI architectures in Draw.io and PowerPoint. Version **0.1.3** is a local release candidate; publishing and installation are separate actions.
 
-| Skill | Purpose |
+| Skill | Responsibility |
 | --- | --- |
-| OCI Architecture Core | Shared OCI semantics, resource scope, official icon constraints, and consistent mapping across formats. |
-| OCI Draw.io Designer | Native editable `.drawio` diagrams with attached connectors and reusable official shape groups. |
-| OCI PowerPoint Designer | Editable `.pptx` architecture slides that preserve the supplied Oracle template and artwork. |
-| Architecture QA | Separate checks for topology, icon identity, native file integrity, visual quality, and cross-format consistency. |
+| OCI Architecture Core | Shared model, resource scope, provenance and selective icon lookup |
+| OCI Draw.io Designer | Native graph, official groups and attached connectors |
+| OCI PowerPoint Designer | Native shapes, source templates and OOXML dependencies |
+| Architecture QA | Separate asset, topology, file, opening, visual and editability evidence |
 
-All four skills declare `policy.allow_implicit_invocation: true` in their `agents/openai.yaml` metadata. Actual automatic selection depends on the host and has not been tested here. No MCP server is required.
+Automatic discovery remains enabled for all four skills. Actual host selection is not established by static checks. No MCP server or OCI credentials are required.
 
-## Contents
+## Requirements and verification
 
-- `plugin.json`: Agent Plugins 1.0 manifest, version 0.1.1.
-- `.codex-plugin/plugin.json`: compatibility manifest with matching identity and metadata.
-- `skills/`: four skill entrypoints, invocation metadata, shared references, and two Python helpers.
-- `skills/oci-architecture-core/references/icon-map.json`: 47 partial cross-format mappings verified against labels and IDs in the inspected toolkit files.
-- `skills/oci-architecture-core/references/toolkit-index.json`: source labels and locators, without artwork.
-- `skills/oci-architecture-core/references/provenance.json`: official source URLs, retrieval date, sizes, hashes, and version caveats.
-
-Use a compatible plugin host to load this package. Keep the directory structure intact: the skills refer to shared files within this repository. This repository is a source export, not a public ChatGPT directory listing.
-
-## Official artwork is supplied separately
-
-Download the relevant files from [Oracle's OCI Architecture Diagram Toolkits page](https://docs.oracle.com/en-us/iaas/Content/General/Reference/graphicsfordiagrams.htm) and supply them to the task in an environment that can inspect and edit files.
-
-Oracle stencil/template binaries, extracted icons, fonts, and the Oracle logo are **not included** in this public repository. Permission to redistribute those assets through this package was not established. The private workspace plugin's logo is separate from this public source export. See [Oracle's materials terms](https://www.oracle.com/legal/terms/), [logo guidelines](https://www.oracle.com/legal/logos/), and the package's [asset provenance notes](skills/oci-architecture-core/references/official-assets.md).
-
-The inspected downloads were retrieved on 2026-10-16, but the server reports an April 2024 modification date. Internal version labels differ; this is not a claim of a 2026 icon refresh. Newer official files need reindexing and review before using pinned shape locators.
-
-If an official icon is unavailable, the skills require a clearly labeled neutral text component and disclosure of the gap. They must not invent or substitute an Oracle pictogram.
-
-## Helpers
-
-Both helpers use the Python 3 standard library and read local files. They do not download assets or contact OCI.
-
-Index official toolkit attachments as metadata:
+Shipped helpers use **Python 3.11+ and the standard library**. From the repository root:
 
 ```sh
-python3 skills/oci-architecture-core/scripts/catalog_assets.py \
-  --drawio /path/to/toolkit.drawio \
-  --library '/path/to/OCI Library.xml' \
-  --pptx /path/to/OCI_Icons.pptx \
-  --output /path/to/catalog.json
+python3 scripts/check.py
 ```
 
-At least one toolkit input is required; the others can be omitted.
+This runs synthetic regression tests, manifest identity/interface checks, internal Markdown-link checks and public-package checks. GitHub Actions runs the same offline command. It does not download Oracle assets or invoke renderers.
 
-Check native draw.io graph integrity:
+## Official toolkits
+
+Reuse verified supplied files or download the official packages to a task-local cache **outside this repository/plugin**:
 
 ```sh
-python3 skills/oci-drawio-designer/validate_drawio.py /path/to/result.drawio
+python3 skills/oci-architecture-core/scripts/fetch_drawio_toolkit.py --cache-dir /tmp/oci-task/toolkits
+python3 skills/oci-architecture-core/scripts/fetch_pptx_toolkit.py --cache-dir /tmp/oci-task/toolkits
 ```
 
-The graph check covers IDs, parent cycles, references, and attached edge endpoints. It does not prove topology, reachability, rendering, or visual quality. Intentional annotation lines without attached endpoints need manual review.
+Both recheck cached bytes, limit download size and accept only HTTPS from docs.oracle.com, including redirects. A checksum change stops use: verify the new official source, reindex and review mappings before supplying a reviewed `--expected-sha256`. `--refresh` fetches again. Failure must not be hidden as an icon gap.
 
-## Verification and limits
+[Oracle's toolkit page](https://docs.oracle.com/en-us/iaas/Content/General/Reference/graphicsfordiagrams.htm) is the source of the official downloads. No toolkit archives, artwork, fonts or Oracle logo are included here. Original version labels/date ambiguity and hashes are in [provenance](skills/oci-architecture-core/references/official-assets.md). Runtime access does not establish permission to redistribute the toolkit through a plugin.
 
-The originating package passed manifest/schema checks, skill metadata validation, internal reference checks, source checksum and icon-locator checks, deterministic indexing against the official downloads, and positive/negative graph-integrity cases. The public export is additionally checked for matching manifests, valid references, and exclusion of private workspace identifiers and artwork.
+## Selective metadata lookup
 
-Full diagram generation, host automatic selection, PowerPoint opening, and rendered layout quality have not been verified end to end. The skills require those checks when the necessary source files and tools are available. A diagram is not evidence of deployment, production readiness, compliance, or Oracle certification.
+Hash the actual source file (the extracted .drawio file, not its ZIP). Query an exact service meaning or source label:
 
-Oracle names and marks belong to their respective owners. This project does not imply Oracle endorsement. No open-source license has been selected for this repository; public source availability does not itself grant a general redistribution license.
+```sh
+python3 skills/oci-architecture-core/scripts/lookup_assets.py --service 'Compute virtual machine' --format drawio --sha256 b544991da988625e147dbeb7623bacc1be96699e2415d7f4d548f0d2a532d59e
+python3 skills/oci-architecture-core/scripts/lookup_assets.py --service 'Oracle Base Database' --format pptx --sha256 e18615d90fbb38a3354e3a55d7d8baca59f6ba20de1af0a384addba73ede57ea
+```
+
+JSON returns only relevant candidates and locators. `MATCH` does not prove artwork identity. `NO_EXACT_MATCH` requires searching the verified source before declaring a service gap; it does not mean the toolkit is missing. Unknown hashes exit 1 with `SOURCE_NOT_VERIFIED`; review updated metadata instead of reusing pinned IDs. Multiple color/label groups require source inspection. Full catalogs remain reference data and need not enter ordinary model context.
+
+Index supplied source files when needed:
+
+```sh
+python3 skills/oci-architecture-core/scripts/catalog_assets.py --drawio /tmp/oci-task/toolkits/toolkit.drawio --pptx /tmp/oci-task/toolkits/OCI_Icons.pptx --output /tmp/oci-task/catalog.json
+```
+
+## Structural checks and delivery
+
+```sh
+python3 skills/oci-drawio-designer/validate_drawio.py /tmp/oci-task/result.drawio
+python3 skills/oci-powerpoint-designer/validate_pptx.py /tmp/oci-task/result.pptx
+```
+
+Both print JSON and exit 0 for a structural pass, 1 for failure. Draw.io covers IDs, references, cycles and attached edge endpoints. PowerPoint covers ZIP/XML integrity, internal relationship targets and references, slide order, shape IDs, connector references and markup-compatibility prefix bindings. External relationships are reported and never fetched. These are focused checks, not complete OOXML schema validation.
+
+A parser pass does not establish application opening, visual quality, editability, topology or reachability. Use [delivery evidence v1](skills/oci-architecture-core/references/delivery-evidence.md) and report each dimension as PASS, FAIL or NOT_VERIFIED; reserve NOT_APPLICABLE for irrelevant dimensions. For intentional unattached annotation lines, record manual review separately from validator output.
+
+## Opt-in official integration exercise
+
+With the downloaded files in an external cache:
+
+```sh
+python3 tests/integration_official.py --toolkits /tmp/oci-task/toolkits --output /tmp/oci-task/deliverables
+```
+
+This fixed synthetic fixture creates two-page/two-slide files with the same regional VCN, subnets, load balancer, Compute VM, Base Database and internal flows. It copies original source groups and template dependencies, makes a scoped test edit and checks preservation of the reference view. It is not a general diagram generator or a model-driven benchmark.
+
+Render using an available external tool, for example:
+
+```sh
+soffice --headless --convert-to pdf --outdir /tmp/oci-task/deliverables /tmp/oci-task/deliverables/architecture.pptx
+```
+
+Open both formats in their applications, move a node, save a separate test copy, reopen and confirm that the connector follows. Record actual checks; the fixture builder deliberately leaves application, visual and editability checks NOT_VERIFIED. Oracle binaries and generated output must remain outside Git. [Verification record](docs/verification-0.1.3.md) lists executed checks and remaining acceptance gaps.
+
+## Distribution and release boundaries
+
+`plugin.json` is the Agent Plugins manifest; `.codex-plugin/plugin.json` is the compatibility manifest. Name, version, description, author, keywords and interface agree. The compatibility manifest alone carries `skills`. This public export omits the private workspace logo, contact email and backend IDs. Account-specific packaging is prepared separately; never copy a private manifest wholesale into this repository.
+
+Only a real project website link is supplied. Privacy/terms URLs are omitted because no applicable project-specific documents have been established. Do not invent URLs to raise an evaluator score. No source-code license change is made; public availability does not itself grant redistribution rights. Oracle names and marks belong to their owners, and this plugin implies no Oracle endorsement.
+
+See [release notes](docs/release-0.1.3.md). No deployment, production readiness, compliance, certification or customer acceptance is established by these diagrams.

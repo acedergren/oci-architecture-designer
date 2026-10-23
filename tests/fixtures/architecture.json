@@ -1,0 +1,17 @@
+{
+  "model_id": "synthetic-three-tier-v1",
+  "status": "proposed synthetic example; no deployment or reachability claim",
+  "region": "Unspecified OCI region",
+  "vcn": "10.20.0.0/16",
+  "subnets": ["Frontend 10.20.1.0/24", "Application 10.20.2.0/24", "Database 10.20.3.0/24"],
+  "nodes": [
+    {"id": "lb", "service": "Load Balancer", "resource": "Internal load balancer"},
+    {"id": "compute", "service": "Compute virtual machine", "resource": "Application VM"},
+    {"id": "database", "service": "Oracle Base Database", "resource": "Database instance"}
+  ],
+  "flows": [
+    {"id": "https", "source": "lb", "target": "compute", "label": "HTTPS / TCP 443"},
+    {"id": "sql", "source": "compute", "target": "database", "label": "SQL / TCP 1521"}
+  ],
+  "assumptions": ["All subnets regional", "Internal traffic view", "Routes and security rules are not deployed or tested", "Single instances; no HA/DR claim"]
+}

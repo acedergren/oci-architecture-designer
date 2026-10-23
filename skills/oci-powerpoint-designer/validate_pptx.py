@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check OOXML package/graph integrity, never visual quality or application behavior."""
 import argparse
+import io
 import json
 from pathlib import Path, PurePosixPath
 import posixpath
@@ -14,6 +15,28 @@ A = 'http://schemas.openxmlformats.org/drawingml/2006/main'
 R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 NS = {'p': P, 'a': A}
 MAX_EXPANDED = 256 * 1024 * 1024
+
+
+def compatibility_errors(data, part):
+    """QName strings in MC attributes are not checked by XML parsers."""
+    errors, stack, pending = [], [], {}
+    mc = 'http://schemas.openxmlformats.org/markup-compatibility/2006'
+    for event, item in ET.iterparse(io.BytesIO(data), events=('start-ns', 'start', 'end')):
+        if event == 'start-ns':
+            pending[item[0]] = item[1]
+        elif event == 'start':
+            bindings = dict(stack[-1]) if stack else {}
+            bindings.update(pending); pending = {}
+            stack.append(bindings)
+            values = item.get('{' + mc + '}Ignorable', '').split()
+            if item.tag == '{' + mc + '}Choice':
+                values += item.get('Requires', '').split()
+            for prefix in values:
+                if prefix not in bindings:
+                    errors.append(f'Undeclared compatibility prefix: {part}: {prefix}')
+        else:
+            stack.pop()
+    return errors
 
 
 def relationship_source(part):
@@ -58,6 +81,7 @@ def inspect_package(archive, result):
         if name.endswith(('.xml', '.rels')):
             try:
                 trees[name] = ET.fromstring(archive.read(name))
+                errors.extend(compatibility_errors(archive.read(name), name))
             except ET.ParseError as error:
                 errors.append(f'Malformed XML: {name}: {error}')
     relations = {}
