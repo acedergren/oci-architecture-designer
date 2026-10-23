@@ -1,28 +1,29 @@
 ---
 name: oci-powerpoint-designer
-description: "Create or edit editable .pptx OCI architecture slides using official Oracle architecture graphics and templates supplied by the user, preserving their visual language."
+description: "Use when creating or editing editable OCI .pptx architecture slides with verified official Oracle artwork and templates."
 ---
 
 # OCI PowerPoint Designer
 
-Read [OCI Architecture Core](../oci-architecture-core/SKILL.md) and use its shared architecture and icon mapping. This release does **not** bundle `OCI_Icons.pptx`. Obtain the official file from the user or create a clearly labeled icon-free draft; never claim an invented symbol is Oracle artwork.
+Read [Core](../oci-architecture-core/SKILL.md). Reuse a verified official local toolkit or fetch one, relative to this skill:
 
-## Start from the actual Oracle source
+```sh
+python3 ../oci-architecture-core/scripts/fetch_pptx_toolkit.py --cache-dir /path/to/task/cache/official-oci
+python3 ../oci-architecture-core/scripts/lookup_assets.py --service 'Compute virtual machine' --format pptx --sha256 SOURCE_FILE_HASH
+```
 
-Inspect the source presentation, its real slide order, layouts, theme, and grouped shapes. For the pinned April 2024 file, slide 5 defines palette/fonts, slides 18–23 define physical notation and icon handling, slides 24–25 provide logical blank canvases, slides 27–28 physical blank canvases, and slides 34–47 contain icon categories. Pin and inspect actual bytes; slide numbers and shape IDs may change in newer files.
+On retrieval failure request the relevant input and preserve a labeled draft. Follow Core's hash-change and icon-gap rules. Reindex new files with `catalog_assets.py --pptx /path/to/OCI_Icons.pptx --output /path/to/catalog.json`; inspect source groups, not just metadata.
 
-Use [icon-map.json](../oci-architecture-core/references/icon-map.json) to locate exact label/slide/shape IDs after confirming the source hash. The source can contain multiple same-label groups or color variants; inspect rather than arbitrarily substituting. Reindex with `catalog_assets.py --pptx /path/to/OCI_Icons.pptx --output /path/to/catalog.json` from the core scripts directory when needed.
+## Keep the deck editable
 
-## Keep the presentation editable
+Inspect actual source slide order, layouts and theme. In the pinned April 2024 source, slide 5 describes colors/fonts, 18–23 notation, 24–25 logical canvases, 27–28 physical canvases and 34–47 icon categories. These positions are not stable across new toolkits.
 
-Clone a suitable source template slide, preserving slide size, theme, master/layout relationships, approved colors, typography, and copyright notices. Copy complete official icon groups including labels and internal geometry. Preserve aspect ratios. Remap OOXML relationships, media, shape IDs, and theme references when copying between presentations; copying an XML node without its dependencies can corrupt the file or silently change its look.
+Clone a suitable source template preserving slide size, masters/layouts, colors, typography and copyright. Copy complete official groups with internal geometry and labels. Remap shape IDs and all OOXML relationships/media/theme dependencies. Preserve aspect ratio; add resource-specific labels separately. Do not rasterize the complete architecture. If an original asset is an image, preserve it faithfully and disclose that limitation.
 
-Use native editable text, containers, and connectors. Official vector group paths are preferred. Do not rasterize the complete architecture onto a slide. If a particular official asset is itself an image, preserve that asset faithfully while keeping the surrounding nodes, labels, and connectors editable, and disclose the limitation when relevant. Do not pretend a flat picture can be edited as individual OCI components.
+Use native text, boundaries and attached connectors. Keep the same stable model IDs, services, counts, scope and flows as the .drawio view; put detail on another slide instead of dropping a route. Preserve unrelated slides and the user's design during edits.
 
-Keep the architecture model consistent with any `.drawio` counterpart: same services, counts, boundaries, directions, and assumptions. Preserve the user's deck design unless asked to restyle it. An overview slide may abstract detail only with an explicit link or note identifying the more detailed view. Reduce clutter by using a detail slide, not by dropping a required route or security boundary.
+## Verify
 
-## Verify and deliver
+Run `python3 validate_pptx.py /path/to/result.pptx`. JSON reports internal package/shape/connector checks, slide order and external relationships separately; exit 0/1 indicates structural pass/failure. External links are not fetched. This is not full OOXML schema validation and does not prove rendering or editability.
 
-Check the PPTX ZIP and all internal relationship targets, reopen it in a presentation parser, and confirm slides, notes, text, shapes, groups, and connectors survive. Render all changed slides with a presentation renderer when available, then inspect readability at intended presentation size, overlaps, labels, connector paths, clipped shapes, fonts, and icon styling. Programmatic counts alone do not prove rendering or editability.
-
-Apply [Architecture QA](../architecture-qa/SKILL.md). Deliver the `.pptx`, optional preview/PDF, source toolkit hash, assumptions, icon gaps, and actual checks. State when PowerPoint opening, rendering, or editability verification was unavailable; do not report an unperformed check as passed.
+Reopen in a presentation parser and application when available. Render and inspect every changed slide at presentation size. On a test copy, move a node, save and reopen; confirm the attached connector follows. Record parser, application opening, rendering, visual inspection and editability separately. Missing tools leave NOT_VERIFIED. Apply [QA](../architecture-qa/SKILL.md) and deliver the editable file and evidence.

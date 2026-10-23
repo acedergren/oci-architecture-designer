@@ -1,28 +1,26 @@
 ---
 name: architecture-qa
-description: "Review OCI architecture diagrams and slides for service-to-icon accuracy, topology, boundary semantics, editable file integrity, and visual quality; apply before delivering OCI architecture drawings."
+description: "Use when reviewing OCI diagrams or slides, and before delivery, to check icon identity, topology, native file integrity and visual quality separately."
 ---
 
 # Architecture QA
 
-Read [OCI Architecture Core](../oci-architecture-core/SKILL.md) and [topology rules](../oci-architecture-core/references/topology.md). Review both the architecture model and the actual deliverable. Inspect the official source bytes when verifying artwork: metadata alone cannot prove icon fidelity.
+Read [Core](../oci-architecture-core/SKILL.md) and use [delivery evidence](../oci-architecture-core/references/delivery-evidence.md). Inspect both the model and actual deliverable. Metadata alone does not verify artwork; a parser pass does not verify layout or application behavior.
 
-Report each dimension separately as `PASS`, `FAIL`, or `NOT_VERIFIED`, with evidence and remaining assumptions. A failure or missing renderer must not be hidden behind one overall score.
+Report each dimension separately as PASS, FAIL or NOT_VERIFIED with method and evidence. Use NOT_APPLICABLE only for irrelevant dimensions, never missing tools.
 
-| Dimension | Acceptance evidence |
+| Dimension | Evidence required |
 | --- | --- |
-| Asset identity | Official source provenance/hash; exact service label and source locator; no invented icon; aspect ratio, label, approved colors, and shape preserved |
-| Topology | Region/realm and verified AD count; regional VCN/subnet versus AD/FD placement; correct managed-service/endpoint scope; required gateway, route, and security path; no unsupported HA/DR claim |
-| Connections | Trace each critical flow from source to destination, direction, protocol/port, endpoint type, route and security dependency; distinguish data, administration, replication, and user interaction in the legend |
-| File integrity | Native editable `.drawio` graph or `.pptx`; no dangling IDs/relationships; correct embedded media/stencils; file reopens; scoped changes preserve unrelated content |
-| Visual quality | Rendered changed pages/slides inspected; readable labels/CIDRs, no clipping or unintended overlap, aligned elements, adequate padding, consistent connectors, unambiguous boundary crossings |
-| Cross-format consistency | Compare stable model IDs, service meaning, instance counts, region, subnets, flows, status, and icon meaning across both formats when supplied; mark not applicable otherwise |
-| Evidence honesty | Assumptions, unresolved icon mapping, unverified service availability, and unrun rendering/opening checks are visible; no claim of deployment, compliance, certification, or perfect architecture |
+| Asset identity | Source bytes/hash; node, exact label and locator; preserved group geometry/colors; disclosed true icon gaps |
+| Topology | Correct region/realm, regional versus AD placement, managed-service/endpoint scope, required routing/security dependencies; current sources for volatile facts |
+| Connections | Trace each critical directed flow, purpose, protocol/port, endpoint and dependencies; distinguish data, administration and replication |
+| File integrity | Format validator, no dangling IDs/relationships; embedded artwork and native graph preserved |
+| Application opening | Actual application and saved/reopened file; parser-only checks are separate |
+| Visual quality | Rendered changed pages/slides inspected for clipping, overlap, label readability and unambiguous boundaries/connectors |
+| Editability | Move a node in a test copy, save/reopen and observe connector attachment/following |
+| Cross-format consistency | Compare stable IDs, service meaning, counts, boundaries, flows, status and icon meaning; NOT_APPLICABLE for a single format |
+| Evidence honesty | Assumptions, missing checks, exact icon gaps and service availability uncertainty disclosed |
 
-A neutral text box with a disclosed icon gap is acceptable for a draft, but cannot pass `official icon coverage` for that component. If toolkit files are unavailable in this release, do not claim asset identity was verified just because the catalog exists. The plugin includes no stencil binaries; use its runtime fetch helper before concluding that the toolkit is unavailable. Require node-to-source-label/page/cell-ID/hash evidence for copied stencils. A missing attachment alone is not an acceptable reason to omit available official icons. When the user requires real stencils, do not mark the result complete until they are used, except for explicitly disclosed exact-service gaps.
+Use available official toolkit retrieval before claiming stencils are unavailable. A neutral exact-service gap may be acceptable in a draft but cannot pass official icon coverage for that node. A drawing or NSG symbol does not prove reachability, rules, deployment or production readiness.
 
-Distinguish a routing connection from demonstrated end-to-end reachability; a drawn NSG does not prove rules exist. Private endpoint support, lifecycle, realm/service availability, and region AD counts need current official documentation when they matter. Do not infer a production-ready topology from Oracle's toolkit examples.
-
-Fix confirmed visual and structural defects within the requested edit scope. Ask before changing a material architecture decision when the source does not establish intended behavior. For review-only work, report findings without silently rewriting the design.
-
-Deliver a short QA table with evidence, the actual files inspected, material findings ordered by consequence, assumptions needing an owner, and verification not run. Block claims of final correctness while a critical topology or artifact-integrity finding remains unresolved. Preserve a useful reviewable draft if a missing tool or source prevents full verification.
+Fix confirmed defects within the requested edit scope. For review-only work, report findings without rewriting. Ask before changing a material architecture decision whose intended behavior is unknown. Deliver a short evidence table, actual files inspected, findings by consequence and unresolved assumptions. Critical topology/file-integrity failures block final-correctness claims; keep a useful draft when verification is blocked.
