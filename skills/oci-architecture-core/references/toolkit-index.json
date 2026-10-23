@@ -159,6 +159,18 @@
         },
         {
           "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-808",
+          "label": "Oracle Services Network",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-818",
+          "label": "Network Performance Inspector",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
           "cell_id": "mREtu-c0wOV9HSzNNSta-834",
           "label": "Load Balancer",
           "cell_count": 8
@@ -285,6 +297,714 @@
         },
         {
           "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1161",
+          "label": "OCI Object Storage",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1178",
+          "label": "Oracle Base Database",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1187",
+          "label": "Database",
+          "cell_count": 6
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1193",
+          "label": "Oracle Autonomous Database",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1202",
+          "label": "OCI Migrate Autonomous Database",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1217",
+          "label": "Oracle Autonomous Data Warehouse",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1233",
+          "label": "ADW-D",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1252",
+          "label": "Oracle Autonomous Transaction Processing ATP",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1261",
+          "label": "ATP-D",
+          "cell_count": 30
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1291",
+          "label": "Oracle Exadata Database Service",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1302",
+          "label": "Oracle Compute Cloud@Customer",
+          "cell_count": 36
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1338",
+          "label": "Exadata Cloud@Customer",
+          "cell_count": 37
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1375",
+          "label": "Exadata Fleet Update",
+          "cell_count": 25
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1401",
+          "label": "ADB-D",
+          "cell_count": 27
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1428",
+          "label": "ADB Exadata Cloud@Customer",
+          "cell_count": 73
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1501",
+          "label": "Data Safe",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1512",
+          "label": "NoSQL Database",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1524",
+          "label": "MySQL Database System",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1538",
+          "label": "RAC",
+          "cell_count": 20
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1558",
+          "label": "OpenSearch",
+          "cell_count": 18
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1576",
+          "label": "Inter-Region Latency",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1588",
+          "label": "Network Path Analyzer",
+          "cell_count": 33
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1621",
+          "label": "Network Visualizer",
+          "cell_count": 22
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1643",
+          "label": "Oracle Cloud Migration Advisor",
+          "cell_count": 18
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1662",
+          "label": "Database Management",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1681",
+          "label": "Data Guard",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1694",
+          "label": "Data Guard Recovery",
+          "cell_count": 33
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1727",
+          "label": "MySQL HeatWave",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1741",
+          "label": "Data Lakehouse",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1755",
+          "label": "Data Lake",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1763",
+          "label": "Oracle REST Data Services",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1775",
+          "label": "Database Flashback",
+          "cell_count": 35
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1810",
+          "label": "Migration Workbench",
+          "cell_count": 31
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1841",
+          "label": "Estate Explorer",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1854",
+          "label": "Oracle Database Migration Service",
+          "cell_count": 24
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1878",
+          "label": "OCI Database with PostgreSQL",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1893",
+          "label": "GoldenGate On-Premises",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1903",
+          "label": "GoldenGate",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1915",
+          "label": "GoldenGate Director",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1928",
+          "label": "GoldenGate Studio",
+          "cell_count": 25
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1953",
+          "label": "GoldenGate Application Adapter",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1967",
+          "label": "GoldenGate Plug-in",
+          "cell_count": 23
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1990",
+          "label": "GoldenGate Stream Analytics",
+          "cell_count": 18
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2008",
+          "label": "GoldenGate Veridata",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2021",
+          "label": "GoldenGate Monitor",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2034",
+          "label": "GoldenGate HP Non-Stop Guardian",
+          "cell_count": 17
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2051",
+          "label": "GoldenGate Free",
+          "cell_count": 27
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2085",
+          "label": "Oracle Analytics Cloud",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2098",
+          "label": "Big Data",
+          "cell_count": 7
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2105",
+          "label": "Data Catalog",
+          "cell_count": 23
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2128",
+          "label": "OCI Data Integration",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2147",
+          "label": "Data Flow",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2157",
+          "label": "OCI Streaming",
+          "cell_count": 33
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2190",
+          "label": "Service Connector Hub",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2198",
+          "label": "OCI Data Science",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2212",
+          "label": "Machine Learning",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2227",
+          "label": "Artificial Intelligence",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2235",
+          "label": "Digital Assistant",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2250",
+          "label": "Document Understanding",
+          "cell_count": 22
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2273",
+          "label": "Essbase",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2289",
+          "label": "Message Listener",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2305",
+          "label": "Message Producer",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2317",
+          "label": "Forecasting",
+          "cell_count": 21
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2338",
+          "label": "OCI Generative AI",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2351",
+          "label": "OCI Language",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2370",
+          "label": "OCI Generative AI",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2381",
+          "label": "OCI Speech",
+          "cell_count": 18
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2399",
+          "label": "OCI Vision",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2741",
+          "label": "OCI Container Engine for Kubernetes",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2757",
+          "label": "OCI Container Registry",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2772",
+          "label": "Container",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2786",
+          "label": "Multiple Containers",
+          "cell_count": 18
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2804",
+          "label": "Container Instances",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2820",
+          "label": "Service Mesh",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2831",
+          "label": "APEX",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2846",
+          "label": "Private Endpoint IP",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2856",
+          "label": "API Gateway",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2871",
+          "label": "API Service",
+          "cell_count": 6
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2877",
+          "label": "Integration",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2886",
+          "label": "Notifications",
+          "cell_count": 37
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2924",
+          "label": "Visual Builder",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2937",
+          "label": "DevOps",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2949",
+          "label": "Content Management",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2959",
+          "label": "Resource Manager",
+          "cell_count": 27
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2986",
+          "label": "Email Delivery",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2999",
+          "label": "Jet",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3007",
+          "label": "Logic Flow",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3016",
+          "label": "Application Dependency Management",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3031",
+          "label": "OKE Virtual Node",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3050",
+          "label": "OCI Process Automation",
+          "cell_count": 21
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3076",
+          "label": "Oracle Identity Cloud Service",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3087",
+          "label": "IAM",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3098",
+          "label": "User",
+          "cell_count": 6
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3104",
+          "label": "User",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3117",
+          "label": "User",
+          "cell_count": 6
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3123",
+          "label": "User Group",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3136",
+          "label": "User Group",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3150",
+          "label": "User Group",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3164",
+          "label": "Policies",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3179",
+          "label": "Compartments",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3189",
+          "label": "Cloud Guard",
+          "cell_count": 7
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3197",
+          "label": "Maximum Security Zone",
+          "cell_count": 31
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3228",
+          "label": "Threat Intelligence",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3236",
+          "label": "Firewall",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3244",
+          "label": "WAF",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3253",
+          "label": "Certificates",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3264",
+          "label": "Vulnerability Scanning",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3276",
+          "label": "Vault",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3290",
+          "label": "Bastion",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3309",
+          "label": "Security Lists",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3325",
+          "label": "DDoS Protection",
+          "cell_count": 25
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3350",
+          "label": "Key Vault",
+          "cell_count": 17
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3368",
+          "label": "Key Management",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3379",
+          "label": "Encryption",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3388",
+          "label": "Threat Defense",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3404",
+          "label": "NSG",
+          "cell_count": 6
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3410",
+          "label": "Active Directory",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3419",
+          "label": "Security Lists",
+          "cell_count": 16
+        },
+        {
+          "page": "Icons",
           "cell_id": "mREtu-c0wOV9HSzNNSta-3623",
           "label": "Application Performance Monitoring",
           "cell_count": 12
@@ -366,6 +1086,312 @@
           "cell_id": "mREtu-c0wOV9HSzNNSta-3636",
           "label": "Fullstack Disaster Recovery",
           "cell_count": 17
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3640",
+          "label": "Roving Edge Service",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3655",
+          "label": "Roving Edge Device (RED)",
+          "cell_count": 18
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3673",
+          "label": "Roving Edge Ultra",
+          "cell_count": 21
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3694",
+          "label": "Roving Edge Infrastructure",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3709",
+          "label": "Dedicated Region",
+          "cell_count": 21
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3733",
+          "label": "Data Transfer",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3742",
+          "label": "Database Migration",
+          "cell_count": 21
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3766",
+          "label": "Cloud Advisor",
+          "cell_count": 18
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3784",
+          "label": "Organization",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3796",
+          "label": "License Manager",
+          "cell_count": 18
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3814",
+          "label": "Oracle Cloud Identifier",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3829",
+          "label": "Tagging",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3840",
+          "label": "Cloud Migrations",
+          "cell_count": 17
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3860",
+          "label": "HCM",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3874",
+          "label": "Oracle SOA Suite",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3886",
+          "label": "ERP",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3897",
+          "label": "E-Business Suite",
+          "cell_count": 30
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3927",
+          "label": "Supply Chain Planning",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3941",
+          "label": "Innovation Management",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3955",
+          "label": "Project Financial Managment",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3966",
+          "label": "Inventory Management",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3985",
+          "label": "Product Master Data Management",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3996",
+          "label": "BI Cloud Connector",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4010",
+          "label": "Cloud Operations",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4018",
+          "label": "Engagement",
+          "cell_count": 30
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4049",
+          "label": "Order Management",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4061",
+          "label": "Procurement",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4074",
+          "label": "CPQ",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4085",
+          "label": "Manufacturing",
+          "cell_count": 15
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4100",
+          "label": "Project Management",
+          "cell_count": 10
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4110",
+          "label": "Financials",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4129",
+          "label": "Healthcare",
+          "cell_count": 11
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4140",
+          "label": "EPM",
+          "cell_count": 26
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4166",
+          "label": "Fusion",
+          "cell_count": 6
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4172",
+          "label": "CRM",
+          "cell_count": 13
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4186",
+          "label": "Media Flow",
+          "cell_count": 14
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4200",
+          "label": "Digital Media",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4212",
+          "label": "Media Streams",
+          "cell_count": 19
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4236",
+          "label": "Cloud Native Environment",
+          "cell_count": 24
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4260",
+          "label": "Private Cloud",
+          "cell_count": 34
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4294",
+          "label": "Transaction Manager",
+          "cell_count": 17
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4311",
+          "label": "Data Integrator",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4323",
+          "label": "Blockchain",
+          "cell_count": 6
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4329",
+          "label": "Remote Agent",
+          "cell_count": 12
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4341",
+          "label": "IoT",
+          "cell_count": 6
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4347",
+          "label": "OCI Multicloud",
+          "cell_count": 29
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4376",
+          "label": "Other Oracle Cloud Service",
+          "cell_count": 8
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4384",
+          "label": "Internet",
+          "cell_count": 9
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4393",
+          "label": "Content Delivery Network Service",
+          "cell_count": 28
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4421",
+          "label": "Zero Data Loss Recovery Appliance",
+          "cell_count": 21
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-4442",
+          "label": "Cross Domain",
+          "cell_count": 26
         },
         {
           "page": "Icons",

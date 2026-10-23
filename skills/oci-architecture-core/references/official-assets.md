@@ -4,7 +4,7 @@
 
 The page invites use of the assets for OCI diagrams. However, the inspected downloads contain no separate license granting redistribution of the whole toolkit through a third-party plugin. [Oracle Web Sites Terms of Use, sections 1–5](https://www.oracle.com/legal/terms/) distinguish specific content terms and restrict redistribution under the general materials terms; [Oracle Legal Notices](https://docs.oracle.com/en-us/iaas/Content/legalnotices.htm) also describe license restrictions. We did not verify additional contractual rights for this workspace. This is a packaging constraint based on the available terms, not a claim that Oracle forbids every internal use or that a user's separate agreement grants no rights.
 
-For icon-based output, the user must supply legitimately obtained official files for the task in a file-capable execution environment. Treat attachments as task inputs; do not silently add them to a distributed plugin or relicense them. If a separate authorization permits bundling, preserve its scope, provenance, copyright notices, and actual limits before making a new release. Private visibility by itself does not establish redistribution permission. Do not apply a permissive license to Oracle assets or imply Oracle endorsement.
+For draw.io output, use legitimately obtained official files from task inputs, a verified local cache, or the official Oracle download at runtime. Downloading for the current diagram does not require bundling the toolkit in this distributed plugin. Keep the cache outside the plugin package. Treat attached or downloaded files as task inputs; do not silently add them to a distributed plugin or relicense them. PowerPoint continues to use a supplied official toolkit. If a separate authorization permits bundling, preserve its scope, provenance, copyright notices, and actual limits before making a new release. Private visibility by itself does not establish redistribution permission. Do not apply a permissive license to Oracle assets or imply Oracle endorsement.
 
 ## Download inventory
 
@@ -17,10 +17,14 @@ For icon-based output, the user must supply legitimately obtained official files
 
 ## Runtime procedure
 
-If files are missing, give the official page link and ask for the relevant toolkit attachment. Continue with topology review or a clearly labeled icon-free draft where useful. Do not fabricate an output file or claim a download link was loaded when the environment cannot access its bytes.
+For draw.io, reuse a verified local toolkit or run `python3 ../scripts/fetch_drawio_toolkit.py --cache-dir /path/to/task/cache/official-oci` relative to this references directory. The helper downloads only from Oracle over HTTPS, checks the archive hash, extracts only the three expected data files, and writes `toolkit-provenance.json`. It checks cached bytes again on reuse; use `--refresh` to retrieve again. Keep toolkit binaries out of plugin update/export ZIPs.
+
+A checksum mismatch stops extraction: inspect the new official download, reindex and review its labels and geometry, then explicitly supply its reviewed SHA-256 with `--expected-sha256`. Do not silently retain stale cell IDs or disable verification. Record URL, retrieval time, hash, original labels, and selected source cells.
+
+Only if download/file execution is unavailable, explain that limitation and request the relevant toolkit attachment. Continue topology review where useful, but do not call an icon-free draft complete when real stencils are required. A service absent from an inspected toolkit may remain a neutral component with the exact gap disclosed. Never fabricate an output file or claim a link was downloaded without accessing its bytes.
 
 The standard-library helper `../scripts/catalog_assets.py` accepts `--drawio`, `--library`, `--pptx`, and `--output`; at least one input is required. It reads local attachments and writes metadata only. It neither downloads nor extracts artwork. Verify hashes against provenance before using pinned IDs; index and review a new version if hashes differ. Only open expected XML/OOXML data; never execute macros or scripts from a toolkit.
 
 ## Package constraints
 
-The creation workflow limits each SKILL.md to 1 MiB and listing subtitle to 30 characters; any optional listing icons must satisfy the workflow's separate image limits. No overall archive limit was stated in the available workflow. This fallback is small and has no listing image assets. Inspect final archive contents and backend diagnostics; respect any limit actually returned rather than claiming an unknown limit was tested.
+The creation workflow limits each SKILL.md to 1 MiB and listing subtitle to 30 characters; any optional listing icons must satisfy the workflow's separate image limits. No overall archive limit was stated in the available workflow. Toolkit artwork is kept outside the package; the existing listing logo is separate from the diagram stencils. Inspect final archive contents and backend diagnostics; respect any limit actually returned rather than claiming an unknown limit was tested.

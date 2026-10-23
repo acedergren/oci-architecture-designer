@@ -19,7 +19,9 @@ Use [icon-map.json](references/icon-map.json), a partial mapping verified agains
 
 The current Draw.io toolkit's **Icons** page is preferred over the older `OCI Library.xml`. Never substitute the Internet Gateway, NAT Gateway, Service Gateway, DRG, and Local Peering Gateway for each other. Treat Oracle Generative AI, Generative AI Agents, Agent Development Kit, and application agents as separate things; this snapshot does not establish an icon for every newer service. IDCS is not automatically a current IAM Identity Domains icon. A generic private endpoint icon does not prove a service supports private access.
 
-If a matching official icon is unavailable, use a clearly labeled neutral text component and record `icon unavailable in supplied official toolkit`. Do not draw an invented pictogram, guess a `mxgraph` shape name, relabel an unrelated icon, scrape an unofficial icon collection, or claim the neutral box is an official icon.
+For draw.io, first obtain the real official toolkit using the runtime procedure in [official-assets.md](references/official-assets.md): reuse verified task inputs/cache or download it from Oracle with `scripts/fetch_drawio_toolkit.py`. Do not treat a missing attachment as a reason to skip available official stencils.
+
+If the verified toolkit has no exact matching icon, use a clearly labeled neutral text component and record `icon unavailable in verified official toolkit` with the searched labels and toolkit hash. A missing toolkit is not an icon gap. If the user explicitly requires official stencils and retrieval fails, report the blocker and preserve a draft; do not claim an icon-free draft satisfies that requirement. Do not draw an invented pictogram, guess a `mxgraph` shape name, relabel an unrelated icon, scrape an unofficial icon collection, or claim the neutral box is an official icon.
 
 ## Keep scope and connectivity correct
 
