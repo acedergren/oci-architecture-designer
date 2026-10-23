@@ -1,15 +1,34 @@
 # OCI Architecture Designer
 
-Four discoverable skills create and review editable OCI architectures in Draw.io and PowerPoint. Version **0.1.3** is a local release candidate; publishing and installation are separate actions.
+Four discoverable skills design and review OCI workload architectures and create editable Draw.io/PowerPoint deliverables. Version **0.2.0** is a local release candidate; publishing and installation are separate actions.
 
 | Skill | Responsibility |
 | --- | --- |
-| OCI Architecture Core | Shared model, resource scope, provenance and selective icon lookup |
+| OCI Architecture Core | Requirements, decisions, scoped sources, shared model and asset provenance |
 | OCI Draw.io Designer | Native graph, official groups and attached connectors |
 | OCI PowerPoint Designer | Native shapes, source templates and OOXML dependencies |
-| Architecture QA | Separate asset, topology, file, opening, visual and editability evidence |
+| Architecture QA | Requirement fit, design/failure behavior and separate artifact-quality evidence |
 
 Automatic discovery remains enabled for all four skills. Actual host selection is not established by static checks. No MCP server or OCI credentials are required.
+
+## Architecture design and review
+
+For a substantive design, Core captures a compact workload brief, evaluates realistic options and records why significant choices meet the requirements. Existing customer platforms, constraints and accepted decisions are inputs. A layout-only task preserves the established design; a review-only task reports findings without rewriting it.
+
+The reference layer is loaded by need:
+
+| Area | Local decision aid |
+| --- | --- |
+| Requirements, ADRs and C4 views | [Requirements to decisions](skills/oci-architecture-core/references/architecture-design.md) |
+| OCI Well-Architected | [Workload review](skills/oci-architecture-core/references/architecture-review.md) |
+| Architecture Center patterns | [Pattern selection](skills/oci-architecture-core/references/workload-patterns.md) |
+| CAF and existing landing zone | [Cloud foundation](skills/oci-architecture-core/references/cloud-foundation.md) |
+| MAA and recovery objectives | [Resilience](skills/oci-architecture-core/references/resilience.md) |
+| Product/region/realm/endpoint/limit facts | [Service verification](skills/oci-architecture-core/references/service-verification.md) |
+
+[Primary-source index](skills/oci-architecture-core/references/architecture-sources.md) records access date, applicability and refresh boundaries. These notes are original decision aids with links to primary references, not copied framework manuals, certification or a current service-availability database. Open the particular service/architecture article when a claim depends on it. Keep customer/internal inputs outside this public package.
+
+Outputs can include a requirements brief, decision log, consistent model/views and review findings; a drawing is optional for advisory work. Every additional component needs a workload justification and operator. Keep a proposed RTO/RPO, documented product capability and measured deployed behavior distinct. No new external tool, account connection or runtime dependency is introduced.
 
 ## Requirements and verification
 
@@ -19,7 +38,9 @@ Shipped helpers use **Python 3.11+ and the standard library**. From the reposito
 python3 scripts/check.py
 ```
 
-This runs synthetic regression tests, manifest identity/interface checks, internal Markdown-link checks and public-package checks. GitHub Actions runs the same offline command. It does not download Oracle assets or invoke renderers.
+This runs synthetic helper regression tests, manifest identity/interface checks, internal Markdown-link checks and public-package checks. GitHub Actions runs the same offline command. It does not download Oracle assets or invoke renderers.
+
+Architecture reasoning also has [six human-reviewed synthetic exercises](tests/architecture-reasoning.md). Package/metadata checks do not validate model decision quality. The exercise inputs are in [architecture-requests.json](tests/fixtures/architecture-requests.json); preserve raw responses outside the distributed package and evaluate consequences rather than matching words.
 
 ## Official toolkits
 
@@ -86,4 +107,4 @@ Open both formats in their applications, move a node, save a separate test copy,
 
 Only a real project website link is supplied. Privacy/terms URLs are omitted because no applicable project-specific documents have been established. Do not invent URLs to raise an evaluator score. No source-code license change is made; public availability does not itself grant redistribution rights. Oracle names and marks belong to their owners, and this plugin implies no Oracle endorsement.
 
-See [release notes](docs/release-0.1.3.md). No deployment, production readiness, compliance, certification or customer acceptance is established by these diagrams.
+See [0.2.0 release notes](docs/release-0.2.0.md) and [behavior verification](docs/verification-0.2.0.md). The [0.1.3 artifact verification](docs/verification-0.1.3.md) remains historical evidence; its unverified UI and model-usage checks are not resolved by the new reference layer. No deployment, production readiness, compliance, certification or customer acceptance is established by these diagrams.

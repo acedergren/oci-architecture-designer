@@ -3,7 +3,7 @@
   "author": {
     "name": "Alexander Cedergren"
   },
-  "description": "Create and review editable OCI draw.io and PowerPoint architectures using verified official toolkits fetched at runtime or supplied locally. Toolkit binaries are not bundled.",
+  "description": "Design and review OCI workload architectures with requirement-based decisions, scoped primary references and editable Draw.io/PowerPoint output. Official toolkit binaries are not bundled.",
   "extensions": {
     "com.openai": {
       "interface": {
@@ -16,8 +16,8 @@
         ],
         "developerName": "Alexander Cedergren",
         "displayName": "OCI Architecture Designer",
-        "longDescription": "Four discoverable skills share OCI semantics, create native editable Draw.io and PowerPoint architectures, and report topology, asset, file and visual checks separately. Standard-library helpers provide verified official downloads, selective metadata lookup and structural validators. Oracle toolkit binaries are not bundled. No MCP server or Oracle endorsement is implied.",
-        "shortDescription": "Editable OCI architecture",
+        "longDescription": "Four discoverable skills connect workload requirements to architecture decisions and native editable OCI diagrams. Conditional references cover Well-Architected reviews, workload patterns, CAF foundations, MAA resilience, current service evidence, C4 views and decision records. QA distinguishes design reasoning, source evidence and actual artifact checks. Verified official toolkit downloads and structural validators remain available. Oracle toolkit binaries are not bundled; no Oracle endorsement is implied.",
+        "shortDescription": "OCI design and diagrams",
         "websiteURL": "https://github.com/acedergren/oci-architecture-designer"
       }
     }
@@ -28,8 +28,10 @@
     "architecture",
     "draw.io",
     "PowerPoint",
-    "official-icons"
+    "official-icons",
+    "Well-Architected",
+    "architecture-decisions"
   ],
   "name": "oci-architecture-designer",
-  "version": "0.1.3"
+  "version": "0.2.0"
 }
