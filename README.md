@@ -58,7 +58,7 @@ python3 skills/oci-drawio-designer/validate_drawio.py /tmp/oci-task/result.drawi
 python3 skills/oci-powerpoint-designer/validate_pptx.py /tmp/oci-task/result.pptx
 ```
 
-Both print JSON and exit 0 for a structural pass, 1 for failure. Draw.io covers IDs, references, cycles and attached edge endpoints. PowerPoint covers ZIP/XML integrity, internal relationship targets and references, slide order, shape IDs, connector references and markup-compatibility prefix bindings. External relationships are reported and never fetched. These are focused checks, not complete OOXML schema validation.
+Both print JSON and exit 0 for a structural pass, 1 for failure. Draw.io covers IDs, references, cycles and attached edge endpoints. PowerPoint covers ZIP/XML integrity, OPC content types and entrypoint, internal relationship targets and references, slide order, shape IDs, connector references and markup-compatibility prefix bindings. External relationships are reported and never fetched. These are focused checks, not complete OOXML schema validation.
 
 A parser pass does not establish application opening, visual quality, editability, topology or reachability. Use [delivery evidence v1](skills/oci-architecture-core/references/delivery-evidence.md) and report each dimension as PASS, FAIL or NOT_VERIFIED; reserve NOT_APPLICABLE for irrelevant dimensions. For intentional unattached annotation lines, record manual review separately from validator output.
 

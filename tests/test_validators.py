@@ -22,7 +22,11 @@ PKG = 'http://schemas.openxmlformats.org/package/2006/relationships'
 
 def presentation_parts(shapes='', slide_ids=None):
     return {
-        '[Content_Types].xml': '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>',
+        '[Content_Types].xml': '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+            '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+            '<Default Extension="xml" ContentType="application/xml"/>'
+            '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>'
+            '<Override PartName="/ppt/slides/slide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/></Types>',
         '_rels/.rels': f'<Relationships xmlns="{PKG}"><Relationship Id="r1" Type="{R}/officeDocument" Target="ppt/presentation.xml"/></Relationships>',
         'ppt/presentation.xml': f'<p:presentation xmlns:p="{P}" xmlns:r="{R}"><p:sldIdLst>' + (
             slide_ids if slide_ids is not None else '<p:sldId id="256" r:id="r1"/>') + '</p:sldIdLst></p:presentation>',
@@ -106,6 +110,18 @@ class Pptx(unittest.TestCase):
             '</p:spTree>', '<mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">'
             '<mc:Choice Requires="p14"/><mc:Fallback/></mc:AlternateContent></p:spTree>')
         self.assertEqual(self.run_check(parts)['file_integrity'], 'FAIL')
+
+    def test_invalid_opc_roots_missing_content_type_and_wrong_entrypoint_fail(self):
+        variants = []
+        for name in ['[Content_Types].xml', '_rels/.rels']:
+            parts = presentation_parts(); parts[name] = '<wrong/>'; variants.append(parts)
+        parts = presentation_parts(); parts['media.untyped'] = b'content'; variants.append(parts)
+        parts = presentation_parts(); parts['_rels/.rels'] = parts['_rels/.rels'].replace('/officeDocument', '/notOfficeDocument'); variants.append(parts)
+        parts = presentation_parts(); parts['[Content_Types].xml'] = parts['[Content_Types].xml'].replace(
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml', 'application/xml'); variants.append(parts)
+        for parts in variants:
+            with self.subTest():
+                self.assertEqual(self.run_check(parts)['file_integrity'], 'FAIL')
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@ Executed 2026-10-23. Synthetic internal-traffic scenario; no OCI changes, deploy
 
 ## Automated and official-input checks
 
-- `python3 scripts/check.py`: 16 tests passed plus four-skill metadata, manifest, link and public-package checks.
+- `python3 scripts/check.py`: 17 tests passed plus four-skill metadata, manifest, link and public-package checks.
 - Five inherited 0.1.2 tests passed before changes. New tests cover exact metadata filtering/hash rejection, PowerPoint retrieval/cache tampering, cache location, compressed/wrapped graphs, malformed packages, slide ordering, duplicate IDs, broken connectors and markup-compatibility namespaces.
 - Both official toolkits downloaded from Oracle with the pinned hashes verified; source URLs remain on [Oracle's toolkit page](https://docs.oracle.com/en-us/iaas/Content/General/Reference/graphicsfordiagrams.htm).
 - The opt-in fixed fixture produced both formats with three official icon groups, the same VCN/subnets/services/flows, and separate source locators. Original and scoped-edited files pass format validators. The second reference page/slide is preserved byte-for-byte by the builder's scoped edit.
@@ -40,6 +40,10 @@ Remaining evaluator deductions include absent project-specific privacy/terms URL
 [Comparable helper benchmark](benchmark-0.1.3.json): three runs per revision of indexing the same official toolkit files and validating the same generated Draw.io graph, same Python/environment. All twelve tool invocations exited 0. Mean combined elapsed time: **6.521 s before / 6.573 s after**. This shows no supported speed improvement and is not an agent benchmark. Manual corrections are not applicable to those deterministic commands.
 
 Actual model token consumption and model-driven task outcomes remain **NOT_VERIFIED**: no isolated before/after agent usage logs were available. Do not present byte counts, static estimates, this session's overall usage or deterministic helper timings as measured agent efficiency.
+
+## Independent final code review
+
+A fresh reviewer found one Important issue: syntactically valid XML with invalid OPC content types or no officeDocument entrypoint could receive a structural PASS. Five negative variants reproduced it before the correction. The validator now checks content-types and relationship roots, content-type coverage, and the internal presentation entrypoint. The positive synthetic fixture was corrected to carry proper OPC declarations. The full 17-test suite and the actual PowerPoint-saved file pass after the fix. No additional Important/Critical or actionable minor findings were reported. The reviewer did not independently repeat application or model-efficiency checks.
 
 ## Remaining release acceptance
 

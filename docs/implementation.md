@@ -17,3 +17,5 @@ Pre-flight: retrieval and catalog lookup share source hashes; validators and evi
 Tasks 1–3: five inherited tests plus ten new tests pass. New missing-feature tests were run before implementation; existing negative graph cases already passed. Baseline public source had no CI/test command. Both fetchers reject caches inside the plugin.
 
 Integration: both files generated and structurally checked with official groups. PowerPoint opened/rendered, moved/saved/reopened. Draw.io opened/rendered/moved; download handoff failed, so persisted UI round-trip remains open. Measured model tokens unavailable; deterministic timings and static estimates separated in verification report.
+
+Final review: fresh read-only reviewer checked 8c80a04..8b38b1b. One Important OPC validation issue fixed with five negative variants RED→GREEN; full suite 17/17 and actual PowerPoint-saved file PASS. No actionable minors. Declined judgment: unattached PowerPoint annotation connectors are allowed; application/artwork/model-efficiency claims remain bounded by recorded evidence.

@@ -13,6 +13,8 @@ import zipfile
 P = 'http://schemas.openxmlformats.org/presentationml/2006/main'
 A = 'http://schemas.openxmlformats.org/drawingml/2006/main'
 R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+PKG = 'http://schemas.openxmlformats.org/package/2006/relationships'
+CT = 'http://schemas.openxmlformats.org/package/2006/content-types'
 NS = {'p': P, 'a': A}
 MAX_EXPANDED = 256 * 1024 * 1024
 
@@ -60,6 +62,39 @@ def resolve_target(source, target):
     return resolved
 
 
+def check_content_types(tree, names, errors):
+    if tree is None or tree.tag != '{' + CT + '}Types':
+        errors.append('Missing/invalid content-types root')
+        return
+    defaults, overrides = {}, {}
+    for element in tree:
+        if element.tag == '{' + CT + '}Default':
+            table, key = defaults, element.get('Extension')
+        elif element.tag == '{' + CT + '}Override':
+            table, key = overrides, element.get('PartName', '').lstrip('/')
+            if not element.get('PartName', '').startswith('/') or key not in names:
+                errors.append(f'Invalid content-type override: {key}')
+        else:
+            errors.append('Invalid content-types child')
+            continue
+        content_type = element.get('ContentType')
+        if not key or key in table or not content_type:
+            errors.append(f'Missing/duplicate content-type declaration: {key}')
+        table[key] = content_type
+    for part in names:
+        if part.endswith('/') or part == '[Content_Types].xml':
+            continue
+        extension = PurePosixPath(part).name.rpartition('.')[2]
+        content_type = overrides.get(part, defaults.get(extension))
+        if not content_type:
+            errors.append(f'No content type for part: {part}')
+        if part.endswith('.rels') and content_type != 'application/vnd.openxmlformats-package.relationships+xml':
+            errors.append(f'Invalid relationships content type: {part}')
+        if part == 'ppt/presentation.xml' and content_type != (
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml'):
+            errors.append('Invalid presentation content type')
+
+
 def inspect_package(archive, result):
     errors = result['errors']
     names = archive.namelist()
@@ -84,15 +119,20 @@ def inspect_package(archive, result):
                 errors.extend(compatibility_errors(archive.read(name), name))
             except ET.ParseError as error:
                 errors.append(f'Malformed XML: {name}: {error}')
+    check_content_types(trees.get('[Content_Types].xml'), names, errors)
     relations = {}
     for part, tree in trees.items():
         if not part.endswith('.rels'):
             continue
+        if tree.tag != '{' + PKG + '}Relationships':
+            errors.append(f'Invalid relationships root: {part}')
         source = relationship_source(part)
         if source and source not in names:
             errors.append(f'Orphan relationships part: {part}')
         by_id = {}
         for rel in tree:
+            if rel.tag != '{' + PKG + '}Relationship' or not rel.get('Type'):
+                errors.append(f'Invalid relationship element/type: {part}')
             identity, target = rel.get('Id'), rel.get('Target', '')
             if not identity or identity in by_id or not target:
                 errors.append(f'Invalid/duplicate relationship ID or empty target: {part}: {identity}')
@@ -104,6 +144,10 @@ def inspect_package(archive, result):
                 if resolved not in names:
                     errors.append(f'Missing relationship target: {source}: {resolved}')
         relations[source] = by_id
+    entrypoints = [rel for rel in relations.get('', {}).values() if rel.get('Type') == R + '/officeDocument']
+    if (len(entrypoints) != 1 or entrypoints[0].get('TargetMode') == 'External' or
+            resolve_target('', entrypoints[0].get('Target', '')) != 'ppt/presentation.xml'):
+        errors.append('Missing/invalid package officeDocument entrypoint')
     for part, tree in trees.items():
         if part.endswith('.rels'):
             continue
