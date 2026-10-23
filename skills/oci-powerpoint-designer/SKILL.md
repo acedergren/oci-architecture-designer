@@ -14,6 +14,8 @@ python3 ../oci-architecture-core/scripts/lookup_assets.py --service 'Compute vir
 
 On retrieval failure request the relevant input and preserve a labeled draft. Follow Core's hash-change and icon-gap rules. Reindex new files with `catalog_assets.py --pptx /path/to/OCI_Icons.pptx --output /path/to/catalog.json`; inspect source groups, not just metadata.
 
+For a substantive design, draw the selected model and reference its requirement/decision IDs. Keep competing alternatives in separately labeled views; do not mix proposed alternatives with deployed components.
+
 ## Keep the deck editable
 
 Inspect actual source slide order, layouts and theme. In the pinned April 2024 source, slide 5 describes colors/fonts, 18–23 notation, 24–25 logical canvases, 27–28 physical canvases and 34–47 icon categories. These positions are not stable across new toolkits.

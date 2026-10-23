@@ -14,6 +14,8 @@ python3 ../oci-architecture-core/scripts/lookup_assets.py --service 'Compute vir
 
 Use the extracted .drawio file hash, not the ZIP hash. Reindex new verified inputs using `catalog_assets.py --drawio /path/to/toolkit.drawio --output /path/to/catalog.json`. Catalogs contain metadata, not artwork.
 
+For a substantive design, draw the selected model and reference its requirement/decision IDs. Keep competing alternatives in separately labeled views; do not mix proposed alternatives with deployed components.
+
 ## Build the native graph
 
 Copy complete original groups and descendants with embedded stencil/image payloads. Remap IDs, parent, source and target references; preserve internal relative coordinates, labels and aspect ratio. Move/scale each group as a unit; add resource-specific text separately. Record node-to-source locators in delivery evidence. Support plain mxCell and UserObject/object wrappers; compressed pages are base64, raw DEFLATE, then URL-decoded UTF-8.

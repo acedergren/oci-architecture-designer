@@ -1,13 +1,28 @@
 ---
 name: oci-architecture-core
-description: "Use when creating, editing, or reviewing OCI architecture diagrams or slides; share resource semantics and exact icon mappings across formats."
+description: "Use when designing or reviewing OCI architecture, comparing workload options, or creating diagrams and slides; connect requirements, decisions and current evidence to one model."
 ---
 
 # OCI Architecture Core
 
-Start from the user's requirements, IaC or existing drawing. Infer audience and format; ask only about facts that materially change the design. Keep one compact model with stable node IDs, service meaning, current/proposed status, scope, region/realm, VCN/subnet membership and directed flows with purpose/protocol/port. Label unresolved decisions. Do not add resources or HA/DR claims without evidence.
+Match the task: design/advisory work develops the architecture; a review identifies findings without silently rewriting accepted decisions; a layout-only edit preserves the established architecture and does not reopen discovery. This skill can deliver an architecture brief without a diagram when that is what the user needs.
 
-Read [topology](references/topology.md) for placement/connectivity and [style](references/style.md) when drawing. Geography, network membership and compartment ownership are different relationships. A regional subnet/VCN must not be constrained to one AD. Managed services and their endpoints have different scopes. Verify region AD counts, availability, lifecycle and endpoint behavior against current official OCI documentation when relevant; toolkit examples do not prove a topology is correct.
+## Establish the architecture
+
+For a new design or material change, use [requirements and decisions](references/architecture-design.md): inspect available IaC/customer standards, capture the workload's relevant constraints, compare feasible approaches and tie significant choices to requirements, consequences, owners and sources. Prefer the smallest secure, operable solution that meets those constraints. Label assumptions and unresolved conflicts; do not invent load, budget, recovery targets or product support.
+
+Keep one compact model with stable node IDs, exact service meaning, current/proposed status, scope, region/realm, VCN/subnet membership and directed flows with purpose/protocol/port. Link its material decisions to the brief. Context/application views and the OCI deployment view answer different questions; use only those the audience needs.
+
+Load references by the decision at hand, not all at once:
+
+- [Workload patterns](references/workload-patterns.md): select a fitting reference and record departures.
+- [CAF and foundation](references/cloud-foundation.md): reuse the existing platform, identify gaps and ownership.
+- [MAA and resilience](references/resilience.md): reason from failure scope and recovery objectives.
+- [Current service evidence](references/service-verification.md): verify changing service/realm/endpoint/limit claims.
+- [Well-Architected review](references/architecture-review.md): examine security, resilience, performance/cost, operations and distributed-cloud concerns before delivery.
+- [Source index](references/architecture-sources.md): provenance, scope and refresh rules for those reference families; C4/ADRs are covered in the design guide.
+
+Apply [topology](references/topology.md) to placement/connectivity and [style](references/style.md) when drawing. Geography, network membership and compartment ownership are different relationships. A regional subnet/VCN must not be constrained to one AD. Managed services and their endpoints have different scopes. A blueprint does not establish customer configuration, reachability or production readiness.
 
 ## Official assets, on demand
 
