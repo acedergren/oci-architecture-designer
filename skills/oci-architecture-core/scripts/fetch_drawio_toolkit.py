@@ -17,6 +17,14 @@ MAX_EXPANDED = 64 * 1024 * 1024
 FILES = ('OCI Architecture Diagram Toolkit v24.2.drawio', 'OCI Library.xml', 'Read-ME.drawio')
 
 
+def check_cache(cache_dir):
+    resolved = Path(cache_dir).resolve()
+    plugin = Path(__file__).resolve().parents[3]
+    if resolved.is_relative_to(plugin):
+        raise ValueError('Toolkit cache must be outside the plugin package')
+    return resolved
+
+
 def check_url(url):
     p = urllib.parse.urlsplit(url)
     if p.scheme != 'https' or p.hostname != 'docs.oracle.com' or p.username or p.password or p.port not in (None, 443):
@@ -53,7 +61,7 @@ def unpack(data, expected_hash):
 
 
 def fetch(cache_dir, refresh=False, expected_hash=SHA256):
-    cache_dir = Path(cache_dir)
+    cache_dir = check_cache(cache_dir)
     archive = cache_dir / 'OCI-Style-Guide-for-Drawio.zip'
     reused = archive.exists() and not refresh
     headers = {}
