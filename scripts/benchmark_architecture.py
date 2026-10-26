@@ -1375,6 +1375,7 @@ def build_review_pack(output, config):
         if (source / 'context.json').exists():
             roots += list(json.loads((source / 'context.json').read_text()).values())
         inputs = [source / name for name in ('answer.md', 'file-evidence.json', 'application-evidence.json')]
+        inputs += sorted((source / 'operator-evidence').glob('*.json'))
         saved = source / 'workspace-evidence'
         inputs += [p for p in saved.rglob('*') if p.is_file() and not p.is_symlink() and
                    p.suffix.lower() in {'.html', '.htm', '.txt', '.md', '.json'} and
@@ -1416,6 +1417,11 @@ def build_review_pack(output, config):
             if application.exists():
                 clean = anonymize(application.read_text(), roots, list(config['revisions'].values()))
                 (folder / (label + '-application-checks.json')).write_text(clean)
+            for check in sorted((source / 'operator-evidence').glob('*.json')):
+                if check.is_symlink():
+                    raise ValueError('Operator evidence must be a local JSON file')
+                clean = anonymize(check.read_text(), roots, list(config['revisions'].values()))
+                (folder / (label + '-operator-' + check.name)).write_text(clean)
             snapshots = []
             saved = source / 'workspace-evidence'
             for snapshot in sorted(saved.rglob('*')):

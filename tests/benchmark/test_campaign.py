@@ -435,6 +435,8 @@ for line in sys.stdin:
                 BENCH.write_json(folder / 'result.json', dict(row, status='PASS', workflow_state='COMPLETE'))
                 (folder / 'answer.md').write_text('Source /tmp/worker; commit 7af1ba8. Synthetic answer.')
                 BENCH.write_json(folder / 'application-evidence.json', {'application_opening': {'status': 'NOT_VERIFIED', 'method': 'No renderer'}})
+                BENCH.write_json(folder / 'operator-evidence/source-audit.json',
+                                 {'source_identity': 'PASS', 'artwork': 'NOT_VERIFIED'})
                 source = folder / 'workspace-evidence/evidence/sources/compute.html'
                 source.parent.mkdir(parents=True)
                 source.write_text('<title>Oracle Compute</title>')
@@ -451,6 +453,8 @@ for line in sys.stdin:
             native_folder = out / 'reviews/packs' / native['pair_id']
             self.assertIn('compute-2', (native_folder / 'request.md').read_text())
             self.assertTrue((native_folder / 'A-application-checks.json').exists())
+            self.assertEqual(json.loads((native_folder / 'A-operator-source-audit.json').read_text())['artwork'],
+                             'NOT_VERIFIED')
             sources = json.loads((native_folder / 'A-sources.json').read_text())
             self.assertEqual(len(sources), 1)
             self.assertEqual((native_folder / sources[0]['review_file']).read_text(), '<title>Oracle Compute</title>')
