@@ -1,13 +1,13 @@
 # OCI Architecture Designer
 
-Four discoverable skills design and review OCI workload architectures and create editable Draw.io/PowerPoint deliverables. Version **0.2.0** is a local release candidate; publishing and installation are separate actions.
+Four discoverable skills design and review OCI workload architectures and create editable Draw.io/PowerPoint deliverables, technical image exports and explicit generated illustrations. Version **0.2.0** is a local release candidate with local follow-up source changes; publishing and installation are separate actions.
 
 | Skill | Responsibility |
 | --- | --- |
-| OCI Architecture Core | Requirements, decisions, scoped sources, shared model and asset provenance |
-| OCI Draw.io Designer | Native graph, official groups and attached connectors |
-| OCI PowerPoint Designer | Native shapes, source templates and OOXML dependencies |
-| Architecture QA | Requirement fit, design/failure behavior and separate artifact-quality evidence |
+| OCI Architecture Core | Requirements, decisions, scoped sources, shared model, image route and asset provenance |
+| OCI Draw.io Designer | Native graph, official groups, attached connectors and technical image export |
+| OCI PowerPoint Designer | Native shapes, source templates, OOXML dependencies and technical image export |
+| Architecture QA | Requirement fit, design/failure behavior and separate native/image quality evidence |
 
 Automatic discovery remains enabled for all four skills. Actual host selection is not established by static checks. No MCP server or OCI credentials are required.
 
@@ -29,6 +29,17 @@ The reference layer is loaded by need:
 [Primary-source index](skills/oci-architecture-core/references/architecture-sources.md) records access date, applicability and refresh boundaries. These notes are original decision aids with links to primary references, not copied framework manuals, certification or a current service-availability database. Open the particular service/architecture article when a claim depends on it. Keep customer/internal inputs outside this public package.
 
 Outputs can include a requirements brief, decision log, consistent model/views and review findings; a drawing is optional for advisory work. Every additional component needs a workload justification and operator. Keep a proposed RTO/RPO, documented product capability and measured deployed behavior distinct. No new external tool, account connection or runtime dependency is introduced.
+
+## OpenAI profiles and architecture images
+
+[OpenAI model profiles](skills/oci-architecture-core/references/openai-model-profiles.md) specialize instruction contracts for GPT-6 Astra, GPT-6.1 Sol and GPT Image 2.5 Sunburst/Flare, with official sources checked on 2026-10-26. Use the active model and the host's actual tool capabilities; the plugin does not select models, change reasoning settings or add an API client. A hidden image backend remains `null` / `NOT_VERIFIED`, even if a prompt names a model. No model-specific quality improvement is established by these instructions alone.
+
+[Image delivery](skills/oci-architecture-core/references/image-delivery.md) keeps one fixed architecture across two routes:
+
+- Technical drawings, “arkitekturbild”, “ritning som bild” and exact official icons default to PNG export from a checked native source. SVG requires an explicit request and an existing supported exporter.
+- Explicit generated illustrations use the host's existing image tool with exact labels, counts, boundaries, directed flows and edit-preservation constraints. Generated symbols are illustrations, not verified official icons.
+
+An image-only request may receive only the image; retain its technical native source in task evidence. Editable-node/connector requirements still need a native file and actual checks. Missing renderers or image tools leave the corresponding delivery/check open; no automatic installation, API fallback or silent route change occurs. Inspect the actual saved image at intended size and compare it with the model. See the separate [image acceptance exercises](tests/image-delivery.md) and [verification record](docs/verification-image-delivery.md); they do not alter the pinned architecture comparison.
 
 ## Requirements and verification
 

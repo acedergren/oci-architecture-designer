@@ -5,17 +5,17 @@
     "defaultPrompt": [
       "Create an editable OCI architecture diagram using verified official Oracle toolkits.",
       "Create a PowerPoint OCI architecture slide and validate its topology and layout.",
-      "Review this OCI diagram for service icon, boundary, routing, and readability errors."
+      "Review this OCI diagram or architecture image for service meaning, boundaries, directed flows, readability and evidence."
     ],
     "developerName": "Alexander Cedergren",
     "displayName": "OCI Architecture Designer",
-    "longDescription": "Four discoverable skills connect workload requirements to architecture decisions and native editable OCI diagrams. Conditional references cover Well-Architected reviews, workload patterns, CAF foundations, MAA resilience, current service evidence, C4 views and decision records. QA distinguishes design reasoning, source evidence and actual artifact checks. Verified official toolkit downloads and structural validators remain available. Oracle toolkit binaries are not bundled; no Oracle endorsement is implied.",
+    "longDescription": "Four discoverable skills connect workload requirements to architecture decisions, editable OCI diagrams and architecture images. Selectively loaded OpenAI profiles cover GPT-6 Astra, GPT-6.1 Sol and GPT Image 2.5 workflows without changing host model settings. Technical PNG/SVG export and explicit generated illustrations preserve one architecture model. QA separates source evidence, semantic/visual checks, editability and observed model identity. Toolkit binaries are not bundled; no Oracle endorsement is implied.",
     "shortDescription": "OCI design and diagrams",
     "websiteURL": "https://github.com/acedergren/oci-architecture-designer"
   },
   "name": "oci-architecture-designer",
   "version": "0.2.0",
-  "description": "Design and review OCI workload architectures with requirement-based decisions, scoped primary references and editable Draw.io/PowerPoint output. Official toolkit binaries are not bundled.",
+  "description": "Design and review OCI architectures with source-backed decisions, editable Draw.io/PowerPoint files, technical image exports and generated illustrations. Official toolkit binaries are not bundled.",
   "author": {
     "name": "Alexander Cedergren"
   },
@@ -27,7 +27,9 @@
     "PowerPoint",
     "official-icons",
     "Well-Architected",
-    "architecture-decisions"
+    "architecture-decisions",
+    "architecture-images",
+    "OpenAI"
   ],
   "skills": "./skills"
 }

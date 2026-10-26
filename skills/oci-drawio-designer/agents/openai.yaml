@@ -1,6 +1,6 @@
 interface:
   display_name: "OCI Draw.io Designer"
-  short_description: "Native editable OCI diagrams with verified official assets"
-  default_prompt: "Use $oci-drawio-designer to help create or review an OCI architecture deliverable using official assets."
+  short_description: "Editable OCI diagrams and technical image export"
+  default_prompt: "Use $oci-drawio-designer to create or edit an OCI diagram with verified official assets, or export a checked PNG/SVG architecture image."
 policy:
   allow_implicit_invocation: true

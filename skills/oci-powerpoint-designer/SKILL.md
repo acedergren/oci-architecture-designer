@@ -1,6 +1,6 @@
 ---
 name: oci-powerpoint-designer
-description: "Use when creating or editing editable OCI .pptx architecture slides with verified official Oracle artwork and templates."
+description: "Use when creating or editing editable OCI .pptx architecture slides or exporting a technical architecture image/PNG (arkitekturbild) with verified official Oracle artwork and templates."
 ---
 
 # OCI PowerPoint Designer
@@ -16,6 +16,8 @@ On retrieval failure request the relevant input and preserve a labeled draft. Fo
 
 For a substantive design, draw the selected model and reference its requirement/decision IDs. Keep competing alternatives in separately labeled views; do not mix proposed alternatives with deployed components.
 
+Use the relevant [OpenAI model profile](../oci-architecture-core/references/openai-model-profiles.md). Inspect source slide order/theme, select exact groups, perform scoped package edits, validate, then open/export and inspect. Use short bounded reads and preserve stable IDs; confirm each dependent tool result before continuing.
+
 ## Keep the deck editable
 
 Inspect actual source slide order, layouts and theme. In the pinned April 2024 source, slide 5 describes colors/fonts, 18–23 notation, 24–25 logical canvases, 27–28 physical canvases and 34–47 icon categories. These positions are not stable across new toolkits.
@@ -30,4 +32,8 @@ Attach connectors to actual shape connection sites inside a copied group; a grou
 
 Run `python3 validate_pptx.py /path/to/result.pptx`. JSON reports internal package/shape/connector checks, slide order and external relationships separately; exit 0/1 indicates structural pass/failure. External links are not fetched. This is not full OOXML schema validation and does not prove rendering or editability.
 
-Reopen in a presentation parser and application when available. Render and inspect every changed slide at presentation size. On a test copy, move a node, save and reopen; confirm the attached connector follows. Record parser, application opening, rendering, visual inspection and editability separately. Missing tools leave NOT_VERIFIED. Apply [QA](../architecture-qa/SKILL.md) and deliver the editable file and evidence.
+Reopen in a presentation parser and application when available. Render and inspect every changed slide at presentation size. When native editability is requested or claimed, on a test copy move a node, save and reopen; confirm the attached connector follows. Record parser, application opening, rendering, visual inspection and editability separately. Missing tools leave NOT_VERIFIED. Apply [QA](../architecture-qa/SKILL.md) and deliver the requested file and evidence.
+
+## Technical image delivery
+
+Follow [image delivery](../oci-architecture-core/references/image-delivery.md). Save the checked deck, then export the requested slide as PNG with an existing application/renderer. Use SVG only through an explicitly requested, supported native export. Record slide order, source/hash and tool/version; reopen the saved image and inspect actual labels, service counts, boundaries, arrow directions and margins at delivery size. Keep the editable source in task evidence for an image-only request. Rendering with a converter is separate from opening in PowerPoint; a bitmap never proves native editability. Do not substitute a generated illustration for a missing exporter.

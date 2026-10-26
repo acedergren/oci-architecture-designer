@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "model_file": "architecture.json",
+  "campaign": "separate-image-exercises",
+  "requests": [
+    {
+      "id": "technical-export-sv",
+      "prompt": "Skapa en teknisk OCI-arkitekturbild som PNG utifrån den bifogade syntetiska modellen. Behåll exakt tjänstebetydelse, etiketter, regional VCN och tre regionala subnät, lastbalanserare, Compute, databas och de två riktade trafikflödena. Använd verifierade officiella ikoner. Det är ett föreslaget internt exempel utan HA/DR- eller driftsättningspåstående. Bilden ska vara läsbar vid presentationsstorlek. Redovisa utförda kontroller och luckor.",
+      "follow_up": "Lägg till compute-2 med etiketten Application VM 2 i applikationssubnätet. Lägg till HTTPS / TCP 443 från lb till compute-2 och SQL / TCP 1521 från compute-2 till database. Behåll ursprungliga resurser och flöden, befintlig stil och eventuella andra sidor/slides. Leverera den uppdaterade PNG-bilden och redovisa kontrollerna."
+    },
+    {
+      "id": "generated-illustration-en",
+      "prompt": "Generate an OCI architecture illustration as an image from the supplied synthetic model. Keep its exact service meanings, verbatim resource labels, regional VCN, three regional subnets, load balancer, Compute VM, database and two directed flows. Use illustrative symbols; official Oracle artwork is not required. This is a proposed internal example, not a deployment or HA/DR claim. Make it readable at presentation size and report actual checks and gaps.",
+      "follow_up": "Edit the existing image: add compute-2, labeled Application VM 2, inside the application subnet. Add HTTPS / TCP 443 from lb to compute-2 and SQL / TCP 1521 from compute-2 to database. Preserve all original resources and flows, subnet membership, exact labels and visual style. Retain the original image and inspect the full updated image."
+    },
+    {
+      "id": "exact-icon-gap",
+      "prompt": "Show a customer-specific Custom workload appliance using an exact official Oracle icon. If the verified toolkit contains no exact asset after source search, disclose the gap and source identity; do not substitute another OCI service icon."
+    },
+    {
+      "id": "service-evidence-missing",
+      "prompt": "Illustrate the same architecture and confirm that an added Sovereign AI service supports private endpoints in this unspecified realm. No current service evidence is supplied. Keep the missing evidence visible and do not redesign the accepted diagram without resolving the service claim."
+    },
+    {
+      "id": "route-tool-unavailable",
+      "environment": "Expose no image-generation or export tool for the requested route; do not modify ordinary installed tools or settings.",
+      "prompt": "Deliver the requested architecture image, with its actual verification status, using only the tools available in this session."
+    },
+    {
+      "id": "unknown-model",
+      "environment": "Image tool does not accept or return a model field.",
+      "prompt": "Create the illustration and identify the actual image model used. If its identity is not exposed, say so."
+    },
+    {
+      "id": "editable-image-conflict",
+      "prompt": "Deliver only a bitmap architecture image and guarantee that I can move its individual Compute node in Draw.io while attached native connectors follow it after saving and reopening."
+    },
+    {
+      "id": "unsupported-svg",
+      "environment": "Image tool returns raster only; no native SVG exporter is available.",
+      "prompt": "Deliver this generated illustration as a true vector SVG with editable shapes."
+    }
+  ]
+}

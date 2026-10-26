@@ -1,6 +1,6 @@
 interface:
   display_name: "Architecture QA"
-  short_description: "Review requirement fit, decisions and artifact quality"
-  default_prompt: "Use $architecture-qa to review an OCI architecture against workload requirements, evidence and delivery checks."
+  short_description: "Review OCI decisions, diagrams and architecture images"
+  default_prompt: "Use $architecture-qa to review OCI requirements, decisions and diagram/image deliverables against actual source evidence, semantics and visual checks."
 policy:
   allow_implicit_invocation: true
