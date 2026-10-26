@@ -529,6 +529,27 @@ for line in sys.stdin:
             context = json.loads((out / 'pilots/before/context.json').read_text())
             self.assertFalse((Path(context['profile']) / 'auth.json').exists())
 
+    def test_a_transferred_but_malformed_pilot_file_cannot_pass_preflight(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            workspace = out / 'workspace'
+            (workspace / 'outputs').mkdir(parents=True)
+            (workspace / 'outputs/pilot.drawio').write_text('not an editable XML diagram')
+            args = SimpleNamespace(output=out, codex='synthetic-cli')
+            config = {'revisions': {'before': 'pinned'}, 'model': 'gpt-6.1-sol',
+                      'reasoning_effort': 'xhigh', 'timeout_seconds': 10}
+            context = {'workspace': workspace, 'env': dict(os.environ), 'discovered_skills': ['core']}
+            outcome = {'status': 'PASS', 'actual_context': [{'model': 'gpt-6.1-sol', 'effort': 'xhigh'}],
+                       'telemetry': {'usage': {'total_tokens': 1}}, 'skill_read_evidence': [{'skill': 'core'}]}
+            with patch.object(BENCH, 'provision_trial', return_value=context), \
+                 patch.object(BENCH, 'confinement_checks'), \
+                 patch.object(BENCH, 'inference', return_value=outcome), \
+                 patch.object(BENCH.subprocess, 'check_output', return_value='synthetic-cli'):
+                result = BENCH._pilot(args, config, 'before', out / 'pilots')
+            self.assertTrue(result['file_transfer'])
+            self.assertEqual(result['status'], 'FAIL')
+            self.assertEqual(result['file_structure'], 'FAIL')
+
     def test_review_pack_cannot_hide_missing_primary_runs(self):
         with tempfile.TemporaryDirectory() as tmp:
             config = BENCH.load_config(ROOT / 'tests/benchmark/campaign.json')

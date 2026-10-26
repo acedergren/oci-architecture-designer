@@ -351,6 +351,10 @@ def require_pilot_gate(output, config):
         raise ValueError('Campaign changed after pilot verification')
     if value.get('isolation_protocol') != ISOLATION_PROTOCOL:
         raise ValueError('Pilot isolation protocol is obsolete; fresh pilots in a new output are required')
+    if set(value.get('pilots', {})) != {'before', 'after'} or not all(
+            p.get('file_structure') == 'PASS' or p.get('file_transfer_and_structure') is True
+            for p in value['pilots'].values()):
+        raise ValueError('Pilot native file structure has not been verified')
     return value
 
 
@@ -1125,19 +1129,25 @@ def _pilot(args, config, arm, root):
         outcome = inference(args, config, context, prompt, logs / 'inference', config['timeout_seconds'])
         file = context['workspace'] / 'outputs/pilot.drawio'
         transfer = file.is_file() and file.stat().st_size > 0
+        structure = 'NOT_VERIFIED'
         if transfer:
             shutil.copyfile(file, logs / 'pilot.drawio')
+            validation = subprocess.run([sys.executable,
+                str(ROOT / 'skills/oci-drawio-designer/validate_drawio.py'), str(logs / 'pilot.drawio')],
+                capture_output=True, text=True, timeout=60)
+            (logs / 'pilot-validation.json').write_text(validation.stdout)
+            structure = 'PASS' if validation.returncode == 0 else 'FAIL'
         models = outcome['actual_context']
         model_ok = bool(models) and all(m.get('model') == config['model'] and
                                        m.get('effort') == config['reasoning_effort'] for m in models)
         status = ('PASS' if outcome['status'] == 'PASS' and outcome['telemetry']['usage'] and
-                  outcome['skill_read_evidence'] and transfer and model_ok
+                  outcome['skill_read_evidence'] and transfer and structure == 'PASS' and model_ok
                   else 'FAIL')
         result = {'status': status, 'discovered_skills': context['discovered_skills'],
                   'isolation_protocol': ISOLATION_PROTOCOL,
                   'usage_verified': outcome['telemetry']['usage'] is not None,
                   'read_evidence_present': bool(outcome['skill_read_evidence']),
-                  'file_transfer': transfer, 'model_verified': model_ok,
+                  'file_transfer': transfer, 'file_structure': structure, 'model_verified': model_ok,
                   'reason': None if status == 'PASS' else 'Pilot did not satisfy every gate'}
         result['cli_version'] = subprocess.check_output([args.codex, '--version'],
                                                         env=context['env'], text=True).strip()
