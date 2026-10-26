@@ -164,6 +164,110 @@ class Campaign(unittest.TestCase):
         self.assertIn('19c', result)
         self.assertIn('v24.2', result)
 
+    def test_manifest_identity_is_redacted_without_erasing_service_versions(self):
+        text = ('Plugin manifest plugin.json reports version 0.2.0. '
+                '{"plugin_version":"0.1.3"}; Oracle Database version 19c; toolkit v24.2')
+        clean = BENCH.anonymize(text, [], [])
+        self.assertNotIn('0.2.0', clean)
+        self.assertNotIn('0.1.3', clean)
+        self.assertIn('19c', clean)
+        self.assertIn('v24.2', clean)
+
+    def test_initial_snapshot_survives_follow_up_overwrite(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace, evidence = root / 'workspace', root / 'evidence'
+            initial = workspace / 'outputs/initial.drawio'
+            initial.parent.mkdir(parents=True)
+            initial.write_text('<mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>')
+            original = initial.read_bytes()
+            BENCH.structural_evidence(workspace, evidence, 'drawio', phases=('initial',))
+            initial.write_text('overwritten during edit')
+            BENCH.structural_evidence(workspace, evidence, 'drawio')
+            self.assertEqual((evidence / 'artifacts/initial.drawio').read_bytes(), original)
+            value = json.loads((evidence / 'file-evidence.json').read_text())
+            self.assertEqual(value['source_changes']['initial']['status'], 'FAIL')
+
+    def test_expired_budget_never_starts_inference(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(BENCH, 'run_process') as process:
+            result = BENCH.inference(SimpleNamespace(codex='unused'), {}, {}, 'request', Path(tmp), -1)
+            self.assertEqual(result['status'], 'TIMEOUT')
+            process.assert_not_called()
+
+    def test_setup_uses_wall_budget_and_late_completion_is_timeout(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            clock = [0]
+            row = {'run_id': 'deadline', 'scenario_id': 'reasoning'}
+            config = {'timeout_seconds': 10, 'scenarios': [{'id': 'reasoning', 'kind': 'reasoning', 'request': 'q'}]}
+            def provision(*args):
+                clock[0] = 3
+                return {}
+            def infer(*args, **kwargs):
+                self.assertEqual(args[5], 7)
+                clock[0] = 11
+                return {'status': 'PASS', 'elapsed_seconds': 8, 'telemetry': {
+                    'usage': None, 'usage_status': 'NOT_VERIFIED', 'tool_calls': 0, 'tool_errors': 0,
+                    'runtime_errors': 0, 'skill_read_commands': [], 'agent_retries': 0}}
+            with patch.object(BENCH, 'make_schedule', return_value=[row]), \
+                 patch.object(BENCH, 'provision_trial', side_effect=provision), \
+                 patch.object(BENCH, 'confinement_checks'), \
+                 patch.object(BENCH, 'campaign_report'), \
+                 patch.object(BENCH, 'inference', side_effect=infer), \
+                 patch.object(BENCH.time, 'time', side_effect=lambda: clock[0]):
+                BENCH.run_campaign(SimpleNamespace(output=out), config)
+            result = json.loads((out / 'runs/deadline/result.json').read_text())
+            self.assertEqual(result['status'], 'TIMEOUT')
+            self.assertEqual(result['elapsed_seconds'], 11)
+
+    def test_observed_failed_usage_survives_unknown_workflow_completeness(self):
+        phase = {'elapsed_seconds': 1, 'telemetry': {'usage': {
+            'input_tokens': 95, 'cached_input_tokens': 30, 'output_tokens': 5, 'total_tokens': 100},
+            'usage_status': 'NOT_VERIFIED', 'tool_calls': 1, 'tool_errors': 1,
+            'runtime_errors': 0, 'skill_read_commands': [], 'agent_retries': 0}}
+        telemetry = BENCH.combine_telemetry([phase])
+        summary = BENCH.resource_summary([{'telemetry': telemetry, 'accepted': False}])
+        self.assertIsNone(telemetry['usage'])
+        self.assertEqual(summary['observed_total_tokens'], 100)
+        self.assertIsNone(summary['tokens_per_accepted_task'])
+
+    def test_native_qa_mutation_invalidates_checked_bytes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            native = root / 'outputs/edited.drawio'
+            native.parent.mkdir()
+            native.write_text('checked bytes')
+            before = BENCH.native_hashes(root)
+            native.write_text('modified by final QA')
+            with self.assertRaisesRegex(ValueError, 'artifact'):
+                BENCH.verify_native_hashes(root, before)
+
+    def test_interrupted_run_preserves_completed_answer_without_repeating_inference(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            row = {'run_id': 'interrupted', 'scenario_id': 'reasoning'}
+            folder = out / 'runs/interrupted'
+            (folder / 'initial').mkdir(parents=True)
+            (folder / 'initial/answer.md').write_text('Completed answer before controller interruption')
+            BENCH.write_json(folder / 'initial/outcome.json', {'status': 'PASS', 'elapsed_seconds': 3,
+                'telemetry': {'usage': None, 'usage_status': 'NOT_VERIFIED', 'tool_calls': 0,
+                              'tool_errors': 0, 'runtime_errors': 0, 'skill_read_commands': [], 'agent_retries': 0}})
+            result = BENCH.recover_interrupted_trial(folder, row)
+            self.assertEqual(result['status'], 'INTERRUPTED')
+            self.assertIsNone(result['elapsed_seconds'])
+            self.assertIn('Completed answer', (folder / 'answer.md').read_text())
+
+    def test_interrupted_setup_is_not_counted_as_a_completed_workflow(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            result = BENCH.recover_interrupted_trial(folder, {'run_id': 'setup-only'})
+            self.assertNotEqual(result['workflow_state'], 'COMPLETE')
+
+    def test_unresolved_candidate_identity_stops_blind_pack(self):
+        with self.assertRaisesRegex(ValueError, 'identity'):
+            BENCH.verify_blind_text('Manifest version: 0.2.0', [])
+        BENCH.verify_blind_text('Oracle Database 19c; toolkit v24.2', [])
+
     def test_critical_review_can_add_human_pairs_beyond_the_eight_samples(self):
         self.assertTrue(BENCH.review_gate({'agent_reviews': 24, 'human_reviews': 10,
                                          'critical_reviews_pending': 0, 'locked': True}))
@@ -422,7 +526,8 @@ for line in sys.stdin:
                 folder.mkdir(parents=True)
                 (folder / 'A.md').write_text('A')
                 (folder / 'B.md').write_text('B')
-                index.append({'pair_id': folder.name, 'input_sha256': BENCH.review_inputs(folder)})
+                index.append({'pair_id': folder.name, 'scenario_id': 'case-' + str(i % 8),
+                              'input_sha256': BENCH.review_inputs(folder)})
             BENCH.write_json(out / 'reviews/index.json', {'pairs': index})
             BENCH.write_json(out / 'reviews/human-sample.json', {'pairs': index[:8]})
             candidate = {'task_status': 'PASS', 'mandatory_checks': [{'status': 'PASS', 'evidence': 'A.md:1'}],
@@ -436,7 +541,17 @@ for line in sys.stdin:
                     artifacts[str(path.relative_to(out))] = BENCH.sha256(path)
             lock = {'agent_reviews': 24, 'human_reviews': 8, 'critical_reviews_pending': 0,
                     'locked': True, 'artifact_sha256': artifacts}
+            BENCH.write_json(out / 'private/conclusion-inputs.json', BENCH.conclusion_inputs(out))
+            lock['conclusion_sha256'] = BENCH.sha256(out / 'private/conclusion-inputs.json')
             self.assertTrue(BENCH.verified_review_lock(out, lock))
+            original_sample = (out / 'reviews/human-sample.json').read_bytes()
+            BENCH.write_json(out / 'reviews/human-sample.json', {'pairs': index[:7] + [index[8]]})
+            BENCH.write_json(out / 'private/conclusion-inputs.json', BENCH.conclusion_inputs(out))
+            lock['conclusion_sha256'] = BENCH.sha256(out / 'private/conclusion-inputs.json')
+            self.assertFalse(BENCH.verified_review_lock(out, lock))
+            (out / 'reviews/human-sample.json').write_bytes(original_sample)
+            BENCH.write_json(out / 'private/conclusion-inputs.json', BENCH.conclusion_inputs(out))
+            lock['conclusion_sha256'] = BENCH.sha256(out / 'private/conclusion-inputs.json')
             path = out / 'reviews/agent/pair-23.json'
             value = json.loads(path.read_text())
             value['findings'] = [{'candidate': 'A', 'severity': 'Critical', 'consequence': 'Lost data', 'evidence': 'A.md:1'}]
@@ -474,6 +589,38 @@ for line in sys.stdin:
             self.assertEqual(before['accepted'], 23)
             self.assertAlmostEqual(before['tokens_per_accepted_task'], 2400 / 23)
             self.assertEqual(report['comparison']['blind_preferences'], {'TIE': 24})
+            lock = json.loads((out / 'reviews/lock.json').read_text())
+            for relative in ('private/version-key.json', 'reviews/human-sample.json',
+                             'runs/' + failed + '/result.json'):
+                path = out / relative
+                original = path.read_bytes()
+                value = json.loads(original)
+                value['changed_after_lock'] = True
+                BENCH.write_json(path, value)
+                self.assertFalse(BENCH.verified_review_lock(out, lock), relative)
+                path.write_bytes(original)
+            human_path = out / 'reviews/human' / (sample[0]['pair_id'] + '.json')
+            value = json.loads(human_path.read_text())
+            value['findings'] = [{'candidate': 'A', 'severity': 'Critical',
+                                 'consequence': 'Lost reference view', 'evidence': 'A.md:1'}]
+            BENCH.write_json(human_path, value)
+            BENCH.lock_reviews(out)
+            report = BENCH.campaign_report(out, config)
+            self.assertEqual(sum(v['overall']['critical_findings'] for v in
+                                 report['comparison']['versions'].values()), 1)
+            self.assertEqual(sum(v['overall']['architecture_accepted'] for v in
+                                 report['comparison']['versions'].values()), 47)
+
+    def test_human_critical_findings_and_failed_checks_affect_acceptance(self):
+        candidate = {'task_status': 'PASS', 'mandatory_checks': [{'status': 'PASS'}]}
+        human = {'task_status': 'FAIL', 'mandatory_checks': [{'status': 'FAIL'}]}
+        result = BENCH.assessed_candidate(candidate, human)
+        self.assertEqual(result['task_status'], 'FAIL')
+        findings = BENCH.assessed_findings([], [{'candidate': 'A', 'severity': 'Critical',
+            'consequence': 'Lost reference view', 'evidence': 'A-reference.png'}])
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(BENCH.acceptance({'status': 'PASS'}, result, findings, 'A'),
+                         {'architecture_accepted': False, 'delivery_accepted': False})
 
     def test_review_counts_alone_cannot_unblind_results(self):
         with tempfile.TemporaryDirectory() as tmp:

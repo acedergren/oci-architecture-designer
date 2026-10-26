@@ -65,6 +65,13 @@ checks; perform those checks and call `run` again to continue the same workflow.
 An infrastructure error stops execution and is retained, not graded as an
 architecture mistake or removed from the denominator.
 
+After a controller interruption, `run` preserves the existing attempt and any
+completed answer without another inference call. Missing timing remains unknown.
+An interrupted setup with no inference is not counted as a completed workflow;
+it requires explicit recovery. Setup time is deducted from the initial inference
+budget, and an answer finishing after the wall deadline cannot be accepted as a
+timely delivery.
+
 Preflight freezes the grading rubric under `frozen/`. Subsequent commands verify
 its hash. Reviewer inputs bind that rubric and every answer, check and image to
 the pair; duplicate pairs or changed inputs cannot satisfy the review lock.
@@ -84,6 +91,8 @@ persisted per-thread `total_token_usage` counters. Counter resets or absent
 values are unknown, not zero. Cached input is separate from total input; it is
 not added a second time. Only verified complete samples can support resource
 comparisons. Failed workflows retain their observed resource consumption.
+`observed_usage` retains known phase counters as a possible lower bound even when
+workflow completeness is unknown; `usage` and exact cost remain null in that case.
 
 Workspace evidence is copied outside temporary trial directories with a hash
 manifest, including sources the agent actually saved. Supplied toolkits, plugin
@@ -110,6 +119,9 @@ identify the edited artifact by SHA-256 and provide `application_opening`,
 PASS requires existing local evidence files; unavailable checks use NOT_VERIFIED.
 The working agent cannot write this controller evidence. It receives a copy for
 final QA reporting and is instructed not to alter the native artifact then.
+The initial artifact is frozen before the edit inference. Later overwrites are
+reported without replacing that snapshot. Native files are hashed before and
+after final QA; a reporting turn that changes them fails artifact integrity.
 
 Use Draw.io in Chrome and the existing PowerPoint installation. Do not install a
 renderer to improve a result. Move a Compute node within its subnet in a test
@@ -136,6 +148,11 @@ separately. Do not penalize an old skill for failing an instruction it did not h
 The versioned conclusion remains NOT_VERIFIED until 24 agent reviews and eight
 human sample reviews, including critical findings, are locked. Review counts
 alone cannot unblind results; actual review files and hashes are required.
+The pack also freezes result records, the version key, review index and the human
+sample before grading. Changed conclusion inputs invalidate the lock. The human
+sample must cover each of the eight scenarios. Human failed requirements and
+Critical findings affect acceptance; their findings are included in severe totals
+with reviewer provenance, alongside the agent assessment.
 Any conclusion is limited to this small workload sample. Metadata-only static
 Plugin Eval findings and source/tool availability gaps are reported separately.
 

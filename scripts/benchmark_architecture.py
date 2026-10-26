@@ -241,8 +241,17 @@ def anonymize(text, roots, revisions):
         text = text.replace(revision, '[revision]')
     text = re.sub(r'(?i)(oci[- ]architecture[- ]designer[/\s]*(?:v|version\s*)?)0\.(?:1\.3|2\.0)',
                   r'\1[candidate]', text)
-    return re.sub(r'(?i)(plugin(?: version)?\s*[:=]?\s*)0\.(?:1\.3|2\.0)',
+    text = re.sub(r'(?i)(plugin(?: version)?\s*[:=]?\s*)0\.(?:1\.3|2\.0)',
                   r'\1[candidate]', text)
+    text = re.sub(r'(?i)(plugin[^\n]{0,100}?version[\s"\x27:=]*)0\.(?:1\.3|2\.0)',
+                  r'\1[candidate]', text)
+    return re.sub(r'(?i)("plugin_version"\s*:\s*")0\.(?:1\.3|2\.0)', r'\1[candidate]', text)
+
+
+def verify_blind_text(text, revisions):
+    if (any(revision in text for revision in revisions) or
+            re.search(r'(?<![\d.])0\.(?:1\.3|2\.0)(?![\d.])', text)):
+        raise ValueError('Unresolved candidate identity in blind inputs; review contextual redaction')
 
 
 def require_pilot_gate(output, config):
@@ -274,6 +283,11 @@ def review_gate(value):
 def verified_review_lock(output, lock):
     if not review_gate(lock):
         return False
+    frozen = output / 'private/conclusion-inputs.json'
+    if not frozen.exists() or lock.get('conclusion_sha256') != sha256(frozen):
+        return False
+    if json.loads(frozen.read_text()) != conclusion_inputs(output):
+        return False
     artifacts = lock.get('artifact_sha256', {})
     index_path = output / 'reviews/index.json'
     sample_path = output / 'reviews/human-sample.json'
@@ -282,6 +296,13 @@ def verified_review_lock(output, lock):
     index = {r['pair_id']: r for r in json.loads(index_path.read_text())['pairs']}
     required_human = {r['pair_id'] for r in json.loads(sample_path.read_text())['pairs']}
     if len(index) != 24 or len(required_human) != 8:
+        return False
+    scenarios = {p['scenario_id'] for p in index.values()}
+    sampled = json.loads(sample_path.read_text())['pairs']
+    if (len(scenarios) != 8 or len(sampled) != 8 or
+            {p.get('scenario_id') for p in sampled} != scenarios or
+            any(p['pair_id'] not in index or p.get('scenario_id') != index[p['pair_id']]['scenario_id']
+                for p in sampled)):
         return False
     for pair, entry in index.items():
         if review_inputs(output / 'reviews/packs' / pair) != entry.get('input_sha256'):
@@ -306,6 +327,14 @@ def verified_review_lock(output, lock):
             required_human.add(pair)
     return (seen['agent'] == set(index) and required_human <= seen['human'] and
             len(seen['human']) == lock['human_reviews'])
+
+
+def conclusion_inputs(output):
+    """Frozen before grading; bind version mapping, resource records and human selection."""
+    paths = [output / p for p in ('private/version-key.json', 'reviews/index.json',
+                                  'reviews/human-sample.json', 'reviews/rubric.md')]
+    paths += sorted((output / 'runs').glob('*/result.json'))
+    return {str(p.relative_to(output)): sha256(p) for p in paths if p.is_file()}
 
 
 def valid_review(row):
@@ -362,7 +391,9 @@ def resource_summary(rows):
               'usage_status': 'PASS' if complete else 'NOT_VERIFIED',
               'total_tokens': distribution(tokens), 'generation_seconds': distribution(generation),
               'elapsed_seconds': distribution(elapsed),
-              'observed_total_tokens': sum(v for v in tokens if v is not None),
+              'observed_total_tokens': sum((r.get('telemetry', {}).get('observed_usage') or
+                                           r.get('telemetry', {}).get('usage') or {}).get('total_tokens', 0)
+                                          for r in rows),
               'tokens_per_accepted_task': sum(tokens) / accepted if complete and accepted else None,
               'generation_seconds_per_accepted_task': sum(generation) / accepted
               if accepted and all(v is not None for v in generation) else None}
@@ -402,6 +433,23 @@ def acceptance(row, candidate, findings, label):
     return {'architecture_accepted': architecture, 'delivery_accepted': architecture and execution == 'PASS'}
 
 
+def assessed_candidate(agent, human=None):
+    if human is None:
+        return agent
+    return dict(agent, task_status='PASS' if agent['task_status'] == human['task_status'] == 'PASS' else 'FAIL',
+                mandatory_checks=agent['mandatory_checks'] + human['mandatory_checks'])
+
+
+def assessed_findings(agent, human):
+    unique = {}
+    for source, findings in (('agent', agent), ('human', human)):
+        for finding in findings:
+            key = json.dumps(finding, sort_keys=True)
+            entry = unique.setdefault(key, dict(finding, reviewers=[]))
+            entry['reviewers'].append(source)
+    return list(unique.values())
+
+
 def comparison_summary(output, rows):
     lock = json.loads((output / 'reviews/lock.json').read_text())
     if not verified_review_lock(output, lock):
@@ -415,19 +463,22 @@ def comparison_summary(output, rows):
         preference = review['preference']
         preferences['TIE' if preference == 'TIE' else pair['mapping'][preference]['arm']] += 1
         human_path = output / 'reviews/human' / (pair_id + '.json')
+        observation = None
         if human_path.exists():
             observation = json.loads(human_path.read_text())
             human.append({'pair_id': pair_id, 'preference': observation['preference'],
                           'agent_preference': preference, 'agreement': observation['preference'] == preference,
                           'findings': observation['findings']})
+        findings = assessed_findings(review['findings'], observation['findings'] if observation else [])
         for label in ('A', 'B'):
             mapping = pair['mapping'][label]
             original = by_run[mapping['run_id']]
-            candidate = review['candidates'][label]
-            accepted = acceptance(original, candidate, review['findings'], label)
-            findings = [f for f in review['findings'] if f['candidate'] == label]
+            candidate = assessed_candidate(review['candidates'][label],
+                                           observation['candidates'][label] if observation else None)
+            accepted = acceptance(original, candidate, findings, label)
+            candidate_findings = [f for f in findings if f['candidate'] == label]
             records.append(dict(original, **accepted, accepted=accepted['delivery_accepted'],
-                                findings=findings, qa=candidate['qa'], pair_id=pair_id))
+                                findings=candidate_findings, qa=candidate['qa'], pair_id=pair_id))
     groups = {}
     for arm in ('before', 'after'):
         selected = [r for r in records if r['arm'] == arm]
@@ -839,6 +890,12 @@ def usage_delta(before, after):
 
 
 def inference(args, config, context, prompt, logs, timeout, resume=None):
+    if timeout <= 0:
+        result = {'status': 'TIMEOUT', 'timed_out': True, 'elapsed_seconds': 0,
+                  'thread_id': resume, 'telemetry': summarize_events([]),
+                  'reason': 'Workflow wall deadline exhausted before inference'}
+        write_json(Path(logs) / 'outcome.json', result)
+        return result
     workspace = context['workspace']
     final = workspace / 'response.md'
     final.unlink(missing_ok=True)
@@ -881,26 +938,44 @@ def inference(args, config, context, prompt, logs, timeout, resume=None):
     return result
 
 
-def structural_evidence(workspace, output, extension):
-    rows = {}
+def native_hashes(workspace):
+    return {str(p.relative_to(workspace)): sha256(p) for p in sorted((workspace / 'outputs').rglob('*'))
+            if p.is_file() and p.suffix.lower() in {'.drawio', '.pptx'}}
+
+
+def verify_native_hashes(workspace, expected):
+    if native_hashes(workspace) != expected:
+        raise ValueError('Native artifact changed during final QA reporting')
+
+
+def structural_evidence(workspace, output, extension, phases=('initial', 'edited')):
+    evidence_path = output / 'file-evidence.json'
+    rows = json.loads(evidence_path.read_text()) if evidence_path.exists() else {}
     validator = ROOT / ('skills/oci-drawio-designer/validate_drawio.py' if extension == 'drawio'
                         else 'skills/oci-powerpoint-designer/validate_pptx.py')
-    for phase in ('initial', 'edited'):
+    for phase in phases:
         file = workspace / f'outputs/{phase}.{extension}'
         if not file.exists():
             rows[phase] = {'status': 'FAIL', 'reason': 'Requested native file absent'}
             continue
         target = output / 'artifacts' / file.name
         target.parent.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            if sha256(file) != sha256(target):
+                rows.setdefault('source_changes', {})[phase] = {
+                    'status': 'FAIL', 'method': 'Compared phase snapshot with later workspace bytes',
+                    'snapshot_sha256': sha256(target), 'later_sha256': sha256(file)}
+            continue
         shutil.copyfile(file, target)
-        process = subprocess.run([sys.executable, str(validator), str(file)],
+        process = subprocess.run([sys.executable, str(validator), str(target)],
                                  capture_output=True, text=True, timeout=60)
         try:
             report = json.loads(process.stdout)
         except json.JSONDecodeError:
             report = {'raw_stdout': process.stdout, 'stderr': process.stderr}
         rows[phase] = {'status': 'PASS' if process.returncode == 0 else 'FAIL',
-                       'sha256': sha256(file), 'report': report}
+                       'sha256': sha256(target), 'report': report,
+                       'captured_at_epoch': time.time()}
     rows['application_checks'] = file_review({'structural': rows.get('edited', {})})
     write_json(output / 'file-evidence.json', rows)
     return rows
@@ -992,7 +1067,16 @@ def combine_telemetry(steps):
                  ('input_tokens', 'output_tokens', 'total_tokens')}
         cached = [row['cached_input_tokens'] for row in samples]
         usage['cached_input_tokens'] = sum(cached) if all(v is not None for v in cached) else None
+    observed = [s['telemetry'].get('observed_usage') or s['telemetry'].get('usage') for s in steps]
+    observed = [r for r in observed if r]
+    observed_usage = {key: sum(r[key] for r in observed) for key in
+                      ('input_tokens', 'output_tokens', 'total_tokens')} if observed else None
+    if observed_usage:
+        caches = [r.get('cached_input_tokens') for r in observed]
+        observed_usage['cached_input_tokens'] = sum(caches) if all(v is not None for v in caches) else None
     return {'usage': usage, 'usage_status': 'PASS' if usage else 'NOT_VERIFIED',
+            'observed_usage': observed_usage,
+            'observed_usage_method': 'Known phase counters; may be an incomplete lower bound',
             'tool_calls': sum(s['telemetry']['tool_calls'] for s in steps),
             'tool_errors': sum(s['telemetry']['tool_errors'] for s in steps),
             'runtime_errors': sum(s['telemetry']['runtime_errors'] for s in steps),
@@ -1005,7 +1089,7 @@ def combine_telemetry(steps):
 def finish_trial(folder, row, steps, status, started, state='COMPLETE'):
     result = dict(row, status=status, workflow_state=state, steps=steps,
                   telemetry=combine_telemetry(steps), started_at_epoch=started,
-                  elapsed_seconds=round(time.time()-started, 4),
+                  elapsed_seconds=round(time.time()-started, 4) if started is not None else None,
                   generation_seconds=round(sum(s['elapsed_seconds'] for s in steps), 4),
                   manual_corrections=0,
                   manual_corrections_method='No human answer/file correction supplied during these fixed task turns')
@@ -1020,6 +1104,41 @@ def finish_trial(folder, row, steps, status, started, state='COMPLETE'):
     if context_file.exists():
         workspace = Path(json.loads(context_file.read_text())['workspace'])
         write_json(folder / 'workspace-manifest.json', collect_workspace(workspace, folder / 'workspace-evidence'))
+    return result
+
+
+def recover_interrupted_trial(folder, row):
+    """Keep the interrupted attempt and its answer; never repeat inference implicitly."""
+    steps = [json.loads(p.read_text()) for name in ('initial', 'edit', 'qa')
+             if (p := folder / name / 'outcome.json').exists()]
+    for name in ('initial', 'edit', 'qa'):
+        phase = folder / name
+        if (phase / 'events.jsonl').exists() and not (phase / 'outcome.json').exists():
+            events, _ = read_events(phase / 'events.jsonl')
+            telemetry = summarize_events(events)
+            telemetry['observed_usage'] = telemetry['usage']
+            telemetry['usage_status'] = 'NOT_VERIFIED'
+            steps.append({'status': 'INTERRUPTED', 'elapsed_seconds': 0,
+                          'telemetry': telemetry, 'timing_status': 'NOT_VERIFIED'})
+    context_path = folder / 'context.json'
+    if context_path.exists():
+        context = json.loads(context_path.read_text())
+        response = Path(context['workspace']) / 'response.md'
+        phase = next((name for name in ('qa', 'edit', 'initial') if (folder / name).exists()), 'initial')
+        target = folder / phase / 'answer.md'
+        if response.exists() and not target.exists():
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(response, target)
+        (Path(context['profile']) / 'auth.json').unlink(missing_ok=True)
+    journal = folder / 'workflow.json'
+    started = json.loads(journal.read_text()).get('started_at_epoch') if journal.exists() else None
+    result = finish_trial(folder, row, steps, 'INTERRUPTED', started,
+                          state='COMPLETE' if steps else 'SETUP_INTERRUPTED')
+    result.update(infrastructure_error='Controller interrupted; original attempt retained without inference replay',
+                  timing_status='PASS' if started is not None else 'NOT_VERIFIED')
+    if any(s.get('timing_status') == 'NOT_VERIFIED' for s in steps):
+        result['generation_seconds'] = None
+    write_json(folder / 'result.json', result)
     return result
 
 
@@ -1066,8 +1185,16 @@ def run_campaign(args, config):
         folder = output / 'runs' / row['run_id']
         result_path = folder / 'result.json'
         saved = json.loads(result_path.read_text()) if result_path.exists() else None
+        if saved is None and folder.exists():
+            recover_interrupted_trial(folder, row)
+            print(json.dumps({'status': 'INTERRUPTED_ATTEMPT_RETAINED', 'run_id': row['run_id']}), flush=True)
+            continue
         if saved and saved['workflow_state'] == 'COMPLETE':
             continue
+        if saved and saved['workflow_state'] == 'SETUP_INTERRUPTED':
+            print(json.dumps({'status': 'SETUP_INTERRUPTED', 'run_id': row['run_id'],
+                              'reason': 'No inference attempted; preserved setup requires explicit recovery'}), flush=True)
+            return 1
         scenario = lookup[row['scenario_id']]
         context = None
         steps = saved.get('steps', []) if saved else []
@@ -1090,27 +1217,41 @@ def run_campaign(args, config):
                 prompt = ('Report final QA using the measured checks in inputs/verification.json and '
                           'the actual files. Keep unavailable checks explicit. Do not edit any native '
                           'artifact during this reporting step.')
+                checked_hashes = native_hashes(context['workspace'])
                 step = inference(args, config, context, prompt, folder / 'qa',
                                  config['timeout_seconds'] - (time.time()-started),
                                  resume=steps[0]['thread_id'])
                 steps.append(step)
+                try:
+                    verify_native_hashes(context['workspace'], checked_hashes)
+                except ValueError as error:
+                    step['status'] = 'FAIL'
+                    step['artifact_integrity'] = {'status': 'FAIL', 'method': str(error),
+                                                  'before': checked_hashes,
+                                                  'after': native_hashes(context['workspace'])}
                 if step.get('protocol_error'):
                     raise ValueError(step['protocol_error'])
-                finish_trial(folder, row, steps, step['status'], started)
+                status = 'TIMEOUT' if time.time()-started >= config['timeout_seconds'] else workflow_status(steps)
+                finish_trial(folder, row, steps, status, started)
             else:
                 folder.mkdir(parents=True)
+                write_json(folder / 'workflow.json', dict(row, started_at_epoch=started,
+                                                       controller_sha256=CONTROLLER_SHA256))
                 context = provision_trial(args, config, row, folder)
                 confinement_checks(context, output, folder)
                 prompt = scenario['request']
                 if scenario['kind'] != 'reasoning':
                     prompt += '\nVerified local official toolkit files, when supplied, are in inputs/.'
-                step = inference(args, config, context, prompt, folder / 'initial', config['timeout_seconds'])
+                step = inference(args, config, context, prompt, folder / 'initial',
+                                 config['timeout_seconds'] - (time.time()-started))
                 steps.append(step)
                 if step.get('protocol_error'):
                     raise ValueError(step['protocol_error'])
                 if scenario['kind'] == 'reasoning' or step['status'] != 'PASS':
-                    finish_trial(folder, row, steps, step['status'], started)
+                    status = 'TIMEOUT' if time.time()-started >= config['timeout_seconds'] else step['status']
+                    finish_trial(folder, row, steps, status, started)
                 else:
+                    structural_evidence(context['workspace'], folder, scenario['kind'], phases=('initial',))
                     edit = inference(args, config, context, scenario['follow_up'], folder / 'edit',
                                      config['timeout_seconds'] - (time.time()-started),
                                      resume=step['thread_id'])
@@ -1226,6 +1367,21 @@ def build_review_pack(output, config):
     index_path = output / 'reviews/index.json'
     if index_path.exists():
         raise ValueError('Blind pack already exists; do not rewrite reviewed evidence')
+    # Check before creating packs, so an unresolved identity never leaves half a pack.
+    revisions = list(config['revisions'].values()) + ['552dd48', '7af1ba8']
+    for row in make_schedule(config):
+        source = output / 'runs' / row['run_id']
+        roots = [str(output), str(ROOT)]
+        if (source / 'context.json').exists():
+            roots += list(json.loads((source / 'context.json').read_text()).values())
+        inputs = [source / name for name in ('answer.md', 'file-evidence.json', 'application-evidence.json')]
+        saved = source / 'workspace-evidence'
+        inputs += [p for p in saved.rglob('*') if p.is_file() and not p.is_symlink() and
+                   p.suffix.lower() in {'.html', '.htm', '.txt', '.md', '.json'} and
+                   ('sources' in p.relative_to(saved).parts or p.name == 'provenance.json')]
+        for path in inputs:
+            if path.exists():
+                verify_blind_text(anonymize(path.read_text(), roots, revisions), revisions)
     rng = random.Random(config['seed'] + 1)
     scenarios = {s['id']: s for s in config['scenarios']}
     pairs = {}
@@ -1302,6 +1458,7 @@ def build_review_pack(output, config):
         pair['input_sha256'] = review_inputs(output / 'reviews/packs' / pair['pair_id'])
     write_json(index_path, {'pairs': index})
     write_json(output / 'reviews/human-sample.json', {'pairs': samples, 'status': 'PENDING_HUMAN_REVIEW'})
+    write_json(output / 'private/conclusion-inputs.json', conclusion_inputs(output))
     print(json.dumps({'pairs': 24, 'human_sample': 8, 'version_key': 'SEALED'}))
     return 0
 
@@ -1411,7 +1568,8 @@ def lock_reviews(output):
                  for p in sorted((output / 'reviews' / kind).glob('*.json'))}
     counts = Counter(json.loads((output / p).read_text()).get('reviewer_kind') for p in artifacts)
     lock = {'agent_reviews': counts['agent'], 'human_reviews': counts['human'],
-            'critical_reviews_pending': 0, 'locked': True, 'artifact_sha256': artifacts}
+            'critical_reviews_pending': 0, 'locked': True, 'artifact_sha256': artifacts,
+            'conclusion_sha256': sha256(output / 'private/conclusion-inputs.json')}
     if not verified_review_lock(output, lock):
         raise ValueError('Review lock refused: incomplete, duplicated, changed or invalid review evidence')
     write_json(output / 'reviews/lock.json', lock)
