@@ -59,6 +59,40 @@ class Campaign(unittest.TestCase):
                 observed = BENCH.environment_inventory(str(command), dict(os.environ))['controller_sha256']
             self.assertEqual(observed, original)
 
+    def test_cli_identity_requires_the_external_code_mode_helper(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            executable = root / 'CodexCLI.app/Contents/MacOS/codex'
+            executable.parent.mkdir(parents=True)
+            executable.write_bytes(b'synthetic vendor executable')
+            with self.assertRaisesRegex(ValueError, 'code-mode'):
+                BENCH.cli_runtime_identity(str(executable))
+            helper = root / 'bin/codex-code-mode-host'
+            helper.parent.mkdir()
+            helper.write_bytes(b'synthetic vendor helper')
+            identity = BENCH.cli_runtime_identity(str(executable))
+            self.assertEqual(identity['code_mode_host_sha256'], BENCH.sha256(helper))
+
+    def test_missing_code_mode_host_is_an_infrastructure_failure_even_after_a_final_answer(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace, logs = root / 'workspace', root / 'logs'
+            workspace.mkdir()
+            def process(*args):
+                logs.mkdir()
+                (logs / 'events.jsonl').write_text('{"type":"turn.completed","usage":{"input_tokens":2,"output_tokens":1}}\n')
+                (logs / 'stderr.log').write_text('ERROR failed to spawn code-mode host: No such file or directory')
+                return {'status': 'PASS', 'elapsed_seconds': 1, 'exit_code': 0}
+            config = {'model': 'gpt-6.1-sol', 'reasoning_effort': 'xhigh'}
+            context = {'workspace': workspace, 'profile': root / 'profile', 'env': {}}
+            with patch.object(BENCH, 'run_process', side_effect=process), \
+                 patch.object(BENCH, 'profile_total', side_effect=[None, {'input_tokens': 2, 'output_tokens': 1, 'cached_input_tokens': 0, 'total_tokens': 3}]), \
+                 patch.object(BENCH, 'actual_context', return_value=[{'model': 'gpt-6.1-sol', 'effort': 'xhigh'}]):
+                result = BENCH.inference(SimpleNamespace(codex='synthetic'), config, context, 'request', logs, 20)
+            self.assertEqual(result['status'], 'FAIL')
+            self.assertIn('runtime', result['protocol_error'])
+            self.assertEqual(result['telemetry']['usage']['total_tokens'], 3)
+
     def test_nested_exit_failure_and_duplicate_events_count_once(self):
         started = {'type': 'item.started', 'item': {'id': 'a', 'type': 'command_execution',
                    'command': 'python validate.py', 'status': 'in_progress'}}

@@ -259,3 +259,9 @@ record its source/copy hashes. This prevents a desktop app update from silently
 changing the measurement engine. The copy belongs outside the plugin and Git;
 ordinary installation and settings remain untouched. Only that executable bundle
 is allowed through the home-directory denial; other result files remain denied.
+Copy the complete vendor `codex-cli` directory, including its sibling `bin/`
+helpers and resources; copying only `CodexCLI.app` is insufficient. Preflight
+requires the code-mode host and binds both executable and helper hashes to the
+pilot gate. Main execution rejects another engine, and a missing code-mode host
+stops the campaign as an infrastructure failure even when the model returns a
+normal final answer. A copied runtime must pass its own functional pilots.

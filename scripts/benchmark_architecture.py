@@ -46,6 +46,18 @@ def sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def cli_runtime_identity(codex):
+    executable = Path(shutil.which(str(codex)) or codex).resolve()
+    bundle = next((p for p in executable.parents if p.suffix == '.app'), None)
+    candidates = [executable.parent / 'codex-code-mode-host']
+    if bundle:
+        candidates.insert(0, bundle.parent / 'bin/codex-code-mode-host')
+    helper = next((p for p in candidates if p.is_file()), None)
+    if not helper:
+        raise ValueError('Required CLI code-mode helper is missing; preserve the complete vendor runtime layout')
+    return {'executable_sha256': sha256(executable), 'code_mode_host_sha256': sha256(helper)}
+
+
 def load_config(path):
     path = Path(path).resolve()
     config = json.loads(path.read_text())
@@ -654,6 +666,8 @@ def native_permissions(context, controller):
     if context.get('codex'):
         executable = Path(context['codex']).resolve()
         runtime = next((p for p in executable.parents if p.suffix == '.app'), executable.parent)
+        if (runtime.parent / 'bin/codex-code-mode-host').is_file():
+            runtime = runtime.parent
         rules[str(runtime)] = 'read'
     for root, access in rules.items():
         text += json.dumps(root) + ' = ' + json.dumps(access) + '\n'
@@ -1050,6 +1064,10 @@ def inference(args, config, context, prompt, logs, timeout, resume=None):
     command += [prompt]
     counter_before = profile_total(context['profile'])
     result = run_process(command, workspace, context['env'], logs, max(0.1, timeout))
+    stderr = logs / 'stderr.log'
+    if stderr.exists() and 'failed to spawn code-mode host' in stderr.read_text(errors='replace'):
+        result['status'] = 'FAIL'
+        result['protocol_error'] = 'Required CLI code-mode runtime could not start; inspect preserved stderr'
     events, malformed = read_events(logs / 'events.jsonl')
     result['telemetry'] = summarize_events(events)
     result['telemetry']['reported_cli_usage'] = result['telemetry']['usage']
@@ -1176,10 +1194,14 @@ def execute_command(args, config):
             return reprocess_preflight(args, config)
         if not args.toolkits:
             raise ValueError('Verified local --toolkits are required for both pilots')
+        runtime_identity = cli_runtime_identity(args.codex)
         attempt = output / 'pilots' / time.strftime('%Y%m%dT%H%M%S')
         pilots = {arm: _pilot(args, config, arm, attempt) for arm in ('before', 'after')}
         status = 'PASS' if all(p['status'] == 'PASS' for p in pilots.values()) else 'FAIL'
+        if cli_runtime_identity(args.codex) != runtime_identity:
+            status = 'FAIL'
         gate = {'campaign_id': config['campaign_id'], 'config_sha256': config_digest(config),
+                'cli_runtime_identity': runtime_identity,
                 'isolation_protocol': ISOLATION_PROTOCOL,
                 'status': status, 'pilots': pilots, 'pilot_evidence': str(attempt),
                 'reason': 'Both isolated pilots passed' if status == 'PASS'
@@ -1192,7 +1214,9 @@ def execute_command(args, config):
         print(json.dumps({'status': status, 'pilots': pilots}))
         return 0 if status == 'PASS' else 1
     if args.command == 'run':
-        require_pilot_gate(output, config)
+        gate = require_pilot_gate(output, config)
+        if gate.get('cli_runtime_identity') != cli_runtime_identity(args.codex):
+            raise ValueError('CLI runtime identity differs from the pilot engine or was not measured; fresh pilots required')
         if any(json.loads(path.read_text()).get('isolation_protocol') != ISOLATION_PROTOCOL
                for path in (output / 'runs').glob('*/result.json')):
             raise ValueError('Existing primary evidence predates isolation protocol; preserve it and use a new output')
@@ -1442,6 +1466,8 @@ def reprocess_preflight(args, config):
     """Reinterpret preserved pilot bytes after a telemetry fix; no inference or auth."""
     output = args.output.resolve()
     previous = json.loads((output / 'preflight.json').read_text())
+    if previous.get('cli_runtime_identity') != cli_runtime_identity(args.codex):
+        raise ValueError('Pilot runtime identity was not established for this engine; fresh pilots required')
     root = Path(previous['pilot_evidence'])
     rows = {}
     for arm in ('before', 'after'):
@@ -1478,6 +1504,7 @@ def reprocess_preflight(args, config):
         write_json(folder / 'reanalysis.json', rows[arm])
     status = 'PASS' if all(row['status'] == 'PASS' for row in rows.values()) else 'FAIL'
     value = {'campaign_id': config['campaign_id'], 'config_sha256': config_digest(config),
+             'cli_runtime_identity': previous['cli_runtime_identity'],
              'isolation_protocol': ISOLATION_PROTOCOL,
              'status': status, 'pilots': rows, 'pilot_evidence': str(root),
              'environment': previous.get('environment'), 'reprocessed_without_inference': True,
