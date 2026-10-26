@@ -663,6 +663,15 @@ def campaign_report(output, config):
     counts = Counter('TIMEOUT' if any(s.get('status') == 'TIMEOUT' for s in row.get('steps', []))
                      else row.get('status', 'NOT_VERIFIED') for row in rows)
     result['execution_status_counts'] = dict(counts)
+    attempts = list((output / 'infrastructure-attempts').glob('*/result.json'))
+    attempts += list((output / 'pilots').glob('*/*/result.json'))
+    result['technical_attempts'] = []
+    for path in sorted(attempts):
+        attempt = json.loads(path.read_text())
+        result['technical_attempts'].append({'evidence': str(path.relative_to(output)),
+            'status': attempt.get('status', 'NOT_VERIFIED'),
+            'reason': attempt.get('infrastructure_error') or attempt.get('reason'),
+            'scope': 'Technical setup/pilot; outside primary inference denominator'})
     result['usage_complete'] = bool(rows) and all(r.get('telemetry', {}).get('usage') for r in rows)
     if result['conclusion_status'] == 'PASS':
         result['comparison'] = comparison_summary(output, rows)
@@ -672,6 +681,7 @@ def campaign_report(output, config):
             f'Comparison conclusion: **{result["conclusion_status"]}**. '
             'Version key remains sealed until 24 agent reviews and eight human sample reviews '
             'are locked and all critical findings are reviewed.\n\n')
+    text += f'Technical attempts outside primary runs: {len(result["technical_attempts"])}. Details are retained in report.json.\n\n'
     if result['preflight']:
         text += 'Preflight: ' + result['preflight'].get('status', 'NOT_VERIFIED') + '\n\n'
         text += result['preflight'].get('reason', '') + '\n'

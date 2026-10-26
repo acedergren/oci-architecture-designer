@@ -399,6 +399,8 @@ for line in sys.stdin:
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             BENCH.write_json(out / 'preflight.json', {'status': 'FAIL', 'reason': 'no activation'})
+            BENCH.write_json(out / 'infrastructure-attempts/setup-only/result.json',
+                             {'status': 'FAIL', 'infrastructure_error': 'Nested execution denied', 'steps': []})
             status = BENCH.main(['report', '--config', str(ROOT / 'tests/benchmark/campaign.json'),
                                  '--output', str(out)])
             self.assertEqual(status, 0)
@@ -406,6 +408,9 @@ for line in sys.stdin:
             self.assertEqual(result['conclusion_status'], 'NOT_VERIFIED')
             self.assertEqual(result['primary_completed'], 0)
             self.assertFalse(result['unblinded'])
+            self.assertEqual(result['technical_attempts'][0]['status'], 'FAIL')
+            self.assertEqual(result['technical_attempts'][0]['reason'], 'Nested execution denied')
+            self.assertIn('Technical attempts outside primary runs: 1', (out / 'report.md').read_text())
 
     def test_failed_provisioning_removes_temporary_auth(self):
         with tempfile.TemporaryDirectory() as tmp:
