@@ -252,3 +252,10 @@ Known worker-token consumption for these failed technical attempts and pilots is
 listed separately in the replacement report, including incomplete lower bounds.
 This resource use is not erased when primary denominators restart. Unknown
 interrupted/controller/operator costs still prevent a complete total-cost claim.
+
+CLI version and executable hash are recorded per trial. For a long campaign, use
+`--codex` with an unchanged external copy of the existing vendor CLI bundle, and
+record its source/copy hashes. This prevents a desktop app update from silently
+changing the measurement engine. The copy belongs outside the plugin and Git;
+ordinary installation and settings remain untouched. Only that executable bundle
+is allowed through the home-directory denial; other result files remain denied.

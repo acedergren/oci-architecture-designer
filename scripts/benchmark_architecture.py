@@ -651,6 +651,10 @@ def native_permissions(context, controller):
              str(Path.home() / '.codex'): 'deny', str(Path.home() / '.agents'): 'deny',
              str(Path.home()): 'deny', '/private/tmp': 'deny', '/tmp': 'deny',
              str(Path.home() / '.cache/codex-runtimes'): 'read'}
+    if context.get('codex'):
+        executable = Path(context['codex']).resolve()
+        runtime = next((p for p in executable.parents if p.suffix == '.app'), executable.parent)
+        rules[str(runtime)] = 'read'
     for root, access in rules.items():
         text += json.dumps(root) + ' = ' + json.dumps(access) + '\n'
     path.write_text(text)
@@ -829,6 +833,8 @@ def environment_inventory(codex, environment):
         result['codex'] = {'version': subprocess.check_output([codex, '--version'], env=environment,
                                                              text=True, timeout=10, stderr=subprocess.DEVNULL).strip(),
                            'path': shutil.which(codex) or codex}
+        executable = Path(result['codex']['path'])
+        result['codex']['sha256'] = sha256(executable) if executable.is_file() else None
     except (OSError, subprocess.SubprocessError):
         result['codex'] = {'version': None, 'status': 'NOT_VERIFIED'}
     for name in ('python-pptx', 'Pillow', 'lxml', 'PyMuPDF'):

@@ -45,6 +45,7 @@ class Campaign(unittest.TestCase):
             env = dict(os.environ, CODEX_HOME=str(Path(tmp) / 'isolated'))
             result = BENCH.environment_inventory(str(command), env)
             self.assertEqual(result['codex']['version'], env['CODEX_HOME'])
+            self.assertEqual(result['codex']['sha256'], BENCH.sha256(command))
 
     def test_controller_hash_describes_loaded_code_when_file_changes_later(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -145,7 +146,9 @@ class Campaign(unittest.TestCase):
             profile.mkdir()
             (profile / 'config.toml').write_text('')
             BENCH.native_permissions({'trial': trial, 'workspace': trial / 'workspace',
-                                      'profile': profile}, trial / 'controller')
+                                      'profile': profile,
+                                      'codex': trial / 'tools/CodexCLI.app/Contents/MacOS/codex'},
+                                     trial / 'controller')
             policy = tomllib.loads((profile / 'config.toml').read_text())
             rules = policy['permissions']['architecture-benchmark']['filesystem']
             self.assertEqual(rules['/private/tmp'], 'deny')
@@ -154,6 +157,7 @@ class Campaign(unittest.TestCase):
             self.assertEqual(rules[str(Path.home() / '.cache/codex-runtimes')], 'read')
             self.assertEqual(rules[str(trial / 'workspace')], 'write')
             self.assertEqual(rules[str(trial / 'workspace/inputs')], 'read')
+            self.assertEqual(rules[str((trial / 'tools/CodexCLI.app').resolve())], 'read')
 
     def test_controller_interruption_reaps_the_running_inference(self):
         from unittest.mock import Mock
