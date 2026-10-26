@@ -254,6 +254,27 @@ def verify_blind_text(text, revisions):
         raise ValueError('Unresolved candidate identity in blind inputs; review contextual redaction')
 
 
+def blind_check_json(text, operator=False):
+    """Hide execution resources in QA copies while retaining source dates and check facts."""
+    hidden = {'checked_at_epoch', 'captured_at_epoch', 'started_at_epoch', 'finished_at_epoch',
+              'elapsed_seconds', 'generation_seconds', 'timing', 'usage', 'telemetry',
+              'input_tokens', 'cached_input_tokens', 'output_tokens', 'total_tokens',
+              'tool_calls', 'tool_errors', 'runtime_errors', 'agent_retries'}
+    def clean(value):
+        if isinstance(value, dict):
+            return {key: clean(item) for key, item in value.items() if key not in hidden}
+        if isinstance(value, list):
+            return [clean(item) for item in value]
+        if isinstance(value, str):
+            return re.sub(r'(?i)post[- ]deadline(?: forensic)?', 'independent operator check', value)
+        return value
+    value = clean(json.loads(text))
+    if operator and isinstance(value, dict):
+        value['review_provenance_note'] = ('Independent operator evidence does not establish that the '
+            'candidate performed or knew these checks when making an earlier claim. Timeliness is assessed separately.')
+    return json.dumps(value, indent=2, ensure_ascii=False)
+
+
 def require_pilot_gate(output, config):
     gate = Path(output) / 'pilot-gate.json'
     if not gate.exists():
@@ -1389,7 +1410,7 @@ def build_review_pack(output, config):
         saved = source / 'workspace-evidence'
         inputs += [p for p in saved.rglob('*') if p.is_file() and not p.is_symlink() and
                    p.suffix.lower() in {'.html', '.htm', '.txt', '.md', '.json'} and
-                   ('sources' in p.relative_to(saved).parts or p.name == 'provenance.json')]
+                   ('sources' in p.relative_to(saved).parts or 'provenance' in p.name.lower())]
         for path in inputs:
             if path.exists():
                 verify_blind_text(anonymize(path.read_text(), roots, revisions), revisions)
@@ -1421,16 +1442,16 @@ def build_review_pack(output, config):
             (folder / (label + '.md')).write_text(answer)
             evidence = source / 'file-evidence.json'
             if evidence.exists():
-                clean = anonymize(evidence.read_text(), roots, list(config['revisions'].values()))
+                clean = anonymize(blind_check_json(evidence.read_text()), roots, list(config['revisions'].values()))
                 (folder / (label + '-checks.json')).write_text(clean)
             application = source / 'application-evidence.json'
             if application.exists():
-                clean = anonymize(application.read_text(), roots, list(config['revisions'].values()))
+                clean = anonymize(blind_check_json(application.read_text(), operator=True), roots, list(config['revisions'].values()))
                 (folder / (label + '-application-checks.json')).write_text(clean)
             for check in sorted((source / 'operator-evidence').glob('*.json')):
                 if check.is_symlink():
                     raise ValueError('Operator evidence must be a local JSON file')
-                clean = anonymize(check.read_text(), roots, list(config['revisions'].values()))
+                clean = anonymize(blind_check_json(check.read_text(), operator=True), roots, list(config['revisions'].values()))
                 (folder / (label + '-operator-' + check.name)).write_text(clean)
             snapshots = []
             saved = source / 'workspace-evidence'
@@ -1438,7 +1459,7 @@ def build_review_pack(output, config):
                 relative = snapshot.relative_to(saved)
                 if (not snapshot.is_file() or snapshot.is_symlink() or
                     snapshot.suffix.lower() not in {'.html', '.htm', '.txt', '.md', '.json'} or
-                    not ('sources' in relative.parts or snapshot.name == 'provenance.json')):
+                    not ('sources' in relative.parts or 'provenance' in snapshot.name.lower())):
                     continue
                 name = label + f'-source-{len(snapshots)+1:03}' + snapshot.suffix.lower()
                 clean = anonymize(snapshot.read_text(), roots,

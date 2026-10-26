@@ -441,10 +441,14 @@ for line in sys.stdin:
                 (folder / 'answer.md').write_text('Source /tmp/worker; commit 7af1ba8. Synthetic answer.')
                 BENCH.write_json(folder / 'application-evidence.json', {'application_opening': {'status': 'NOT_VERIFIED', 'method': 'No renderer'}})
                 BENCH.write_json(folder / 'operator-evidence/source-audit.json',
-                                 {'source_identity': 'PASS', 'artwork': 'NOT_VERIFIED'})
+                                 {'source_identity': 'PASS', 'artwork': 'NOT_VERIFIED',
+                                  'checked_at_epoch': 123, 'elapsed_seconds': 1200,
+                                  'timing': 'Post-deadline forensic', 'source_access_date': '2026-10-26'})
                 source = folder / 'workspace-evidence/evidence/sources/compute.html'
                 source.parent.mkdir(parents=True)
                 source.write_text('<title>Oracle Compute</title>')
+                BENCH.write_json(folder / 'workspace-evidence/outputs/evidence/icon-provenance.json',
+                                 {'assets': [{'label': 'Virtual Machine', 'source_position': 'Icons/199'}]})
             BENCH.build_review_pack(out, config)
             key = json.loads((out / 'private/version-key.json').read_text())
             sample = json.loads((out / 'reviews/human-sample.json').read_text())
@@ -460,9 +464,16 @@ for line in sys.stdin:
             self.assertTrue((native_folder / 'A-application-checks.json').exists())
             self.assertEqual(json.loads((native_folder / 'A-operator-source-audit.json').read_text())['artwork'],
                              'NOT_VERIFIED')
+            operator = json.loads((native_folder / 'A-operator-source-audit.json').read_text())
+            self.assertNotIn('checked_at_epoch', operator)
+            self.assertNotIn('elapsed_seconds', operator)
+            self.assertNotIn('timing', operator)
+            self.assertEqual(operator['source_access_date'], '2026-10-26')
             sources = json.loads((native_folder / 'A-sources.json').read_text())
-            self.assertEqual(len(sources), 1)
-            self.assertEqual((native_folder / sources[0]['review_file']).read_text(), '<title>Oracle Compute</title>')
+            self.assertEqual(len(sources), 2)
+            self.assertTrue(any((native_folder / item['review_file']).read_text() == '<title>Oracle Compute</title>'
+                                for item in sources))
+            self.assertTrue(any('icon-provenance.json' in item['source_position'] for item in sources))
             for answer in (out / 'reviews/packs').glob('*/[AB].md'):
                 self.assertNotIn('7af1ba8', answer.read_text())
 
