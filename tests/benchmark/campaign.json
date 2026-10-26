@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "campaign_id": "oci-architecture-013-vs-020-v1",
+  "seed": 26102026,
+  "repetitions": 3,
+  "revisions": {
+    "before": "552dd48c5b7098e0f3845b794b319a29f2c4bc26",
+    "after": "7af1ba8708e6243d62c795fd515facf5fd93ccc9"
+  },
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "timeout_seconds": 1200,
+  "requests": "../fixtures/architecture-requests.json",
+  "file_scenarios": [
+    {
+      "id": "native-drawio",
+      "kind": "drawio",
+      "request": "Create an editable two-page OCI architecture file. The first view is a synthetic internal application: one regional VCN 10.20.0.0/16 with regional frontend, application and database subnets; an internal Load Balancer, a Compute virtual machine and an Oracle Base Database. Traffic is Load Balancer to Compute using HTTPS/TCP 443, then Compute to Database using SQL/TCP 1521. Use stable resource IDs lb, compute and database. Region is unspecified; this is a proposed internal traffic view, not deployed infrastructure or an HA/DR claim. Use verified official icons when an exact match exists, with source hash, exact label and locator. The second page is a reference view of assumptions and flows, to preserve in subsequent edits. Verify concrete service claims using primary sources where accessible; save sources and provenance in the workspace. Deliver the editable file plus verification evidence; distinguish checks actually executed from those not available. Do not modify infrastructure. Use Draw.io format and save outputs/initial.drawio.",
+      "follow_up": "Add a second Compute instance, ID compute-2, in the existing application subnet. Connect the Load Balancer to it on HTTPS/TCP 443 and it to the same database on SQL/TCP 1521. Preserve the existing model, source style and second page/slide. Save outputs/edited.drawio and record what you checked. No other architecture changes are requested."
+    },
+    {
+      "id": "native-pptx",
+      "kind": "pptx",
+      "request": "Create an editable two-page OCI architecture file. The first view is a synthetic internal application: one regional VCN 10.20.0.0/16 with regional frontend, application and database subnets; an internal Load Balancer, a Compute virtual machine and an Oracle Base Database. Traffic is Load Balancer to Compute using HTTPS/TCP 443, then Compute to Database using SQL/TCP 1521. Use stable resource IDs lb, compute and database. Region is unspecified; this is a proposed internal traffic view, not deployed infrastructure or an HA/DR claim. Use verified official icons when an exact match exists, with source hash, exact label and locator. The second page is a reference view of assumptions and flows, to preserve in subsequent edits. Verify concrete service claims using primary sources where accessible; save sources and provenance in the workspace. Deliver the editable file plus verification evidence; distinguish checks actually executed from those not available. Do not modify infrastructure. Use PowerPoint format and save outputs/initial.pptx.",
+      "follow_up": "Add a second Compute instance, ID compute-2, in the existing application subnet. Connect the Load Balancer to it on HTTPS/TCP 443 and it to the same database on SQL/TCP 1521. Preserve the existing model, source style and second page/slide. Save outputs/edited.pptx and record what you checked. No other architecture changes are requested."
+    }
+  ],
+  "review": {
+    "human_sample_pairs": 8,
+    "agent_pairs": 24,
+    "quality_priority": true
+  }
+}
