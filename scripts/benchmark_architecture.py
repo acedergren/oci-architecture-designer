@@ -275,6 +275,43 @@ def blind_check_json(text, operator=False):
     return json.dumps(value, indent=2, ensure_ascii=False)
 
 
+def review_documents(source):
+    saved = source / 'workspace-evidence'
+    manifest = source / 'runtime-manifest.json'
+    runtime = json.loads(manifest.read_text()).get('files', {}) if manifest.exists() else {}
+    instructions = {value for name, value in runtime.items()
+                    if name.lower().endswith('.md') or Path(name).name == 'plugin.json'}
+    result = []
+    for path in sorted(saved.rglob('*')):
+        if (not path.is_file() or path.is_symlink() or path.name == 'response.md' or
+                path.suffix.lower() not in {'.html', '.htm', '.txt', '.md', '.json'} or
+                path.name == 'SKILL.md' or sha256(path) in instructions):
+            continue
+        relative = path.relative_to(saved)
+        material = (path.suffix.lower() in {'.html', '.htm'} or
+                    bool({'sources', 'references', 'refs'} & set(relative.parts)) or
+                    any(word in path.name.lower() for word in ('source', 'provenance')))
+        report = ('outputs' in relative.parts and
+                  (any(part.endswith('evidence') for part in relative.parts) or
+                   'verification' in path.name.lower() or path.name.lower().startswith('qa')))
+        if material or report:
+            result.append((path, relative, 'worker_source_material' if material else 'worker_report'))
+    return result
+
+
+def review_activation(source, result):
+    catalog = source / 'setup/catalog/events.jsonl'
+    text = catalog.read_text() if catalog.exists() else ''
+    discovered = sorted(set(re.findall(r'([a-z][a-z0-9-]+)/SKILL\.md', text)))
+    reads = sorted({entry['skill'] for phase in result.get('steps', [])
+                    for entry in phase.get('skill_read_evidence', [])})
+    return {'discovered_skills': discovered, 'discovery_status': 'PASS' if discovered else 'NOT_VERIFIED',
+            'read_skills': reads, 'read_status': 'PASS' if reads else 'NOT_VERIFIED',
+            'method': 'Catalog observation and successful tool output matching complete immutable skill source',
+            'application_status': 'NOT_VERIFIED',
+            'application_method': 'Assess use in the decisions/artifact; reading alone is insufficient'}
+
+
 def require_pilot_gate(output, config):
     gate = Path(output) / 'pilot-gate.json'
     if not gate.exists():
@@ -693,6 +730,11 @@ def campaign_report(output, config):
             'status': attempt.get('status', 'NOT_VERIFIED'),
             'reason': attempt.get('infrastructure_error') or attempt.get('reason'),
             'scope': 'Technical setup/pilot; outside primary inference denominator'})
+    result['resource_scope'] = {
+        'worker_tokens': 'Isolated initial/edit/QA sessions; known failed consumption retained separately',
+        'controller_tokens': {'value': None, 'status': 'NOT_VERIFIED'},
+        'active_operator_seconds': {'value': None, 'status': 'NOT_VERIFIED'},
+        'total_end_to_end_cost_status': 'NOT_VERIFIED'}
     result['usage_complete'] = bool(rows) and all(r.get('telemetry', {}).get('usage') for r in rows)
     if result['conclusion_status'] == 'PASS':
         result['comparison'] = comparison_summary(output, rows)
@@ -1407,10 +1449,7 @@ def build_review_pack(output, config):
             roots += list(json.loads((source / 'context.json').read_text()).values())
         inputs = [source / name for name in ('answer.md', 'file-evidence.json', 'application-evidence.json')]
         inputs += sorted((source / 'operator-evidence').glob('*.json'))
-        saved = source / 'workspace-evidence'
-        inputs += [p for p in saved.rglob('*') if p.is_file() and not p.is_symlink() and
-                   p.suffix.lower() in {'.html', '.htm', '.txt', '.md', '.json'} and
-                   ('sources' in p.relative_to(saved).parts or 'provenance' in p.name.lower())]
+        inputs += [path for path, _, _ in review_documents(source)]
         for path in inputs:
             if path.exists():
                 verify_blind_text(anonymize(path.read_text(), roots, revisions), revisions)
@@ -1440,6 +1479,7 @@ def build_review_pack(output, config):
             answer = anonymize((source / 'answer.md').read_text(), roots,
                                list(config['revisions'].values()) + ['552dd48', '7af1ba8'])
             (folder / (label + '.md')).write_text(answer)
+            write_json(folder / (label + '-activation.json'), review_activation(source, rows[candidate['run_id']]))
             evidence = source / 'file-evidence.json'
             if evidence.exists():
                 clean = anonymize(blind_check_json(evidence.read_text()), roots, list(config['revisions'].values()))
@@ -1454,21 +1494,19 @@ def build_review_pack(output, config):
                 clean = anonymize(blind_check_json(check.read_text(), operator=True), roots, list(config['revisions'].values()))
                 (folder / (label + '-operator-' + check.name)).write_text(clean)
             snapshots = []
-            saved = source / 'workspace-evidence'
-            for snapshot in sorted(saved.rglob('*')):
-                relative = snapshot.relative_to(saved)
-                if (not snapshot.is_file() or snapshot.is_symlink() or
-                    snapshot.suffix.lower() not in {'.html', '.htm', '.txt', '.md', '.json'} or
-                    not ('sources' in relative.parts or 'provenance' in snapshot.name.lower())):
-                    continue
+            for snapshot, relative, kind in review_documents(source):
                 name = label + f'-source-{len(snapshots)+1:03}' + snapshot.suffix.lower()
-                clean = anonymize(snapshot.read_text(), roots,
+                raw = snapshot.read_text()
+                if kind == 'worker_report' and snapshot.suffix.lower() == '.json':
+                    raw = blind_check_json(raw)
+                clean = anonymize(raw, roots,
                                   list(config['revisions'].values()) + ['552dd48', '7af1ba8'])
                 (folder / name).write_text(clean)
-                snapshots.append({'source_position': anonymize(str(relative), roots, []),
+                position = anonymize(str(relative), roots, []).replace('0.1.3', '[candidate]').replace('0.2.0', '[candidate]')
+                snapshots.append({'source_position': position, 'kind': kind,
                                   'original_sha256': sha256(snapshot), 'review_file': name,
                                   'review_copy_sha256': sha256(folder / name),
-                                  'transformation': 'Trial paths and candidate identity redacted'})
+                                  'transformation': 'Trial paths/candidate identity redacted; execution metrics redacted in QA JSON'})
             write_json(folder / (label + '-sources.json'), snapshots)
             # Native packages contain identifying metadata. Reviewers receive checked renders only.
             for image in sorted(source.glob('application/*')):

@@ -411,6 +411,35 @@ for line in sys.stdin:
             self.assertEqual(result['technical_attempts'][0]['status'], 'FAIL')
             self.assertEqual(result['technical_attempts'][0]['reason'], 'Nested execution denied')
             self.assertIn('Technical attempts outside primary runs: 1', (out / 'report.md').read_text())
+            self.assertIsNone(result['resource_scope']['controller_tokens']['value'])
+            self.assertEqual(result['resource_scope']['total_end_to_end_cost_status'], 'NOT_VERIFIED')
+
+    def test_activation_review_observes_reads_without_exposing_instructions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            catalog = folder / 'setup/catalog/events.jsonl'
+            catalog.parent.mkdir(parents=True)
+            catalog.write_text('skills/core/SKILL.md\nPRIVATE CANDIDATE INSTRUCTION TEXT')
+            result = {'steps': [{'skill_read_evidence': [{'skill': 'core', 'source_sha256': 'private-identity'}]}]}
+            value = BENCH.review_activation(folder, result)
+            self.assertEqual(value['discovered_skills'], ['core'])
+            self.assertEqual(value['read_skills'], ['core'])
+            self.assertNotIn('PRIVATE CANDIDATE', json.dumps(value))
+            self.assertNotIn('private-identity', json.dumps(value))
+            self.assertEqual(BENCH.review_activation(folder, {'steps': []})['read_status'], 'NOT_VERIFIED')
+
+    def test_worker_reports_include_findings_but_exclude_copied_candidate_instructions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            reports = folder / 'workspace-evidence/outputs/evidence'
+            reports.mkdir(parents=True)
+            copied = reports / 'candidate-notes.md'
+            copied.write_text('Complete candidate instructions copied into evidence')
+            (reports / 'architecture-review.md').write_text('Worker findings about the requested architecture')
+            BENCH.write_json(folder / 'runtime-manifest.json', {'files': {
+                'skills/core/references/architecture-review.md': BENCH.sha256(copied)}})
+            selected = [relative.name for _, relative, _ in BENCH.review_documents(folder)]
+            self.assertEqual(selected, ['architecture-review.md'])
 
     def test_failed_provisioning_removes_temporary_auth(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -449,6 +478,11 @@ for line in sys.stdin:
                 source.write_text('<title>Oracle Compute</title>')
                 BENCH.write_json(folder / 'workspace-evidence/outputs/evidence/icon-provenance.json',
                                  {'assets': [{'label': 'Virtual Machine', 'source_position': 'Icons/199'}]})
+                BENCH.write_json(folder / 'workspace-evidence/outputs/evidence/sources.json',
+                                 {'source_access_date': '2026-10-26', 'input_tokens': 8192})
+                BENCH.write_json(folder / 'workspace-evidence/outputs/evidence/validator.json',
+                                 {'status': 'PASS', 'elapsed_seconds': 2})
+                (folder / 'workspace-evidence/outputs/verification.md').write_text('Executed checks and limitations')
             BENCH.build_review_pack(out, config)
             key = json.loads((out / 'private/version-key.json').read_text())
             sample = json.loads((out / 'reviews/human-sample.json').read_text())
@@ -470,10 +504,15 @@ for line in sys.stdin:
             self.assertNotIn('timing', operator)
             self.assertEqual(operator['source_access_date'], '2026-10-26')
             sources = json.loads((native_folder / 'A-sources.json').read_text())
-            self.assertEqual(len(sources), 2)
+            self.assertEqual(len(sources), 5)
             self.assertTrue(any((native_folder / item['review_file']).read_text() == '<title>Oracle Compute</title>'
                                 for item in sources))
             self.assertTrue(any('icon-provenance.json' in item['source_position'] for item in sources))
+            source_metadata = next(item for item in sources if item['source_position'].endswith('/sources.json'))
+            self.assertEqual(json.loads((native_folder / source_metadata['review_file']).read_text())['input_tokens'], 8192)
+            validation = next(item for item in sources if item['source_position'].endswith('/validator.json'))
+            self.assertNotIn('elapsed_seconds', json.loads((native_folder / validation['review_file']).read_text()))
+            self.assertTrue((native_folder / 'A-activation.json').exists())
             for answer in (out / 'reviews/packs').glob('*/[AB].md'):
                 self.assertNotIn('7af1ba8', answer.read_text())
 

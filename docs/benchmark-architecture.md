@@ -138,6 +138,13 @@ evidence and checked renders. Native packages stay outside the blind pack becaus
 their internal metadata can identify a generator. Preserve service facts, official
 labels, source positions and meaningful source/version distinctions.
 
+The pack includes saved worker QA reports and source registers, plus independent
+catalog/read observations. It excludes copies matching candidate instruction
+files. Source facts and access dates remain visible; execution metrics in QA JSON
+are hidden. Operator checks do not prove that the candidate performed or knew
+those checks when making an earlier claim. Useful skill application is judged
+from the decisions and artifact, separately from observed reading.
+
 Use a fresh independent reviewer context per pair, with no candidate instructions
 or access to other reviews/key. Grade consequential requirements, proportionality,
 decisions, failure behavior, source scope, action boundaries and evidence honesty.
