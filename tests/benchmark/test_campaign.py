@@ -25,6 +25,91 @@ class Campaign(unittest.TestCase):
     def setUp(self):
         self.assertIsNotNone(BENCH, 'Architecture campaign runner is not implemented')
 
+    def test_private_session_archive_excludes_auth_config_and_symlinks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            profile, output = root / 'profile', root / 'evidence'
+            session = profile / 'sessions/2026/trace.jsonl'
+            session.parent.mkdir(parents=True)
+            raw = b'{"type":"event_msg","payload":{"type":"token_count"}}\n'
+            session.write_bytes(raw)
+            (profile / 'auth.json').write_text('synthetic authentication must stay outside archives')
+            (profile / 'config.toml').write_text('synthetic configuration')
+            (session.parent / 'linked.jsonl').symlink_to(profile / 'auth.json')
+            manifest = BENCH.archive_profile_sessions(profile, output)
+            self.assertEqual(manifest['status'], 'PASS')
+            self.assertEqual(len(manifest['snapshots']), 1)
+            archived = output / manifest['snapshots'][0]['file']
+            self.assertEqual(archived.read_bytes(), raw)
+            self.assertEqual(archived.stat().st_mode & 0o777, 0o600)
+            self.assertEqual((output / 'private-session-manifest.json').stat().st_mode & 0o777, 0o600)
+            self.assertEqual(BENCH.sha256(archived), manifest['snapshots'][0]['sha256'])
+            self.assertEqual(manifest['snapshots'][0]['source'], 'sessions/2026/trace.jsonl')
+            self.assertNotIn('synthetic authentication', json.dumps(manifest))
+            self.assertEqual(list(output.rglob('auth.json')), [])
+            self.assertEqual(list(output.rglob('config.toml')), [])
+
+    def test_session_snapshots_retain_prior_bytes_when_follow_up_appends(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / 'profile/sessions/trace.jsonl'
+            source.parent.mkdir(parents=True)
+            first = b'{"type":"first"}\n'
+            source.write_bytes(first)
+            a = BENCH.archive_profile_sessions(root / 'profile', root / 'evidence')
+            source.write_bytes(first + b'{"type":"follow_up"}\n')
+            b = BENCH.archive_profile_sessions(root / 'profile', root / 'evidence')
+            self.assertEqual(len(b['snapshots']), 2)
+            self.assertEqual((root / 'evidence' / a['snapshots'][0]['file']).read_bytes(), first)
+            c = BENCH.archive_profile_sessions(root / 'profile', root / 'evidence')
+            self.assertEqual(len(c['snapshots']), 2)
+
+    def test_changed_archived_session_is_detected_before_appending(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / 'profile/sessions/trace.jsonl'
+            source.parent.mkdir(parents=True)
+            source.write_text('{"type":"first"}\n')
+            original = BENCH.archive_profile_sessions(root / 'profile', root / 'evidence')
+            archived = root / 'evidence' / original['snapshots'][0]['file']
+            archived.write_text('changed archived bytes')
+            source.write_text('{"type":"first"}\n{"type":"follow_up"}\n')
+            with self.assertRaisesRegex(ValueError, 'checksum'):
+                BENCH.archive_profile_sessions(root / 'profile', root / 'evidence')
+            self.assertEqual(archived.read_text(), 'changed archived bytes')
+
+    def test_absent_or_malformed_session_logs_are_not_verified(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            missing = BENCH.archive_profile_sessions(root / 'profile', root / 'missing')
+            self.assertEqual(missing['status'], 'NOT_VERIFIED')
+            self.assertEqual(missing['snapshots'], [])
+            source = root / 'profile/sessions/trace.jsonl'
+            source.parent.mkdir(parents=True)
+            source.write_bytes(b'{"type":"valid"}\ntruncated')
+            malformed = BENCH.archive_profile_sessions(root / 'profile', root / 'malformed')
+            self.assertEqual(malformed['status'], 'NOT_VERIFIED')
+            self.assertEqual(malformed['snapshots'][0]['malformed_lines'], 1)
+            self.assertEqual((root / 'malformed' / malformed['snapshots'][0]['file']).read_bytes(), source.read_bytes())
+
+    def test_finishing_trial_archives_raw_session_evidence_without_inference(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / 'workspace'
+            workspace.mkdir()
+            folder = root / 'run'
+            folder.mkdir()
+            profile = root / 'profile'
+            source = profile / 'sessions/trace.jsonl'
+            source.parent.mkdir(parents=True)
+            source.write_text('{"type":"synthetic"}\n')
+            BENCH.write_json(folder / 'context.json', {'workspace': str(workspace), 'profile': str(profile)})
+            with patch.object(BENCH, 'inference', side_effect=AssertionError('No inference during archival')):
+                BENCH.finish_trial(folder, {'run_id': 'synthetic'}, [], 'PASS', 0)
+            manifest = json.loads((folder / 'private-session-manifest.json').read_text())
+            self.assertEqual(manifest['status'], 'PASS')
+            self.assertEqual(len(manifest['snapshots']), 1)
+
     def test_missing_usage_is_unknown_not_zero(self):
         result = BENCH.summarize_events([{'type': 'turn.failed', 'error': {'message': 'offline'}}])
         self.assertIsNone(result['usage'])

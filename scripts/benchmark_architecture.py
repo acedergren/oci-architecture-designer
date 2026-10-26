@@ -1260,6 +1260,56 @@ def combine_telemetry(steps):
             'agent_retries_method': 'Exact failed-call retries; changed-command semantic repairs NOT_VERIFIED'}
 
 
+def archive_profile_sessions(profile, folder):
+    """Preserve raw private session evidence without copying profile credentials."""
+    profile, folder = Path(profile), Path(folder)
+    manifest_path = folder / 'private-session-manifest.json'
+    prior = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+    snapshots = prior.get('snapshots', [])
+    for snapshot in snapshots:
+        archived = folder / snapshot['file']
+        if (not archived.resolve().is_relative_to((folder / 'private-sessions').resolve())
+                or archived.is_symlink() or not archived.is_file()
+                or sha256(archived) != snapshot['sha256']):
+            raise ValueError('Archived private session checksum changed')
+    known = {(item['source'], item['sha256']) for item in snapshots}
+    latest, malformed, event_count = [], 0, 0
+    for source in sorted((profile / 'sessions').glob('**/*.jsonl')):
+        if (not source.is_file() or source.is_symlink()
+                or any(p.is_symlink() for p in source.parents
+                       if p != profile and p.is_relative_to(profile))
+                or not source.resolve().is_relative_to((profile / 'sessions').resolve())):
+            continue
+        raw = source.read_bytes()
+        digest = hashlib.sha256(raw).hexdigest()
+        relative = str(source.relative_to(profile))
+        target = folder / 'private-sessions' / (digest + '.jsonl')
+        target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        if target.exists():
+            if sha256(target) != digest:
+                raise ValueError('Archived private session checksum changed')
+        else:
+            target.write_bytes(raw)
+        target.chmod(0o600)
+        events, bad_lines = read_events(target)
+        malformed += bad_lines
+        event_count += len(events)
+        latest.append(digest)
+        if (relative, digest) not in known:
+            snapshots.append({'source': relative, 'file': str(target.relative_to(folder)),
+                              'sha256': digest, 'bytes': len(raw),
+                              'malformed_lines': bad_lines, 'event_count': len(events)})
+            known.add((relative, digest))
+    manifest = {'status': 'PASS' if latest and event_count and not malformed else 'NOT_VERIFIED',
+                'method': 'Content-addressed raw profile sessions/**/*.jsonl snapshots; '
+                          'auth/config files and symlinks excluded; no inference',
+                'snapshots': snapshots, 'latest_sha256': latest,
+                'archiver_sha256': CONTROLLER_SHA256}
+    write_json(manifest_path, manifest)
+    manifest_path.chmod(0o600)
+    return manifest
+
+
 def finish_trial(folder, row, steps, status, started, state='COMPLETE'):
     guard = folder / 'confinement.json'
     checks = json.loads(guard.read_text()) if guard.exists() else {}
@@ -1281,8 +1331,11 @@ def finish_trial(folder, row, steps, status, started, state='COMPLETE'):
     (folder / 'answer.md').write_text('\n\n'.join(answers))
     context_file = folder / 'context.json'
     if context_file.exists():
-        workspace = Path(json.loads(context_file.read_text())['workspace'])
+        saved_context = json.loads(context_file.read_text())
+        workspace = Path(saved_context['workspace'])
         write_json(folder / 'workspace-manifest.json', collect_workspace(workspace, folder / 'workspace-evidence'))
+        if saved_context.get('profile'):
+            archive_profile_sessions(Path(saved_context['profile']), folder)
     return result
 
 

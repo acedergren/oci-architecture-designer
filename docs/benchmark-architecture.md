@@ -85,7 +85,13 @@ pilot. There is no simulated benchmark or automatic model fallback.
 ## Measurement and application evidence
 
 Each run preserves raw CLI JSONL, stderr, phase answers, source manifests,
-effective execution context, file evidence and elapsed time. CLI terminal usage
+effective execution context, file evidence and elapsed time. Raw private profile
+session JSONL is also copied into content-addressed snapshots with a hash manifest;
+follow-up snapshots retain prior bytes. Authentication/configuration files and
+symlinks are excluded. These private execution logs stay outside Git and blind
+review packs. Missing or malformed session evidence remains NOT_VERIFIED, and a
+changed archived checksum stops archival without replacing the old evidence.
+CLI terminal usage
 is retained, but follow-up billing is calculated from the difference between
 persisted per-thread `total_token_usage` counters. Counter resets or absent
 values are unknown, not zero. Cached input is separate from total input; it is
