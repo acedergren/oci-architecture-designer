@@ -8,6 +8,7 @@ import sys
 import subprocess
 import tempfile
 from types import SimpleNamespace
+from unittest.mock import patch
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -44,6 +45,18 @@ class Campaign(unittest.TestCase):
             env = dict(os.environ, CODEX_HOME=str(Path(tmp) / 'isolated'))
             result = BENCH.environment_inventory(str(command), env)
             self.assertEqual(result['codex']['version'], env['CODEX_HOME'])
+
+    def test_controller_hash_describes_loaded_code_when_file_changes_later(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            replacement = Path(tmp) / 'later-controller.py'
+            replacement.write_text('new file content after import')
+            command = Path(tmp) / 'codex-probe'
+            command.write_text('#!/bin/sh\nprintf synthetic-version\n')
+            command.chmod(0o700)
+            original = BENCH.environment_inventory(str(command), dict(os.environ))['controller_sha256']
+            with patch.object(BENCH, '__file__', str(replacement)):
+                observed = BENCH.environment_inventory(str(command), dict(os.environ))['controller_sha256']
+            self.assertEqual(observed, original)
 
     def test_nested_exit_failure_and_duplicate_events_count_once(self):
         started = {'type': 'item.started', 'item': {'id': 'a', 'type': 'command_execution',
@@ -360,6 +373,11 @@ for line in sys.stdin:
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]['usage']['input_token_details']['cached_tokens'], 40)
         self.assertEqual(result[0]['usage']['total_tokens'], 105)
+
+    def test_eval_does_not_convert_unknown_cache_to_a_measured_zero(self):
+        row = {'run_id': 'cache-unknown', 'telemetry': {'usage_status': 'PASS', 'usage': {
+            'input_tokens': 100, 'cached_input_tokens': None, 'output_tokens': 5, 'total_tokens': 105}}}
+        self.assertEqual(BENCH.eval_usage([row]), [])
 
     def test_durable_workspace_evidence_excludes_inputs_plugins_and_symlinks(self):
         with tempfile.TemporaryDirectory() as tmp:

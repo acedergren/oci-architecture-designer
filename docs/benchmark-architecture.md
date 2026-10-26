@@ -156,6 +156,11 @@ the denominator and measured cost. No currency estimate is manufactured.
 Normalized `plugin-eval-before-usage.jsonl` and `plugin-eval-after-usage.jsonl`
 contain only complete measured samples with cache counters. Plugin Eval static
 budgets remain a separate signal and do not establish architectural quality.
+Plugin Eval 0.1.2 substitutes zero for missing cache/reasoning details. The adapter
+excludes unknown-cache samples; its metadata explicitly marks reasoning tokens
+unmeasured. A reasoning zero in Plugin Eval is therefore not an observed zero.
+Workflow usage aggregates all actual model calls and phases, while static budgets
+estimate instruction text; their difference does not isolate plugin overhead.
 
 Confirmed fixes follow the locked comparison, with reproduction and regression
 evidence. Retain original runs, identify a corrected candidate by commit, and

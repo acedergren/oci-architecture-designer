@@ -22,6 +22,7 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
+CONTROLLER_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 QA = ('asset_identity', 'topology', 'connections', 'file_integrity',
       'application_opening', 'visual_quality', 'editability',
       'cross_format_consistency', 'evidence_honesty')
@@ -381,10 +382,14 @@ def eval_usage(rows):
             continue
         usage = dict(telemetry['usage'])
         cached = usage.pop('cached_input_tokens', None)
-        if cached is not None:
-            usage['input_token_details'] = {'cached_tokens': cached}
+        if cached is None:
+            # Plugin Eval 0.1.2 converts a missing cache counter to zero.
+            continue
+        usage['input_token_details'] = {'cached_tokens': cached}
         result.append({'id': row['run_id'], 'usage': usage,
-                       'metadata': {'method': 'Measured workflow counters; failed workflows retained'}})
+                       'metadata': {'method': 'Measured workflow counters; failed workflows retained',
+                                    'scenario': row.get('scenario_id'),
+                                    'unmeasured_fields': ['reasoning_tokens']}})
     return result
 
 
@@ -644,7 +649,7 @@ def environment_inventory(codex, environment):
     result = {'python': {'version': sys.version, 'executable': sys.executable},
               'libraries': {}, 'applications': {}, 'tool_paths': {},
               'drawio_web_version': {'value': None, 'status': 'NOT_VERIFIED'},
-              'controller_sha256': sha256(Path(__file__))}
+              'controller_sha256': CONTROLLER_SHA256}
     try:
         result['codex'] = {'version': subprocess.check_output([codex, '--version'], env=environment,
                                                              text=True, timeout=10, stderr=subprocess.DEVNULL).strip(),
