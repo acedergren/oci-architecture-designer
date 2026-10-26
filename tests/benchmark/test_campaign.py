@@ -127,6 +127,35 @@ class Campaign(unittest.TestCase):
         self.assertNotIn('/tmp/trial', result)
         self.assertIn('https://docs.oracle.com/en/database/oracle/oracle-database/19/', result)
 
+    def test_blind_cache_paths_and_display_names_do_not_identify_candidate(self):
+        text = ('/private/cache/oci-architecture-designer/0.2.0/skills/core/SKILL.md; '
+                'OCI Architecture Designer v0.1.3 uses Oracle Database 19c and toolkit v24.2')
+        result = BENCH.anonymize(text, [], [])
+        self.assertNotIn('0.2.0', result)
+        self.assertNotIn('0.1.3', result)
+        self.assertIn('19c', result)
+        self.assertIn('v24.2', result)
+
+    def test_critical_review_can_add_human_pairs_beyond_the_eight_samples(self):
+        self.assertTrue(BENCH.review_gate({'agent_reviews': 24, 'human_reviews': 10,
+                                         'critical_reviews_pending': 0, 'locked': True}))
+
+    def test_review_lock_rejects_duplicate_pairs_and_unbound_answers(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            artifacts = {}
+            for kind, count in [('agent', 24), ('human', 8)]:
+                for i in range(count):
+                    path = out / f'reviews/{kind}-{i}.json'
+                    BENCH.write_json(path, {'reviewer_kind': kind, 'pair_id': 'pair-01'})
+                    artifacts[str(path.relative_to(out))] = BENCH.sha256(path)
+            lock = {'agent_reviews': 24, 'human_reviews': 8, 'critical_reviews_pending': 0,
+                    'locked': True, 'artifact_sha256': artifacts}
+            self.assertFalse(BENCH.verified_review_lock(out, lock))
+
+    def test_timeout_remains_distinct_from_an_architecture_failure(self):
+        self.assertEqual(BENCH.workflow_status([{'status': 'PASS'}, {'status': 'TIMEOUT'}]), 'TIMEOUT')
+
     def test_run_refuses_missing_pilot_gate_before_spawning(self):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaisesRegex(ValueError, 'pilot'):
@@ -264,6 +293,7 @@ for line in sys.stdin:
                 folder = out / 'runs' / row['run_id']
                 BENCH.write_json(folder / 'result.json', dict(row, status='PASS', workflow_state='COMPLETE'))
                 (folder / 'answer.md').write_text('Source /tmp/worker; commit 7af1ba8. Synthetic answer.')
+                BENCH.write_json(folder / 'application-evidence.json', {'application_opening': {'status': 'NOT_VERIFIED', 'method': 'No renderer'}})
             BENCH.build_review_pack(out, config)
             key = json.loads((out / 'private/version-key.json').read_text())
             sample = json.loads((out / 'reviews/human-sample.json').read_text())
@@ -271,8 +301,59 @@ for line in sys.stdin:
             self.assertEqual(len(sample['pairs']), 8)
             self.assertEqual(len({r['scenario_id'] for r in sample['pairs']}), 8)
             self.assertFalse((out / 'reviews/packs/version-key.json').exists())
+            index = json.loads((out / 'reviews/index.json').read_text())
+            self.assertIn('rubric.md', index['pairs'][0]['input_sha256'])
+            native = next(p for p in index['pairs'] if p['scenario_id'] == 'native-drawio')
+            native_folder = out / 'reviews/packs' / native['pair_id']
+            self.assertIn('compute-2', (native_folder / 'request.md').read_text())
+            self.assertTrue((native_folder / 'A-application-checks.json').exists())
             for answer in (out / 'reviews/packs').glob('*/[AB].md'):
                 self.assertNotIn('7af1ba8', answer.read_text())
+
+    def test_unknown_usage_prevents_claiming_full_cost_per_accepted_task(self):
+        rows = [{'accepted': True, 'telemetry': {'usage': {'total_tokens': 100}, 'usage_status': 'PASS'},
+                 'elapsed_seconds': 10, 'generation_seconds': 8},
+                {'accepted': False, 'telemetry': {'usage': None, 'usage_status': 'NOT_VERIFIED'},
+                 'elapsed_seconds': 20, 'generation_seconds': 20}]
+        value = BENCH.resource_summary(rows)
+        self.assertEqual(value['observed_total_tokens'], 100)
+        self.assertIsNone(value['tokens_per_accepted_task'])
+        self.assertEqual(value['generation_seconds_per_accepted_task'], 28)
+        self.assertEqual(value['generation_seconds']['median'], 14)
+        self.assertEqual(value['usage_status'], 'NOT_VERIFIED')
+
+    def test_successful_review_lock_is_bound_to_all_evidence_and_critical_human_checks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            index = []
+            (out / 'reviews').mkdir()
+            (out / 'reviews/rubric.md').write_text('Frozen synthetic rubric')
+            for i in range(24):
+                folder = out / f'reviews/packs/pair-{i:02}'
+                folder.mkdir(parents=True)
+                (folder / 'A.md').write_text('A')
+                (folder / 'B.md').write_text('B')
+                index.append({'pair_id': folder.name, 'input_sha256': BENCH.review_inputs(folder)})
+            BENCH.write_json(out / 'reviews/index.json', {'pairs': index})
+            BENCH.write_json(out / 'reviews/human-sample.json', {'pairs': index[:8]})
+            candidate = {'task_status': 'PASS', 'mandatory_checks': [{'status': 'PASS', 'evidence': 'A.md:1'}],
+                         'qa': {k: {'status': 'NOT_VERIFIED', 'method': 'No native check'} for k in BENCH.QA + BENCH.DESIGN_QA}}
+            artifacts = {}
+            for kind, pairs in [('agent', index), ('human', index[:8])]:
+                for pair in pairs:
+                    path = out / f'reviews/{kind}/{pair["pair_id"]}.json'
+                    BENCH.write_json(path, dict(pair, reviewer_kind=kind, candidates={'A': candidate, 'B': candidate},
+                                               findings=[], preference='TIE'))
+                    artifacts[str(path.relative_to(out))] = BENCH.sha256(path)
+            lock = {'agent_reviews': 24, 'human_reviews': 8, 'critical_reviews_pending': 0,
+                    'locked': True, 'artifact_sha256': artifacts}
+            self.assertTrue(BENCH.verified_review_lock(out, lock))
+            path = out / 'reviews/agent/pair-23.json'
+            value = json.loads(path.read_text())
+            value['findings'] = [{'candidate': 'A', 'severity': 'Critical', 'consequence': 'Lost data', 'evidence': 'A.md:1'}]
+            BENCH.write_json(path, value)
+            lock['artifact_sha256'][str(path.relative_to(out))] = BENCH.sha256(path)
+            self.assertFalse(BENCH.verified_review_lock(out, lock))
 
     def test_review_counts_alone_cannot_unblind_results(self):
         with tempfile.TemporaryDirectory() as tmp:

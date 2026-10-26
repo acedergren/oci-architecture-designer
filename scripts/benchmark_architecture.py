@@ -12,6 +12,7 @@ import re
 import select
 import shutil
 import signal
+import statistics
 import subprocess
 import sys
 import tarfile
@@ -235,6 +236,8 @@ def anonymize(text, roots, revisions):
         text = text.replace(str(root), '[trial]')
     for revision in revisions:
         text = text.replace(revision, '[revision]')
+    text = re.sub(r'(?i)(oci[- ]architecture[- ]designer[/\s]*(?:v|version\s*)?)0\.(?:1\.3|2\.0)',
+                  r'\1[candidate]', text)
     return re.sub(r'(?i)(plugin(?: version)?\s*[:=]?\s*)0\.(?:1\.3|2\.0)',
                   r'\1[candidate]', text)
 
@@ -261,7 +264,7 @@ def file_review(evidence):
 
 
 def review_gate(value):
-    return (value.get('agent_reviews') == 24 and value.get('human_reviews') == 8 and
+    return (value.get('agent_reviews') == 24 and value.get('human_reviews', 0) >= 8 and
             value.get('critical_reviews_pending') == 0 and value.get('locked') is True)
 
 
@@ -269,9 +272,18 @@ def verified_review_lock(output, lock):
     if not review_gate(lock):
         return False
     artifacts = lock.get('artifact_sha256', {})
-    if len(artifacts) != 32:
+    index_path = output / 'reviews/index.json'
+    sample_path = output / 'reviews/human-sample.json'
+    if not index_path.exists() or not sample_path.exists():
         return False
-    counts = Counter()
+    index = {r['pair_id']: r for r in json.loads(index_path.read_text())['pairs']}
+    required_human = {r['pair_id'] for r in json.loads(sample_path.read_text())['pairs']}
+    if len(index) != 24 or len(required_human) != 8:
+        return False
+    for pair, entry in index.items():
+        if review_inputs(output / 'reviews/packs' / pair) != entry.get('input_sha256'):
+            return False
+    seen = {'agent': set(), 'human': set()}
     for relative, expected in artifacts.items():
         path = (output / relative).resolve()
         if not path.is_relative_to((output / 'reviews').resolve()) or not path.is_file():
@@ -279,8 +291,81 @@ def verified_review_lock(output, lock):
         if sha256(path) != expected:
             return False
         row = json.loads(path.read_text())
-        counts[row.get('reviewer_kind')] += 1
-    return counts == {'agent': 24, 'human': 8}
+        kind, pair = row.get('reviewer_kind'), row.get('pair_id')
+        if kind not in seen or pair not in index or pair in seen[kind]:
+            return False
+        if row.get('input_sha256') != index[pair].get('input_sha256'):
+            return False
+        if not row.get('input_sha256') or not valid_review(row):
+            return False
+        seen[kind].add(pair)
+        if kind == 'agent' and any(f['severity'] == 'Critical' for f in row['findings']):
+            required_human.add(pair)
+    return (seen['agent'] == set(index) and required_human <= seen['human'] and
+            len(seen['human']) == lock['human_reviews'])
+
+
+def valid_review(row):
+    if row.get('preference') not in {'A', 'B', 'TIE'}:
+        return False
+    candidates = row.get('candidates', {})
+    for label in ('A', 'B'):
+        candidate = candidates.get(label, {})
+        checks = candidate.get('mandatory_checks', [])
+        if candidate.get('task_status') not in {'PASS', 'FAIL'} or not checks:
+            return False
+        if any(c.get('status') not in {'PASS', 'FAIL'} or not c.get('evidence') for c in checks):
+            return False
+        dimensions = candidate.get('qa', {})
+        if any(dimensions.get(k, {}).get('status') not in
+               {'PASS', 'FAIL', 'NOT_VERIFIED', 'NOT_APPLICABLE'} or
+               not dimensions.get(k, {}).get('method') for k in QA + DESIGN_QA):
+            return False
+    findings = row.get('findings')
+    return isinstance(findings, list) and all(
+        f.get('severity') in {'Critical', 'Important', 'Minor'} and f.get('candidate') in {'A', 'B'}
+        and f.get('consequence') and f.get('evidence') for f in findings)
+
+
+def workflow_status(steps):
+    if any(s['status'] == 'TIMEOUT' for s in steps):
+        return 'TIMEOUT'
+    return 'PASS' if steps and all(s['status'] == 'PASS' for s in steps) else 'FAIL'
+
+
+def review_inputs(folder):
+    values = {p.name: sha256(p) for p in sorted(folder.iterdir()) if p.is_file()}
+    values['rubric.md'] = sha256(folder.parent.parent / 'rubric.md')
+    return values
+
+
+def resource_summary(rows):
+    def distribution(values):
+        known = [v for v in values if isinstance(v, (int, float))]
+        return {'median': statistics.median(known) if known else None,
+                'min': min(known) if known else None, 'max': max(known) if known else None,
+                'measured': len(known), 'missing': len(values) - len(known)}
+    accepted = sum(bool(r.get('accepted')) for r in rows)
+    tokens = [r.get('telemetry', {}).get('usage', {}).get('total_tokens')
+              if r.get('telemetry', {}).get('usage_status') == 'PASS' and
+              r.get('telemetry', {}).get('usage') else None for r in rows]
+    complete = bool(rows) and all(v is not None for v in tokens)
+    generation = [r.get('generation_seconds') for r in rows]
+    elapsed = [r.get('elapsed_seconds') for r in rows]
+    result = {'runs': len(rows), 'accepted': accepted,
+              'usage_status': 'PASS' if complete else 'NOT_VERIFIED',
+              'total_tokens': distribution(tokens), 'generation_seconds': distribution(generation),
+              'elapsed_seconds': distribution(elapsed),
+              'observed_total_tokens': sum(v for v in tokens if v is not None),
+              'tokens_per_accepted_task': sum(tokens) / accepted if complete and accepted else None,
+              'generation_seconds_per_accepted_task': sum(generation) / accepted
+              if accepted and all(v is not None for v in generation) else None}
+    for field in ('input_tokens', 'cached_input_tokens', 'output_tokens'):
+        result[field] = distribution([(r.get('telemetry', {}).get('usage') or {}).get(field) for r in rows])
+    for field in ('tool_calls', 'tool_errors', 'runtime_errors', 'agent_retries'):
+        result[field] = distribution([r.get('telemetry', {}).get(field) for r in rows])
+    result['manual_corrections'] = distribution([r.get('manual_corrections') for r in rows])
+    return result
 
 
 def config_digest(config):
@@ -405,7 +490,7 @@ def campaign_report(output, config):
     result = {'campaign_id': config['campaign_id'], 'planned_primary': 48,
               'primary_completed': sum(r.get('workflow_state') == 'COMPLETE' for r in rows),
               'unblinded': unblinded,
-              'conclusion_status': 'PASS' if len(rows) == 48 and unblinded else 'NOT_VERIFIED',
+              'conclusion_status': 'PASS' if sum(r.get('workflow_state') == 'COMPLETE' for r in rows) == 48 and unblinded else 'NOT_VERIFIED',
               'review_status': review, 'preflight': None,
               'note': 'No architecture-quality or resource improvement conclusion before review lock.'}
     preflight = output / 'pilot-gate.json'
@@ -413,7 +498,8 @@ def campaign_report(output, config):
         preflight = output / 'preflight.json'
     if preflight.exists():
         result['preflight'] = json.loads(preflight.read_text())
-    counts = Counter(row.get('status', 'NOT_VERIFIED') for row in rows)
+    counts = Counter('TIMEOUT' if any(s.get('status') == 'TIMEOUT' for s in row.get('steps', []))
+                     else row.get('status', 'NOT_VERIFIED') for row in rows)
     result['execution_status_counts'] = dict(counts)
     result['usage_complete'] = bool(rows) and all(r.get('telemetry', {}).get('usage') for r in rows)
     write_json(output / 'report.json', result)
@@ -858,7 +944,7 @@ def run_campaign(args, config):
                         print(json.dumps({'status': 'AWAITING_APPLICATION_CHECKS',
                                           'run_id': row['run_id']}), flush=True)
                         return 2
-                    finish_trial(folder, row, steps, 'FAIL', started)
+                    finish_trial(folder, row, steps, workflow_status(steps), started)
         except (ValueError, OSError, subprocess.SubprocessError) as error:
             result = finish_trial(folder, row, steps, 'FAIL', started)
             result['infrastructure_error'] = str(error)
@@ -951,6 +1037,8 @@ def build_review_pack(output, config):
         folder.mkdir(parents=True)
         mapping = {}
         prompt = scenarios[scenario_id]['request']
+        if scenarios[scenario_id].get('follow_up'):
+            prompt += '\n\n## Follow-up request\n\n' + scenarios[scenario_id]['follow_up']
         (folder / 'request.md').write_text(prompt)
         for label, candidate in zip(('A', 'B'), candidates):
             source = output / 'runs' / candidate['run_id']
@@ -965,8 +1053,14 @@ def build_review_pack(output, config):
             if evidence.exists():
                 clean = anonymize(evidence.read_text(), roots, list(config['revisions'].values()))
                 (folder / (label + '-checks.json')).write_text(clean)
+            application = source / 'application-evidence.json'
+            if application.exists():
+                clean = anonymize(application.read_text(), roots, list(config['revisions'].values()))
+                (folder / (label + '-application-checks.json')).write_text(clean)
             # Native packages contain identifying metadata. Reviewers receive checked renders only.
-            for image in source.glob('application/*.png'):
+            for image in sorted(source.glob('application/*')):
+                if image.suffix.lower() not in {'.png', '.jpg', '.jpeg'}:
+                    continue
                 shutil.copyfile(image, folder / (label + '-' + image.name))
             mapping[label] = {'arm': candidate['arm'], 'run_id': candidate['run_id']}
         key.append({'pair_id': pair_id, 'scenario_id': scenario_id,
@@ -992,6 +1086,10 @@ def build_review_pack(output, config):
                'A missing application dependency is a verification gap; distinguish it from an '
                'architecture mistake. Do not infer the plugin version.\n')
     (output / 'reviews/rubric.md').write_text(rubric)
+    for pair in index:
+        pair['input_sha256'] = review_inputs(output / 'reviews/packs' / pair['pair_id'])
+    write_json(index_path, {'pairs': index})
+    write_json(output / 'reviews/human-sample.json', {'pairs': samples, 'status': 'PENDING_HUMAN_REVIEW'})
     print(json.dumps({'pairs': 24, 'human_sample': 8, 'version_key': 'SEALED'}))
     return 0
 
