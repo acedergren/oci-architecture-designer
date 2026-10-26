@@ -232,3 +232,19 @@ observed time; independent checks do not prove an earlier worker claim.
 CI fetches repository history because runtime-export regressions exercise the
 pinned candidate commits. A default shallow checkout does not contain those
 revisions. Local checks do not establish that a hosted CI run has passed.
+
+Isolation protocol 2 denies the ordinary user home and shared `/tmp` and
+`/private/tmp` directories, while permitting the trial's own files and bundled
+dependency runtime. Before each model call sequence, native guard probes must
+deny reading, listing and writing a synthetic other-candidate directory in shared
+temporary storage, as well as the repository and controller checks. Legacy pilot
+gates cannot authorize this protocol, and results without its proof cannot
+produce a verified campaign conclusion.
+
+An earlier campaign was stopped after an agent's shared-temporary-directory
+inventory exposed filenames for another candidate and previous diagram files.
+The original raw attempts and their resource consumption remain infrastructure
+evidence. They are not mixed into a replacement primary comparison. A new output
+directory and fresh technical pilots are required before restarting the fixed
+48-run campaign. This isolation failure is a measurement defect, not evidence of
+an architecture-quality difference between the candidates.

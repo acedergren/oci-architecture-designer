@@ -137,6 +137,36 @@ class Campaign(unittest.TestCase):
             self.assertNotIn('unrelated', (profile / 'config.toml').read_text())
             self.assertFalse((source / 'skills').exists())
 
+    def test_native_profile_denies_other_home_and_shared_temporary_candidates(self):
+        import tomllib
+        with tempfile.TemporaryDirectory() as tmp:
+            trial = Path(tmp)
+            profile = trial / 'profile'
+            profile.mkdir()
+            (profile / 'config.toml').write_text('')
+            BENCH.native_permissions({'trial': trial, 'workspace': trial / 'workspace',
+                                      'profile': profile}, trial / 'controller')
+            policy = tomllib.loads((profile / 'config.toml').read_text())
+            rules = policy['permissions']['architecture-benchmark']['filesystem']
+            self.assertEqual(rules['/private/tmp'], 'deny')
+            self.assertEqual(rules['/tmp'], 'deny')
+            self.assertEqual(rules[str(Path.home())], 'deny')
+            self.assertEqual(rules[str(Path.home() / '.cache/codex-runtimes')], 'read')
+            self.assertEqual(rules[str(trial / 'workspace')], 'write')
+            self.assertEqual(rules[str(trial / 'workspace/inputs')], 'read')
+
+    def test_controller_interruption_reaps_the_running_inference(self):
+        from unittest.mock import Mock
+        process = Mock(pid=12345)
+        process.wait.side_effect = [KeyboardInterrupt, -15]
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch.object(BENCH.subprocess, 'Popen', return_value=process), \
+             patch.object(BENCH.os, 'killpg') as kill:
+            with self.assertRaises(KeyboardInterrupt):
+                BENCH.run_process(['synthetic'], tmp, {}, tmp, timeout=20)
+        kill.assert_called_once_with(12345, BENCH.signal.SIGTERM)
+        self.assertEqual(process.wait.call_count, 2)
+
     def test_timeout_is_saved_as_failure_with_raw_logs(self):
         with tempfile.TemporaryDirectory() as tmp:
             folder = Path(tmp)
@@ -394,6 +424,14 @@ for line in sys.stdin:
                                                       'config_sha256': 'old'})
             with self.assertRaisesRegex(ValueError, 'changed'):
                 BENCH.require_pilot_gate(out, {'campaign_id': 'test', 'timeout_seconds': 1200})
+
+    def test_passing_legacy_pilots_cannot_approve_the_hardened_isolation_protocol(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config = {'campaign_id': 'test'}
+            BENCH.write_json(Path(tmp) / 'pilot-gate.json', {
+                'campaign_id': 'test', 'status': 'PASS', 'config_sha256': BENCH.config_digest(config)})
+            with self.assertRaisesRegex(ValueError, 'isolation'):
+                BENCH.require_pilot_gate(Path(tmp), config)
 
     def test_frozen_rubric_cannot_be_changed_after_definition_is_locked(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -668,6 +706,7 @@ for line in sys.stdin:
                 folder = out / 'runs' / row['run_id']
                 usage = {'input_tokens': 95, 'output_tokens': 5, 'total_tokens': 100, 'cached_input_tokens': 30}
                 BENCH.write_json(folder / 'result.json', dict(row, status='TIMEOUT' if row['run_id'] == failed else 'PASS',
+                    isolation_protocol=BENCH.ISOLATION_PROTOCOL, isolation_status='PASS',
                     workflow_state='COMPLETE', telemetry={'usage_status': 'PASS', 'usage': usage},
                     elapsed_seconds=30, generation_seconds=20, steps=[]))
                 (folder / 'answer.md').write_text('Synthetic response')

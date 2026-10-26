@@ -23,6 +23,11 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+ISOLATION_PROTOCOL = 2
+CONFINEMENT_CHECKS = {'controller_read_denied', 'repository_read_denied',
+                      'controller_write_denied', 'workspace_write_allowed',
+                      'shared_temp_read_denied', 'shared_temp_inventory_denied',
+                      'shared_temp_write_denied'}
 QA = ('asset_identity', 'topology', 'connections', 'file_integrity',
       'application_opening', 'visual_quality', 'editability',
       'cross_format_consistency', 'evidence_honesty')
@@ -210,6 +215,18 @@ def summarize_events(events):
             'agent_retries_method': 'Exact failed tool signatures repeated with a new item ID; semantic retries NOT_VERIFIED'}
 
 
+def terminate_process(process):
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        pass
+    try:
+        return process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        os.killpg(process.pid, signal.SIGKILL)
+        return process.wait()
+
+
 def run_process(command, cwd, environment, logs, timeout):
     logs = Path(logs)
     logs.mkdir(parents=True, exist_ok=True)
@@ -221,27 +238,23 @@ def run_process(command, cwd, environment, logs, timeout):
         process = subprocess.Popen(command, cwd=cwd, env=environment,
                                    stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr,
                                    start_new_session=True)
-        while True:
-            remaining = min(wall_deadline - time.time(), timeout - (time.monotonic() - started))
-            if remaining <= 0:
-                timed_out = True
-                break
-            try:
-                code = process.wait(timeout=min(1, remaining))
-                timed_out = time.time() >= wall_deadline or time.monotonic() - started >= timeout
-                break
-            except subprocess.TimeoutExpired:
-                continue
-        if timed_out and remaining <= 0:
-            try:
-                os.killpg(process.pid, signal.SIGTERM)
-            except ProcessLookupError:
-                pass
-            try:
-                code = process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                os.killpg(process.pid, signal.SIGKILL)
-                code = process.wait()
+        try:
+            while True:
+                remaining = min(wall_deadline - time.time(), timeout - (time.monotonic() - started))
+                if remaining <= 0:
+                    timed_out = True
+                    break
+                try:
+                    code = process.wait(timeout=min(1, remaining))
+                    timed_out = time.time() >= wall_deadline or time.monotonic() - started >= timeout
+                    break
+                except subprocess.TimeoutExpired:
+                    continue
+            if timed_out and remaining <= 0:
+                code = terminate_process(process)
+        except BaseException:
+            terminate_process(process)
+            raise
     return {'exit_code': code, 'timed_out': timed_out,
             'elapsed_seconds': round(time.monotonic() - started, 4),
             'wall_elapsed_seconds': round(time.time() - wall_started, 4),
@@ -336,6 +349,8 @@ def require_pilot_gate(output, config):
         raise ValueError('Both pilot runs must pass for this campaign')
     if value.get('config_sha256') != config_digest(config):
         raise ValueError('Campaign changed after pilot verification')
+    if value.get('isolation_protocol') != ISOLATION_PROTOCOL:
+        raise ValueError('Pilot isolation protocol is obsolete; fresh pilots in a new output are required')
     return value
 
 
@@ -629,7 +644,9 @@ def native_permissions(context, controller):
              str(trial / 'tmp'): 'write', str(workspace / 'plugins'): 'read',
              str(workspace / 'inputs'): 'read', str(profile / 'auth.json'): 'deny',
              str(ROOT.resolve()): 'deny', str(Path(controller).resolve()): 'deny',
-             str(Path.home() / '.codex'): 'deny', str(Path.home() / '.agents'): 'deny'}
+             str(Path.home() / '.codex'): 'deny', str(Path.home() / '.agents'): 'deny',
+             str(Path.home()): 'deny', '/private/tmp': 'deny', '/tmp': 'deny',
+             str(Path.home() / '.cache/codex-runtimes'): 'read'}
     for root, access in rules.items():
         text += json.dumps(root) + ' = ' + json.dumps(access) + '\n'
     path.write_text(text)
@@ -722,10 +739,13 @@ def campaign_report(output, config):
     lock = output / 'reviews/lock.json'
     review = json.loads(lock.read_text()) if lock.exists() else {}
     unblinded = verified_review_lock(output, review)
+    isolation = bool(rows) and all(r.get('isolation_protocol') == ISOLATION_PROTOCOL and
+                                   r.get('isolation_status') == 'PASS' for r in rows)
     result = {'campaign_id': config['campaign_id'], 'planned_primary': 48,
               'primary_completed': sum(r.get('workflow_state') == 'COMPLETE' for r in rows),
               'unblinded': unblinded,
-              'conclusion_status': 'PASS' if sum(r.get('workflow_state') == 'COMPLETE' for r in rows) == 48 and unblinded else 'NOT_VERIFIED',
+              'conclusion_status': 'PASS' if len(rows) == 48 and isolation and unblinded else 'NOT_VERIFIED',
+              'isolation_status': 'PASS' if isolation else 'NOT_VERIFIED',
               'review_status': review, 'preflight': None,
               'note': 'No architecture-quality or resource improvement conclusion before review lock.'}
     preflight = output / 'pilot-gate.json'
@@ -760,6 +780,7 @@ def campaign_report(output, config):
             'Version key remains sealed until 24 agent reviews and eight human sample reviews '
             'are locked and all critical findings are reviewed.\n\n')
     text += f'Technical attempts outside primary runs: {len(result["technical_attempts"])}. Details are retained in report.json.\n\n'
+    text += 'Isolation protocol: ' + result['isolation_status'] + '\n\n'
     if result['preflight']:
         text += 'Preflight: ' + result['preflight'].get('status', 'NOT_VERIFIED') + '\n\n'
         text += result['preflight'].get('reason', '') + '\n'
@@ -883,8 +904,17 @@ def confinement_checks(context, output, logs):
         'workspace_write_allowed': ['/usr/bin/touch', str(context['workspace'] / 'guard-ok')],
     }
     checks = {}
-    with AppServer([context['codex'], '--no-daemon', 'app-server', '--stdio'], context['workspace'],
+    with tempfile.TemporaryDirectory(prefix='oci-benchmark-guard-',
+                                     dir='/private/tmp' if Path('/private/tmp').exists() else '/tmp') as shared, \
+         AppServer([context['codex'], '--no-daemon', 'app-server', '--stdio'], context['workspace'],
                    context['env'], logs / 'guard/server') as client:
+        foreign = Path(shared) / 'other-candidate-SKILL.md'
+        foreign.write_text('Synthetic other-candidate isolation canary\n')
+        commands.update({
+            'shared_temp_read_denied': ['/bin/cat', str(foreign)],
+            'shared_temp_inventory_denied': ['/bin/ls', shared],
+            'shared_temp_write_denied': ['/usr/bin/touch', str(Path(shared) / 'must-not-exist')],
+        })
         profiles = client.request('permissionProfile/list', {})
         if not any(p['id'] == 'architecture-benchmark' and p['allowed'] for p in profiles['data']):
             raise ValueError('Managed requirements do not allow the isolated workspace profile')
@@ -1093,6 +1123,7 @@ def _pilot(args, config, arm, root):
                   outcome['skill_read_evidence'] and transfer and model_ok
                   else 'FAIL')
         result = {'status': status, 'discovered_skills': context['discovered_skills'],
+                  'isolation_protocol': ISOLATION_PROTOCOL,
                   'usage_verified': outcome['telemetry']['usage'] is not None,
                   'read_evidence_present': bool(outcome['skill_read_evidence']),
                   'file_transfer': transfer, 'model_verified': model_ok,
@@ -1122,6 +1153,7 @@ def execute_command(args, config):
         pilots = {arm: _pilot(args, config, arm, attempt) for arm in ('before', 'after')}
         status = 'PASS' if all(p['status'] == 'PASS' for p in pilots.values()) else 'FAIL'
         gate = {'campaign_id': config['campaign_id'], 'config_sha256': config_digest(config),
+                'isolation_protocol': ISOLATION_PROTOCOL,
                 'status': status, 'pilots': pilots, 'pilot_evidence': str(attempt),
                 'reason': 'Both isolated pilots passed' if status == 'PASS'
                           else 'Primary campaign not started: pilot acceptance remains open',
@@ -1134,6 +1166,9 @@ def execute_command(args, config):
         return 0 if status == 'PASS' else 1
     if args.command == 'run':
         require_pilot_gate(output, config)
+        if any(json.loads(path.read_text()).get('isolation_protocol') != ISOLATION_PROTOCOL
+               for path in (output / 'runs').glob('*/result.json')):
+            raise ValueError('Existing primary evidence predates isolation protocol; preserve it and use a new output')
         if not args.toolkits:
             raise ValueError('The same verified --toolkits inputs are required for primary runs')
         provenance = json.loads((ROOT / 'skills/oci-architecture-core/references/provenance.json').read_text())
@@ -1175,7 +1210,12 @@ def combine_telemetry(steps):
 
 
 def finish_trial(folder, row, steps, status, started, state='COMPLETE'):
+    guard = folder / 'confinement.json'
+    checks = json.loads(guard.read_text()) if guard.exists() else {}
+    isolated = CONFINEMENT_CHECKS <= checks.keys() and all(checks[k] for k in CONFINEMENT_CHECKS)
     result = dict(row, status=status, workflow_state=state, steps=steps,
+                  isolation_protocol=ISOLATION_PROTOCOL if isolated else None,
+                  isolation_status='PASS' if isolated else 'NOT_VERIFIED',
                   telemetry=combine_telemetry(steps), started_at_epoch=started,
                   elapsed_seconds=round(time.time()-started, 4) if started is not None else None,
                   generation_seconds=round(sum(s['elapsed_seconds'] for s in steps), 4),
@@ -1324,6 +1364,7 @@ def run_campaign(args, config):
             else:
                 folder.mkdir(parents=True)
                 write_json(folder / 'workflow.json', dict(row, started_at_epoch=started,
+                                                       isolation_protocol=ISOLATION_PROTOCOL,
                                                        controller_sha256=CONTROLLER_SHA256))
                 context = provision_trial(args, config, row, folder)
                 confinement_checks(context, output, folder)
@@ -1399,7 +1440,8 @@ def reprocess_preflight(args, config):
             p.get('path', {}).get('path') == str(ROOT.resolve()) and p.get('access') == 'deny'
             for p in m.get('permission_profile', {}).get('file_system', {}).get('entries', []))
             for m in models)
-        passed = (all(confinement.values()) and model_ok and native_ok and bool(reads) and valid
+        passed = (CONFINEMENT_CHECKS <= confinement.keys() and all(confinement.values())
+                  and model_ok and native_ok and bool(reads) and valid
                   and telemetry['usage'] is not None and original['status'] == 'PASS' and malformed == 0)
         rows[arm] = {'status': 'PASS' if passed else 'FAIL', 'model_verified': model_ok,
                      'native_profile_verified': native_ok, 'file_transfer_and_structure': valid,
@@ -1409,6 +1451,7 @@ def reprocess_preflight(args, config):
         write_json(folder / 'reanalysis.json', rows[arm])
     status = 'PASS' if all(row['status'] == 'PASS' for row in rows.values()) else 'FAIL'
     value = {'campaign_id': config['campaign_id'], 'config_sha256': config_digest(config),
+             'isolation_protocol': ISOLATION_PROTOCOL,
              'status': status, 'pilots': rows, 'pilot_evidence': str(root),
              'environment': previous.get('environment'), 'reprocessed_without_inference': True,
              'reason': 'Preserved native-profile pilots reprocessed against exact skill source output'}
