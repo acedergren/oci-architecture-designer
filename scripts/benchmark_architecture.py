@@ -214,16 +214,29 @@ def run_process(command, cwd, environment, logs, timeout):
     logs = Path(logs)
     logs.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
+    wall_started = time.time()
+    wall_deadline = wall_started + timeout
     timed_out = False
     with (logs / 'events.jsonl').open('wb') as stdout, (logs / 'stderr.log').open('wb') as stderr:
         process = subprocess.Popen(command, cwd=cwd, env=environment,
                                    stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr,
                                    start_new_session=True)
-        try:
-            code = process.wait(timeout=timeout)
-        except subprocess.TimeoutExpired:
-            timed_out = True
-            os.killpg(process.pid, signal.SIGTERM)
+        while True:
+            remaining = min(wall_deadline - time.time(), timeout - (time.monotonic() - started))
+            if remaining <= 0:
+                timed_out = True
+                break
+            try:
+                code = process.wait(timeout=min(1, remaining))
+                timed_out = time.time() >= wall_deadline or time.monotonic() - started >= timeout
+                break
+            except subprocess.TimeoutExpired:
+                continue
+        if timed_out and remaining <= 0:
+            try:
+                os.killpg(process.pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
             try:
                 code = process.wait(timeout=5)
             except subprocess.TimeoutExpired:
@@ -231,6 +244,8 @@ def run_process(command, cwd, environment, logs, timeout):
                 code = process.wait()
     return {'exit_code': code, 'timed_out': timed_out,
             'elapsed_seconds': round(time.monotonic() - started, 4),
+            'wall_elapsed_seconds': round(time.time() - wall_started, 4),
+            'deadline_method': 'Earlier of wall-clock deadline and monotonic budget; checked at most every second',
             'status': 'TIMEOUT' if timed_out else 'PASS' if code == 0 else 'FAIL'}
 
 

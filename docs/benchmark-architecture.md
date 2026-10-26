@@ -215,3 +215,15 @@ materialized after primary execution began. The unchanged rubric definition was
 reconstructed from the already committed controller and reasoning criteria; its
 source commits and hash are recorded in external provenance. Post-deadline native
 checks are forensic evidence and cannot reverse an original timeout.
+
+One primary workflow exposed a gap between wall time and the process monotonic
+timer. Its cause was not established, and its TIMEOUT result is retained. New
+controller processes check both clocks at least once per second and stop at the
+earlier deadline. Phase records retain the original monotonic elapsed field and
+add wall elapsed time and the deadline method. A host suspension cannot be
+interrupted while the host is asleep; an expired process is stopped on resume.
+Controller hashes identify which method each run actually used.
+
+CI fetches repository history because runtime-export regressions exercise the
+pinned candidate commits. A default shallow checkout does not contain those
+revisions. Local checks do not establish that a hosted CI run has passed.

@@ -146,6 +146,40 @@ class Campaign(unittest.TestCase):
             self.assertEqual(result['status'], 'TIMEOUT')
             self.assertTrue((folder / 'events.jsonl').exists())
 
+    def test_wall_clock_jump_stops_process_before_monotonic_budget_is_used(self):
+        clock = [100.0]
+        waits = []
+        def wait(timeout=None):
+            waits.append(timeout)
+            if len(waits) == 1:
+                clock[0] = 130.0
+                raise subprocess.TimeoutExpired('synthetic', timeout)
+            return -15
+        process = SimpleNamespace(pid=12345, wait=wait)
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch.object(BENCH.subprocess, 'Popen', return_value=process), \
+             patch.object(BENCH.time, 'time', side_effect=lambda: clock[0]), \
+             patch.object(BENCH.time, 'monotonic', return_value=0), \
+             patch.object(BENCH.os, 'killpg') as kill:
+            result = BENCH.run_process(['synthetic'], tmp, {}, tmp, timeout=20)
+        self.assertEqual(result['status'], 'TIMEOUT')
+        self.assertEqual(result['wall_elapsed_seconds'], 30)
+        self.assertLessEqual(waits[0], 1)
+        kill.assert_called_once_with(12345, BENCH.signal.SIGTERM)
+
+    def test_process_exit_after_wall_deadline_is_not_a_pass(self):
+        clock = [100.0]
+        def wait(timeout=None):
+            clock[0] = 121.0
+            return 0
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch.object(BENCH.subprocess, 'Popen', return_value=SimpleNamespace(wait=wait)), \
+             patch.object(BENCH.time, 'time', side_effect=lambda: clock[0]), \
+             patch.object(BENCH.time, 'monotonic', return_value=0):
+            result = BENCH.run_process(['synthetic'], tmp, {}, tmp, timeout=20)
+        self.assertEqual(result['status'], 'TIMEOUT')
+        self.assertEqual(result['exit_code'], 0)
+
     def test_anonymization_preserves_service_documentation(self):
         text = ('Plugin version 0.2.0, commit 7af1ba8. Source /tmp/trial/plugins/core/SKILL.md. '
                 'https://docs.oracle.com/en/database/oracle/oracle-database/19/')
