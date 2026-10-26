@@ -472,7 +472,8 @@ for line in sys.stdin:
             out = Path(tmp)
             BENCH.write_json(out / 'preflight.json', {'status': 'FAIL', 'reason': 'no activation'})
             BENCH.write_json(out / 'infrastructure-attempts/setup-only/result.json',
-                             {'status': 'FAIL', 'infrastructure_error': 'Nested execution denied', 'steps': []})
+                             {'status': 'FAIL', 'infrastructure_error': 'Nested execution denied', 'steps': [],
+                              'observed_usage': {'total_tokens': 105}, 'usage_status': 'NOT_VERIFIED'})
             status = BENCH.main(['report', '--config', str(ROOT / 'tests/benchmark/campaign.json'),
                                  '--output', str(out)])
             self.assertEqual(status, 0)
@@ -482,6 +483,8 @@ for line in sys.stdin:
             self.assertFalse(result['unblinded'])
             self.assertEqual(result['technical_attempts'][0]['status'], 'FAIL')
             self.assertEqual(result['technical_attempts'][0]['reason'], 'Nested execution denied')
+            self.assertEqual(result['technical_attempts'][0]['observed_usage']['total_tokens'], 105)
+            self.assertEqual(result['technical_attempts'][0]['usage_status'], 'NOT_VERIFIED')
             self.assertIn('Technical attempts outside primary runs: 1', (out / 'report.md').read_text())
             self.assertIsNone(result['resource_scope']['controller_tokens']['value'])
             self.assertEqual(result['resource_scope']['total_end_to_end_cost_status'], 'NOT_VERIFIED')

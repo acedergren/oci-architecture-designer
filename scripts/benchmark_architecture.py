@@ -761,14 +761,23 @@ def campaign_report(output, config):
     result['technical_attempts'] = []
     for path in sorted(attempts):
         attempt = json.loads(path.read_text())
+        telemetry = attempt.get('telemetry', {})
+        outcome = path.parent / 'inference/outcome.json'
+        if outcome.exists() and not telemetry:
+            telemetry = json.loads(outcome.read_text()).get('telemetry', {})
         result['technical_attempts'].append({'evidence': str(path.relative_to(output)),
             'status': attempt.get('status', 'NOT_VERIFIED'),
             'reason': attempt.get('infrastructure_error') or attempt.get('reason'),
+            'inference_attempts': attempt.get('attempts'),
+            'observed_usage': attempt.get('observed_usage') or telemetry.get('observed_usage') or telemetry.get('usage'),
+            'usage_status': attempt.get('usage_status', telemetry.get('usage_status', 'NOT_VERIFIED')),
             'scope': 'Technical setup/pilot; outside primary inference denominator'})
     result['resource_scope'] = {
         'worker_tokens': 'Isolated initial/edit/QA sessions; known failed consumption retained separately',
         'controller_tokens': {'value': None, 'status': 'NOT_VERIFIED'},
         'active_operator_seconds': {'value': None, 'status': 'NOT_VERIFIED'},
+        'known_technical_worker_tokens': sum((a.get('observed_usage') or {}).get('total_tokens', 0)
+                                           for a in result['technical_attempts']),
         'total_end_to_end_cost_status': 'NOT_VERIFIED'}
     result['usage_complete'] = bool(rows) and all(r.get('telemetry', {}).get('usage') for r in rows)
     if result['conclusion_status'] == 'PASS':
@@ -780,6 +789,8 @@ def campaign_report(output, config):
             'Version key remains sealed until 24 agent reviews and eight human sample reviews '
             'are locked and all critical findings are reviewed.\n\n')
     text += f'Technical attempts outside primary runs: {len(result["technical_attempts"])}. Details are retained in report.json.\n\n'
+    text += ('Known technical worker tokens (may be a lower bound): ' +
+             str(result['resource_scope']['known_technical_worker_tokens']) + '\n\n')
     text += 'Isolation protocol: ' + result['isolation_status'] + '\n\n'
     if result['preflight']:
         text += 'Preflight: ' + result['preflight'].get('status', 'NOT_VERIFIED') + '\n\n'

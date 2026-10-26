@@ -209,7 +209,7 @@ reanalysis corrected an initial quoted-command read-detector miss without new
 inference. No architecture-quality improvement is claimed from those pilots.
 Primary and review status is recorded in the external campaign report.
 
-The current campaign retains two limitations explicitly: application/operator
+The earlier campaign retained two limitations explicitly: application/operator
 delays count toward the 20-minute wall deadline, and the rubric hash artifact was
 materialized after primary execution began. The unchanged rubric definition was
 reconstructed from the already committed controller and reasoning criteria; its
@@ -248,3 +248,7 @@ evidence. They are not mixed into a replacement primary comparison. A new output
 directory and fresh technical pilots are required before restarting the fixed
 48-run campaign. This isolation failure is a measurement defect, not evidence of
 an architecture-quality difference between the candidates.
+Known worker-token consumption for these failed technical attempts and pilots is
+listed separately in the replacement report, including incomplete lower bounds.
+This resource use is not erased when primary denominators restart. Unknown
+interrupted/controller/operator costs still prevent a complete total-cost claim.
