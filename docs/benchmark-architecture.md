@@ -51,6 +51,9 @@ python3 scripts/benchmark_architecture.py preflight \
 python3 scripts/benchmark_architecture.py run \
   --toolkits /path/to/verified/toolkits --output /path/outside/repo/campaign
 python3 scripts/benchmark_architecture.py review-pack --output /path/outside/repo/campaign
+python3 scripts/benchmark_architecture.py review-pack --judge --output /path/outside/repo/campaign
+# Complete the actual human reviews under reviews/human/, then:
+python3 scripts/benchmark_architecture.py review-pack --lock-reviews --output /path/outside/repo/campaign
 python3 scripts/benchmark_architecture.py report --output /path/outside/repo/campaign
 ```
 
@@ -61,6 +64,10 @@ are not silently repeated. `run` exits 2 when an artifact needs application
 checks; perform those checks and call `run` again to continue the same workflow.
 An infrastructure error stops execution and is retained, not graded as an
 architecture mistake or removed from the denominator.
+
+Preflight freezes the grading rubric under `frozen/`. Subsequent commands verify
+its hash. Reviewer inputs bind that rubric and every answer, check and image to
+the pair; duplicate pairs or changed inputs cannot satisfy the review lock.
 
 `preflight --reprocess-pilots` reinterprets existing raw logs after a telemetry
 correction without inference. It preserves original outcomes, records hashes of
@@ -77,6 +84,12 @@ persisted per-thread `total_token_usage` counters. Counter resets or absent
 values are unknown, not zero. Cached input is separate from total input; it is
 not added a second time. Only verified complete samples can support resource
 comparisons. Failed workflows retain their observed resource consumption.
+
+Workspace evidence is copied outside temporary trial directories with a hash
+manifest, including sources the agent actually saved. Supplied toolkits, plugin
+runtime content and symlinks are excluded from that copy. Environment records
+capture CLI/Python, available library versions, application versions and tool
+paths. A web renderer version remains unverified until observed in its UI.
 
 Tool calls are deduplicated by turn/item identity and nested failures are counted.
 Exact failed calls repeated with a new item ID are counted separately; semantic
@@ -126,6 +139,24 @@ alone cannot unblind results; actual review files and hashes are required.
 Any conclusion is limited to this small workload sample. Metadata-only static
 Plugin Eval findings and source/tool availability gaps are reported separately.
 
+`--judge` starts a fresh profile and conversation per pair with no discoverable
+skills, candidate content, prior review or version key. It saves review inference
+usage separately. Failed judge attempts remain in `reviews/raw/` and stop the
+loop; the runner does not silently replace them. Each valid review includes
+mandatory checks, consequential findings, all twelve QA dimensions and a blind
+preference. Human templates are deliberately incomplete. They cannot count as
+reviews until the person supplies an actual assessment; any critical pair outside
+the original eight becomes an additional required human check.
+
+After locking, the report joins the private version key and reports per-task
+repetitions, severe findings, acceptance, blind preferences and measured medians
+and ranges. Architecture acceptance and timely delivery are separate. Unknown
+usage prevents full token cost per accepted task; known failures still belong in
+the denominator and measured cost. No currency estimate is manufactured.
+Normalized `plugin-eval-before-usage.jsonl` and `plugin-eval-after-usage.jsonl`
+contain only complete measured samples with cache counters. Plugin Eval static
+budgets remain a separate signal and do not establish architectural quality.
+
 Confirmed fixes follow the locked comparison, with reproduction and regression
 evidence. Retain original runs, identify a corrected candidate by commit, and
 repeat affected pairs three times. Privacy/terms links are added only if relevant
@@ -140,3 +171,10 @@ measured usage and structurally valid file transfer for both revisions. A raw-lo
 reanalysis corrected an initial quoted-command read-detector miss without new
 inference. No architecture-quality improvement is claimed from those pilots.
 Primary and review status is recorded in the external campaign report.
+
+The current campaign retains two limitations explicitly: application/operator
+delays count toward the 20-minute wall deadline, and the rubric hash artifact was
+materialized after primary execution began. The unchanged rubric definition was
+reconstructed from the already committed controller and reasoning criteria; its
+source commits and hash are recorded in external provenance. Post-deadline native
+checks are forensic evidence and cannot reverse an original timeout.

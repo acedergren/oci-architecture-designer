@@ -30,6 +30,12 @@ class Campaign(unittest.TestCase):
         self.assertEqual(result['usage_status'], 'NOT_VERIFIED')
         self.assertEqual(result['status'], 'FAIL')
 
+    def test_actual_model_and_effort_must_match_and_absent_context_is_unknown(self):
+        config = {'model': 'gpt-6.1-sol', 'reasoning_effort': 'xhigh'}
+        self.assertEqual(BENCH.model_status([], config), 'NOT_VERIFIED')
+        self.assertEqual(BENCH.model_status([{'model': 'gpt-6.1-sol', 'effort': 'xhigh'}], config), 'PASS')
+        self.assertEqual(BENCH.model_status([{'model': 'other', 'effort': 'xhigh'}], config), 'FAIL')
+
     def test_nested_exit_failure_and_duplicate_events_count_once(self):
         started = {'type': 'item.started', 'item': {'id': 'a', 'type': 'command_execution',
                    'command': 'python validate.py', 'status': 'in_progress'}}
@@ -229,6 +235,15 @@ for line in sys.stdin:
             with self.assertRaisesRegex(ValueError, 'changed'):
                 BENCH.require_pilot_gate(out, {'campaign_id': 'test', 'timeout_seconds': 1200})
 
+    def test_frozen_rubric_cannot_be_changed_after_definition_is_locked(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            rubric = BENCH.freeze_rubric(out)
+            self.assertIn('Critical', rubric)
+            (out / 'frozen/rubric.md').write_text('changed grading criteria')
+            with self.assertRaisesRegex(ValueError, 'rubric'):
+                BENCH.freeze_rubric(out)
+
     def test_missing_toolkit_or_changed_bytes_block_native_task(self):
         with tempfile.TemporaryDirectory() as tmp:
             folder = Path(tmp)
@@ -322,6 +337,41 @@ for line in sys.stdin:
         self.assertEqual(value['generation_seconds']['median'], 14)
         self.assertEqual(value['usage_status'], 'NOT_VERIFIED')
 
+    def test_eval_usage_excludes_unknown_samples_and_preserves_cache(self):
+        rows = [{'run_id': 'known', 'telemetry': {'usage_status': 'PASS', 'usage': {
+            'input_tokens': 100, 'cached_input_tokens': 40, 'output_tokens': 5, 'total_tokens': 105}}},
+                {'run_id': 'unknown', 'telemetry': {'usage_status': 'NOT_VERIFIED', 'usage': None}}]
+        result = BENCH.eval_usage(rows)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['usage']['input_token_details']['cached_tokens'], 40)
+        self.assertEqual(result[0]['usage']['total_tokens'], 105)
+
+    def test_durable_workspace_evidence_excludes_inputs_plugins_and_symlinks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace, evidence = root / 'workspace', root / 'evidence'
+            for name in ('outputs/file.txt', 'source.html', 'inputs/official.pptx', 'plugins/SKILL.md'):
+                path = workspace / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(name)
+            (workspace / 'secret-link').symlink_to('/etc/passwd')
+            files = BENCH.collect_workspace(workspace, evidence)
+            self.assertEqual(set(files), {'outputs/file.txt', 'source.html'})
+            self.assertEqual((evidence / 'source.html').read_text(), 'source.html')
+
+    def test_judge_output_missing_checks_is_rejected(self):
+        self.assertFalse(BENCH.valid_review({'preference': 'A', 'findings': [],
+                                           'candidates': {'A': {'task_status': 'PASS'}, 'B': {'task_status': 'FAIL'}}}))
+
+    def test_critical_finding_and_timeout_cannot_be_hidden_by_a_pass_grade(self):
+        row = {'status': 'PASS', 'steps': [{'status': 'TIMEOUT'}]}
+        candidate = {'task_status': 'PASS', 'mandatory_checks': [{'status': 'PASS'}]}
+        findings = [{'candidate': 'A', 'severity': 'Critical'}]
+        self.assertEqual(BENCH.acceptance(row, candidate, findings, 'A'),
+                         {'architecture_accepted': False, 'delivery_accepted': False})
+        self.assertEqual(BENCH.acceptance(row, candidate, [], 'A'),
+                         {'architecture_accepted': True, 'delivery_accepted': False})
+
     def test_successful_review_lock_is_bound_to_all_evidence_and_critical_human_checks(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
@@ -354,6 +404,37 @@ for line in sys.stdin:
             BENCH.write_json(path, value)
             lock['artifact_sha256'][str(path.relative_to(out))] = BENCH.sha256(path)
             self.assertFalse(BENCH.verified_review_lock(out, lock))
+
+    def test_locked_report_counts_failed_run_cost_and_opens_the_key_only_after_reviews(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            config = BENCH.load_config(ROOT / 'tests/benchmark/campaign.json')
+            schedule = BENCH.make_schedule(config)
+            failed = next(r['run_id'] for r in schedule if r['arm'] == 'before')
+            for row in schedule:
+                folder = out / 'runs' / row['run_id']
+                usage = {'input_tokens': 95, 'output_tokens': 5, 'total_tokens': 100, 'cached_input_tokens': 30}
+                BENCH.write_json(folder / 'result.json', dict(row, status='TIMEOUT' if row['run_id'] == failed else 'PASS',
+                    workflow_state='COMPLETE', telemetry={'usage_status': 'PASS', 'usage': usage},
+                    elapsed_seconds=30, generation_seconds=20, steps=[]))
+                (folder / 'answer.md').write_text('Synthetic response')
+            BENCH.build_review_pack(out, config)
+            self.assertFalse(BENCH.campaign_report(out, config)['unblinded'])
+            candidate = {'task_status': 'PASS', 'mandatory_checks': [{'status': 'PASS', 'evidence': 'answer'}],
+                         'qa': {k: {'status': 'NOT_VERIFIED', 'method': 'No program check'} for k in BENCH.QA + BENCH.DESIGN_QA}}
+            index = json.loads((out / 'reviews/index.json').read_text())['pairs']
+            sample = json.loads((out / 'reviews/human-sample.json').read_text())['pairs']
+            for kind, pairs in [('agent', index), ('human', sample)]:
+                for pair in pairs:
+                    BENCH.write_json(out / f'reviews/{kind}/{pair["pair_id"]}.json', dict(pair, reviewer_kind=kind,
+                                     candidates={'A': candidate, 'B': candidate}, findings=[], preference='TIE'))
+            BENCH.lock_reviews(out)
+            report = BENCH.campaign_report(out, config)
+            self.assertTrue(report['unblinded'])
+            before = report['comparison']['versions']['before']['overall']
+            self.assertEqual(before['accepted'], 23)
+            self.assertAlmostEqual(before['tokens_per_accepted_task'], 2400 / 23)
+            self.assertEqual(report['comparison']['blind_preferences'], {'TIE': 24})
 
     def test_review_counts_alone_cannot_unblind_results(self):
         with tempfile.TemporaryDirectory() as tmp:

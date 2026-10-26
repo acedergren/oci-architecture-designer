@@ -4,10 +4,12 @@ import argparse
 from collections import Counter
 import hashlib
 import io
+import importlib.metadata
 import json
 import os
 from pathlib import Path
 import random
+import plistlib
 import re
 import select
 import shutil
@@ -368,6 +370,107 @@ def resource_summary(rows):
     return result
 
 
+def eval_usage(rows):
+    result = []
+    for row in rows:
+        telemetry = row.get('telemetry', {})
+        if telemetry.get('usage_status') != 'PASS' or not telemetry.get('usage'):
+            continue
+        usage = dict(telemetry['usage'])
+        cached = usage.pop('cached_input_tokens', None)
+        if cached is not None:
+            usage['input_token_details'] = {'cached_tokens': cached}
+        result.append({'id': row['run_id'], 'usage': usage,
+                       'metadata': {'method': 'Measured workflow counters; failed workflows retained'}})
+    return result
+
+
+def acceptance(row, candidate, findings, label):
+    architecture = (candidate['task_status'] == 'PASS' and
+                    all(c['status'] == 'PASS' for c in candidate['mandatory_checks']) and
+                    not any(f['candidate'] == label and f['severity'] == 'Critical' for f in findings))
+    execution = ('TIMEOUT' if any(s.get('status') == 'TIMEOUT' for s in row.get('steps', []))
+                 else row.get('status'))
+    return {'architecture_accepted': architecture, 'delivery_accepted': architecture and execution == 'PASS'}
+
+
+def comparison_summary(output, rows):
+    lock = json.loads((output / 'reviews/lock.json').read_text())
+    if not verified_review_lock(output, lock):
+        raise ValueError('Versioned comparison requires locked evidence')
+    key = json.loads((output / 'private/version-key.json').read_text())['pairs']
+    by_run = {r['run_id']: r for r in rows}
+    records, preferences, human = [], Counter(), []
+    for pair in key:
+        pair_id = pair['pair_id']
+        review = json.loads((output / 'reviews/agent' / (pair_id + '.json')).read_text())
+        preference = review['preference']
+        preferences['TIE' if preference == 'TIE' else pair['mapping'][preference]['arm']] += 1
+        human_path = output / 'reviews/human' / (pair_id + '.json')
+        if human_path.exists():
+            observation = json.loads(human_path.read_text())
+            human.append({'pair_id': pair_id, 'preference': observation['preference'],
+                          'agent_preference': preference, 'agreement': observation['preference'] == preference,
+                          'findings': observation['findings']})
+        for label in ('A', 'B'):
+            mapping = pair['mapping'][label]
+            original = by_run[mapping['run_id']]
+            candidate = review['candidates'][label]
+            accepted = acceptance(original, candidate, review['findings'], label)
+            findings = [f for f in review['findings'] if f['candidate'] == label]
+            records.append(dict(original, **accepted, accepted=accepted['delivery_accepted'],
+                                findings=findings, qa=candidate['qa'], pair_id=pair_id))
+    groups = {}
+    for arm in ('before', 'after'):
+        selected = [r for r in records if r['arm'] == arm]
+        def summarize(chosen):
+            value = resource_summary(chosen)
+            value['architecture_accepted'] = sum(r['architecture_accepted'] for r in chosen)
+            value['critical_findings'] = sum(f['severity'] == 'Critical' for r in chosen for f in r['findings'])
+            value['important_findings'] = sum(f['severity'] == 'Important' for r in chosen for f in r['findings'])
+            value['qa_common'] = {k: dict(Counter(r['qa'][k]['status'] for r in chosen)) for k in QA}
+            value['qa_design_separate'] = {k: dict(Counter(r['qa'][k]['status'] for r in chosen)) for k in DESIGN_QA}
+            value['repetitions'] = [{'scenario_id': r['scenario_id'], 'repetition': r['repetition'],
+                                    'architecture_accepted': r['architecture_accepted'],
+                                    'delivery_accepted': r['delivery_accepted'],
+                                    'execution_status': 'TIMEOUT' if any(s.get('status') == 'TIMEOUT' for s in r.get('steps', [])) else r['status'],
+                                    'tokens': (r['telemetry'].get('usage') or {}).get('total_tokens'),
+                                    'usage_status': r['telemetry'].get('usage_status'),
+                                    'generation_seconds': r.get('generation_seconds'),
+                                    'elapsed_seconds': r.get('elapsed_seconds'),
+                                    'read_skills': sorted({s['skill'] for phase in r.get('steps', [])
+                                                          for s in phase.get('skill_read_evidence', [])})}
+                                   for r in chosen]
+            return value
+        groups[arm] = {'overall': summarize(selected), 'tasks': {
+            scenario: summarize([r for r in selected if r['scenario_id'] == scenario])
+            for scenario in sorted({r['scenario_id'] for r in selected})}}
+        with (output / ('plugin-eval-' + arm + '-usage.jsonl')).open('w') as stream:
+            for event in eval_usage(selected):
+                stream.write(json.dumps(event) + '\n')
+    return {'versions': groups, 'blind_preferences': dict(preferences), 'human_sample': human,
+            'limitations': ['Eight synthetic tasks with three repetitions; no general quality claim.',
+                            'Reviewer uses the same pinned model family in independent contexts.',
+                            'Unknown usage excludes full cost claims; known-sample medians are labeled.',
+                            'Cached search alone does not establish current primary-source verification.',
+                            'Post-deadline application checks do not reverse workflow timeouts.']}
+
+
+def collect_workspace(workspace, destination):
+    workspace, destination = workspace.resolve(), destination.resolve()
+    files = {}
+    for source in sorted(workspace.rglob('*')):
+        relative = source.relative_to(workspace)
+        if (relative.parts[0] in {'inputs', 'plugins', '.agents', '.git'} or not source.is_file()
+                or source.is_symlink() or any(p.is_symlink() for p in source.parents)):
+            continue
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)
+        files[str(relative)] = sha256(target)
+    return files
+
+
 def config_digest(config):
     return hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
 
@@ -502,6 +605,8 @@ def campaign_report(output, config):
                      else row.get('status', 'NOT_VERIFIED') for row in rows)
     result['execution_status_counts'] = dict(counts)
     result['usage_complete'] = bool(rows) and all(r.get('telemetry', {}).get('usage') for r in rows)
+    if result['conclusion_status'] == 'PASS':
+        result['comparison'] = comparison_summary(output, rows)
     write_json(output / 'report.json', result)
     text = ('# Architecture comparison campaign\n\n'
             f'Primary runs recorded: {len(rows)}/48.\n\n'
@@ -511,6 +616,16 @@ def campaign_report(output, config):
     if result['preflight']:
         text += 'Preflight: ' + result['preflight'].get('status', 'NOT_VERIFIED') + '\n\n'
         text += result['preflight'].get('reason', '') + '\n'
+    if 'comparison' in result:
+        text += '\n| Version | Critical | Important | Architecture accepted | Delivered within limit | Median tokens | Median seconds |\n'
+        text += '| --- | ---: | ---: | ---: | ---: | ---: | ---: |\n'
+        for arm, version in (('before', '0.1.3'), ('after', '0.2.0')):
+            value = result['comparison']['versions'][arm]['overall']
+            text += (f'| {version} | {value["critical_findings"]} | {value["important_findings"]} | '
+                     f'{value["architecture_accepted"]}/24 | {value["accepted"]}/24 | '
+                     f'{value["total_tokens"]["median"]} | {value["generation_seconds"]["median"]} |\n')
+        text += '\nBlind preferences: ' + json.dumps(result['comparison']['blind_preferences']) + '\n\n'
+        text += '\n'.join('- ' + item for item in result['comparison']['limitations']) + '\n'
     (output / 'report.md').write_text(text)
     return result
 
@@ -522,6 +637,35 @@ def _capture(command, cwd, environment, folder, timeout=60):
     return (Path(folder) / 'events.jsonl').read_text()
 
 
+def environment_inventory(codex):
+    result = {'python': {'version': sys.version, 'executable': sys.executable},
+              'libraries': {}, 'applications': {}, 'tool_paths': {},
+              'drawio_web_version': {'value': None, 'status': 'NOT_VERIFIED'},
+              'controller_sha256': sha256(Path(__file__))}
+    try:
+        result['codex'] = {'version': subprocess.check_output([codex, '--version'], text=True, timeout=10).strip(),
+                           'path': shutil.which(codex) or codex}
+    except (OSError, subprocess.SubprocessError):
+        result['codex'] = {'version': None, 'status': 'NOT_VERIFIED'}
+    for name in ('python-pptx', 'Pillow', 'lxml', 'PyMuPDF'):
+        try:
+            result['libraries'][name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            result['libraries'][name] = None
+    for name in ('Microsoft PowerPoint', 'Google Chrome', 'LibreOffice'):
+        path = Path('/Applications') / (name + '.app/Contents/Info.plist')
+        try:
+            with path.open('rb') as stream:
+                metadata = plistlib.load(stream)
+            result['applications'][name] = {'version': metadata.get('CFBundleShortVersionString'),
+                                             'build': metadata.get('CFBundleVersion')}
+        except (OSError, ValueError, plistlib.InvalidFileException):
+            result['applications'][name] = {'version': None, 'status': 'NOT_VERIFIED'}
+    for name in ('node', 'soffice', 'pdftoppm', 'git'):
+        result['tool_paths'][name] = shutil.which(name)
+    return result
+
+
 def provision_trial(args, config, row, logs):
     trial = Path(tempfile.mkdtemp(prefix='oci-architecture-trial-')).resolve()
     workspace, profile = trial / 'workspace', trial / 'profile'
@@ -530,6 +674,7 @@ def provision_trial(args, config, row, logs):
     workspace.mkdir()
     (trial / 'tmp').mkdir()
     (workspace / 'outputs').mkdir()
+    write_json(logs / 'environment.json', environment_inventory(args.codex))
     prepare_profile(profile, getattr(args, 'auth_source', Path.home() / '.codex'))
     environment = dict(os.environ)
     # Child-only standard Codex profile selection; the parent's environment is not changed.
@@ -623,6 +768,13 @@ def actual_context(profile):
     return metadata
 
 
+def model_status(contexts, config):
+    if not contexts:
+        return 'NOT_VERIFIED'
+    return 'PASS' if all(c.get('model') == config['model'] and
+                         c.get('effort') == config['reasoning_effort'] for c in contexts) else 'FAIL'
+
+
 def measured_skill_reads(installed, events):
     """Match successful command output to immutable complete skill source bytes."""
     sources = {str(p): p.read_text() for p in (Path(installed) / 'skills').glob('*/SKILL.md')}
@@ -703,14 +855,19 @@ def inference(args, config, context, prompt, logs, timeout, resume=None):
                                          else 'NOT_VERIFIED')
     result['telemetry']['usage_method'] = 'Difference of persisted per-thread total_token_usage counters'
     result['counter_before'], result['counter_after'] = counter_before, counter_after
-    result['skill_read_evidence'] = measured_skill_reads(context['installed'], events)
+    result['skill_read_evidence'] = measured_skill_reads(context['installed'], events) if 'installed' in context else []
     result['malformed_event_lines'] = malformed
     result['actual_context'] = actual_context(context['profile'])
+    result['model_status'] = model_status(result['actual_context'], config)
+    if result['status'] == 'PASS' and result['model_status'] != 'PASS':
+        result['status'] = 'FAIL'
+        result['protocol_error'] = 'Actual model/effort is missing or differs from the pinned configuration'
     result['thread_id'] = next((e.get('thread_id') for e in events if e.get('thread_id')), None)
     if final.exists():
         shutil.copyfile(final, logs / 'answer.md')
-    verify_runtime(context['installed'], context['manifest'])
-    verify_runtime(workspace / 'plugins/oci-architecture-designer', context['manifest'])
+    if 'installed' in context:
+        verify_runtime(context['installed'], context['manifest'])
+        verify_runtime(workspace / 'plugins/oci-architecture-designer', context['manifest'])
     write_json(logs / 'outcome.json', result)
     return result
 
@@ -783,6 +940,7 @@ def _pilot(args, config, arm, root):
 
 def execute_command(args, config):
     output = args.output.resolve()
+    freeze_rubric(output)
     if args.command == 'preflight':
         if args.reprocess_pilots:
             return reprocess_preflight(args, config)
@@ -810,6 +968,10 @@ def execute_command(args, config):
         verify_toolkits(args.toolkits, provenance,
                         ['OCI Architecture Diagram Toolkit v24.2.drawio', 'OCI_Icons.pptx'])
         return run_campaign(args, config)
+    if args.judge:
+        return judge_campaign(args, config)
+    if args.lock_reviews:
+        return lock_reviews(output)
     return build_review_pack(output, config)
 
 
@@ -845,6 +1007,10 @@ def finish_trial(folder, row, steps, status, started, state='COMPLETE'):
         if answer.exists():
             answers.append('## ' + name + '\n\n' + answer.read_text())
     (folder / 'answer.md').write_text('\n\n'.join(answers))
+    context_file = folder / 'context.json'
+    if context_file.exists():
+        workspace = Path(json.loads(context_file.read_text())['workspace'])
+        write_json(folder / 'workspace-manifest.json', collect_workspace(workspace, folder / 'workspace-evidence'))
     return result
 
 
@@ -919,6 +1085,8 @@ def run_campaign(args, config):
                                  config['timeout_seconds'] - (time.time()-started),
                                  resume=steps[0]['thread_id'])
                 steps.append(step)
+                if step.get('protocol_error'):
+                    raise ValueError(step['protocol_error'])
                 finish_trial(folder, row, steps, step['status'], started)
             else:
                 folder.mkdir(parents=True)
@@ -929,6 +1097,8 @@ def run_campaign(args, config):
                     prompt += '\nVerified local official toolkit files, when supplied, are in inputs/.'
                 step = inference(args, config, context, prompt, folder / 'initial', config['timeout_seconds'])
                 steps.append(step)
+                if step.get('protocol_error'):
+                    raise ValueError(step['protocol_error'])
                 if scenario['kind'] == 'reasoning' or step['status'] != 'PASS':
                     finish_trial(folder, row, steps, step['status'], started)
                 else:
@@ -936,6 +1106,8 @@ def run_campaign(args, config):
                                      config['timeout_seconds'] - (time.time()-started),
                                      resume=step['thread_id'])
                     steps.append(edit)
+                    if edit.get('protocol_error'):
+                        raise ValueError(edit['protocol_error'])
                     structural_evidence(context['workspace'], folder, scenario['kind'])
                     edited = folder / 'artifacts' / ('edited.' + scenario['kind'])
                     if edited.exists() and edit['status'] == 'PASS':
@@ -1009,6 +1181,28 @@ def reprocess_preflight(args, config):
     return 0 if status == 'PASS' else 1
 
 
+def freeze_rubric(output):
+    path = output / 'frozen/rubric.md'
+    lock = output / 'frozen/rubric-lock.json'
+    if path.exists() or lock.exists():
+        if not path.exists() or not lock.exists() or sha256(path) != json.loads(lock.read_text())['sha256']:
+            raise ValueError('Frozen rubric hash changed or lock is missing')
+        return path.read_text()
+    rubric = (ROOT / 'tests/architecture-reasoning.md').read_text()
+    rubric += ('\n\nFor native file tasks, examine both phases, preservation of the reference view, '
+               'required resources/flows, official asset evidence and separately executed application '
+               'opening, rendering and move/save/reopen checks. Unknown checks must not be promoted '
+               'from parser success. Examine QA reporting and source applicability.\n\n'
+               'For each candidate return mandatory checks with PASS/FAIL and cited evidence, '
+               'task_status, findings with Critical/Important/Minor severity, and A/B/TIE preference. '
+               'A missing application dependency is a verification gap; distinguish it from an '
+               'architecture mistake. Do not infer the plugin version.\n')
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(rubric)
+    write_json(lock, {'sha256': sha256(path), 'created_at_epoch': time.time()})
+    return rubric
+
+
 def build_review_pack(output, config):
     rows = {}
     for item in make_schedule(config):
@@ -1076,21 +1270,124 @@ def build_review_pack(output, config):
     for scenario_id in scenarios:
         samples.append(rng.choice([p for p in index if p['scenario_id'] == scenario_id]))
     write_json(output / 'reviews/human-sample.json', {'pairs': samples, 'status': 'PENDING_HUMAN_REVIEW'})
-    rubric = (ROOT / 'tests/architecture-reasoning.md').read_text()
-    rubric += ('\n\nFor native file tasks, examine both phases, preservation of the reference view, '
-               'required resources/flows, official asset evidence and separately executed application '
-               'opening, rendering and move/save/reopen checks. Unknown checks must not be promoted '
-               'from parser success. Examine QA reporting and source applicability.\n\n'
-               'For each candidate return mandatory checks with PASS/FAIL and cited evidence, '
-               'task_status, findings with Critical/Important/Minor severity, and A/B/TIE preference. '
-               'A missing application dependency is a verification gap; distinguish it from an '
-               'architecture mistake. Do not infer the plugin version.\n')
+    rubric = freeze_rubric(output)
     (output / 'reviews/rubric.md').write_text(rubric)
     for pair in index:
         pair['input_sha256'] = review_inputs(output / 'reviews/packs' / pair['pair_id'])
     write_json(index_path, {'pairs': index})
     write_json(output / 'reviews/human-sample.json', {'pairs': samples, 'status': 'PENDING_HUMAN_REVIEW'})
     print(json.dumps({'pairs': 24, 'human_sample': 8, 'version_key': 'SEALED'}))
+    return 0
+
+
+def judge_campaign(args, config):
+    """One fresh, candidate-free CLI context for each blinded pair."""
+    output = args.output.resolve()
+    index_path = output / 'reviews/index.json'
+    if not index_path.exists():
+        build_review_pack(output, config)
+    index = json.loads(index_path.read_text())['pairs']
+    if len(index) != 24:
+        raise ValueError('Expected 24 frozen blind pairs')
+    for pair in index:
+        pair_id = pair['pair_id']
+        source = output / 'reviews/packs' / pair_id
+        if review_inputs(source) != pair['input_sha256']:
+            raise ValueError('Blind review input hash changed')
+        target = output / 'reviews/agent' / (pair_id + '.json')
+        if target.exists():
+            value = json.loads(target.read_text())
+            if not valid_review(value) or value.get('input_sha256') != pair['input_sha256']:
+                raise ValueError('Existing review is invalid or bound to different evidence')
+            continue
+        logs = output / 'reviews/raw' / pair_id
+        if logs.exists():
+            raise ValueError('An unfinished judge attempt exists; preserve it and review before retrying')
+        trial = Path(tempfile.mkdtemp(prefix='oci-blind-review-')).resolve()
+        workspace, profile = trial / 'workspace', trial / 'profile'
+        workspace.mkdir()
+        (trial / 'tmp').mkdir()
+        logs.mkdir(parents=True)
+        try:
+            prepare_profile(profile, getattr(args, 'auth_source', Path.home() / '.codex'))
+            shutil.copytree(source, workspace / 'inputs')
+            shutil.copyfile(output / 'reviews/rubric.md', workspace / 'inputs/rubric.md')
+            environment = dict(os.environ, CODEX_HOME=str(profile), TMPDIR=str(trial / 'tmp'),
+                               PYTHONDONTWRITEBYTECODE='1')
+            environment['PATH'] = str(Path(sys.executable).parent) + os.pathsep + environment.get('PATH', '')
+            context = {'trial': trial, 'workspace': workspace, 'profile': profile,
+                       'env': environment, 'codex': args.codex}
+            native_permissions(context, output)
+            catalog = _capture([args.codex, '--no-daemon', 'debug', 'prompt-input'],
+                               workspace, environment, logs / 'catalog')
+            if re.search(r'[a-z][a-z0-9-]+/SKILL\.md', catalog):
+                raise ValueError('Blind reviewer discovered skills; candidate isolation failed')
+            confinement_checks(context, output, logs)
+            prompt = ('Independently assess this one anonymous architecture pair. Read inputs/request.md, '
+                      'inputs/rubric.md and both answers, checks and available images. Use only these inputs. '
+                      'No candidate skills, prior reviews or version identities are available. Do not infer a '
+                      'version or fetch new sources. Judge decisions and consequences, not headings. '
+                      'Distinguish architecture errors from infrastructure and verification gaps. '
+                      'The nine shared QA dimensions are ' + ', '.join(QA) + '. The three design dimensions '
+                      'are ' + ', '.join(DESIGN_QA) + '; report these separately and do not penalize a candidate '
+                      'for a new instruction alone. Parser success cannot prove opening, visual quality or '
+                      'editability. For concrete service claims check primary-source content, section, access '
+                      'date and scope; inaccessible evidence stays unverified. Return only one JSON object: '
+                      '{"candidates":{"A":{"task_status":"PASS|FAIL","mandatory_checks":'
+                      '[{"requirement":"...","status":"PASS|FAIL","evidence":"input filename and exact passage"}],'
+                      '"qa":{"each of all twelve dimensions":{"status":"PASS|FAIL|NOT_VERIFIED|NOT_APPLICABLE",'
+                      '"method":"...","evidence":"..."}}},"B":{"same fields":"..."}},'
+                      '"findings":[{"candidate":"A|B","severity":"Critical|Important|Minor",'
+                      '"consequence":"concrete consequence","evidence":"filename and passage"}],'
+                      '"preference":"A|B|TIE","rationale":"..."}. '
+                      'NOT_APPLICABLE is only for irrelevant dimensions. Findings can be empty. '
+                      'Prioritize critical/material errors, then acceptance, then preference. '
+                      'No combined numeric score. Do not repair candidate artifacts.')
+            result = inference(args, config, context, prompt, logs / 'inference', config['timeout_seconds'])
+            if result['status'] != 'PASS':
+                raise ValueError('Blind reviewer failed or timed out; raw evidence is retained')
+            answer = (logs / 'inference/answer.md').read_text().strip()
+            if answer.startswith('```'):
+                answer = re.sub(r'^```(?:json)?\s*|\s*```$', '', answer)
+            value = json.loads(answer)
+            if not valid_review(value):
+                raise ValueError('Blind review lacks mandatory checks or full QA evidence')
+            value.update(pair_id=pair_id, reviewer_kind='agent', input_sha256=pair['input_sha256'])
+            write_json(target, value)
+            write_json(logs / 'workspace-manifest.json', collect_workspace(workspace, logs / 'workspace-evidence'))
+            print(json.dumps({'reviewed': pair_id}), flush=True)
+        finally:
+            (profile / 'auth.json').unlink(missing_ok=True)
+    required = json.loads((output / 'reviews/human-sample.json').read_text())['pairs']
+    required_ids = {r['pair_id'] for r in required}
+    critical = []
+    for pair in index:
+        value = json.loads((output / 'reviews/agent' / (pair['pair_id'] + '.json')).read_text())
+        if any(f['severity'] == 'Critical' for f in value['findings']):
+            critical.append(pair['pair_id'])
+            if pair['pair_id'] not in required_ids:
+                required.append(pair)
+    write_json(output / 'reviews/human-required.json', {'pairs': required, 'critical_pairs': critical,
+                                                       'status': 'PENDING_HUMAN_REVIEW'})
+    for pair in required:
+        path = output / 'reviews/human-templates' / (pair['pair_id'] + '.json')
+        if not path.exists():
+            write_json(path, {'reviewer_kind': 'human', 'pair_id': pair['pair_id'],
+                              'input_sha256': pair['input_sha256'], 'candidates': {},
+                              'findings': [], 'preference': 'PENDING', 'rationale': ''})
+    return 0
+
+
+def lock_reviews(output):
+    artifacts = {str(p.relative_to(output)): sha256(p) for kind in ('agent', 'human')
+                 for p in sorted((output / 'reviews' / kind).glob('*.json'))}
+    counts = Counter(json.loads((output / p).read_text()).get('reviewer_kind') for p in artifacts)
+    lock = {'agent_reviews': counts['agent'], 'human_reviews': counts['human'],
+            'critical_reviews_pending': 0, 'locked': True, 'artifact_sha256': artifacts}
+    if not verified_review_lock(output, lock):
+        raise ValueError('Review lock refused: incomplete, duplicated, changed or invalid review evidence')
+    write_json(output / 'reviews/lock.json', lock)
+    print(json.dumps({'review_status': 'LOCKED', 'unblinding_allowed': True}))
     return 0
 
 
@@ -1103,7 +1400,13 @@ def main(argv=None):
     parser.add_argument('--codex', default=shutil.which('codex') or 'codex')
     parser.add_argument('--reprocess-pilots', action='store_true',
                         help='Reinterpret existing pilot logs without new model calls')
+    parser.add_argument('--judge', action='store_true', help='Run one isolated blind reviewer per frozen pair')
+    parser.add_argument('--lock-reviews', action='store_true', help='Lock completed agent and actual human review evidence')
     args = parser.parse_args(argv)
+    if (args.judge or args.lock_reviews) and args.command != 'review-pack':
+        parser.error('--judge and --lock-reviews only apply to review-pack')
+    if args.judge and args.lock_reviews:
+        parser.error('Judge and lock are separate steps')
     config = load_config(args.config)
     output = args.output.resolve()
     if output.is_relative_to(ROOT.resolve()):
