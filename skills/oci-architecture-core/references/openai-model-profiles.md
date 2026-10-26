@@ -24,11 +24,11 @@ The official guide positions Sol as a balance of intelligence and cost for compl
 
 The documented model is `gpt-image-2.5-sunburst`, with snapshot `gpt-image-2.5-sunburst-2026-09-08`. It is the quality-oriented reference profile for illustrations and precise image edits. Supply the fixed architecture, verbatim text and explicit roles for reference/edit images. For a change, name the target, exact delta and all semantic/style invariants. Edit the current image rather than starting a new unrelated generation. Check every resource, boundary and flow after each change, including supposedly unchanged areas.
 
-Generated artwork is illustrative. An image model's preservation or text capabilities do not prove exact Oracle artwork, correct networking, pixel identity or editability. Exact-official-icon requirements use [technical export](image-delivery.md). Dense labels and precise layout remain review risks even with this model.
+Use inspected official source renderings and the [Oracle Redwood/OCI style contract](oracle-redwood-style.md) for composition, glyph references, palette, sans-serif typography and connectors. Generated artwork is illustrative. An image model's preservation or text capabilities do not prove exact Oracle artwork, correct networking, pixel identity or editability. Exact-official-icon requirements use [technical export](image-delivery.md). Dense labels and precise layout remain review risks even with this model.
 
 ## GPT Image 2.5 Flare: requested concepts and alternatives
 
-The documented model is `gpt-image-2.5-flare`, with snapshot `gpt-image-2.5-flare-2026-09-08`. Use this reference profile for explicitly requested quick concept images or visual alternatives. Hold the architecture fixed between alternatives; vary only the requested presentation properties. A fast draft still needs semantic and visual inspection. Do not automatically replace Sunburst or a technical export with Flare.
+The documented model is `gpt-image-2.5-flare`, with snapshot `gpt-image-2.5-flare-2026-09-08`. Use this reference profile for explicitly requested quick concept images or visual alternatives. Hold the architecture and Oracle/OCI style contract fixed between alternatives; vary only the requested presentation properties. A fast draft still needs semantic and visual inspection. Do not automatically replace Sunburst or a technical export with Flare.
 
 ## Host capability boundary
 

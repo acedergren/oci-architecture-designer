@@ -2,6 +2,8 @@
 
 Use actual source shapes and template styling as the authority. Pinned references: `OCI_Icons.pptx` slides 5, 7–12, 18–25; Draw.io Start here, Logical, Physical, and Icons pages. These compact rules describe relevant conventions, not replacement artwork.
 
+For new images in either delivery route, apply the [Oracle Redwood/OCI style contract](oracle-redwood-style.md). Inspect a source reference before prompting/rendering and compare the actual saved image afterward. This includes generated illustrations unless the user explicitly requested a different style.
+
 - Preserve official icon geometry and aspect ratio; never rotate, flip, skew, embellish, add shadows/3D, or invent pictograms. Keep the identification label and approved source color variant. Do not relabel an unrelated icon to stand for a new product.
 - Icon colors use the source Ocean/Sienna variants. Oracle's palette lists Ocean `#2C5967`, Sienna `#AE562C`, Bark `#312D2A`, Air `#FCFBFA`, Neutral 1 `#F5F4F2`, Neutral 2 `#DFDCD8`, Neutral 3 `#9E9892`, Neutral 4 `#70736E`, Ivy `#759C6C`, and Oracle Red `#C74634`. Copy the supplied shapes rather than globally recoloring their internals; actual source encodings may differ slightly.
 - Use the provided Oracle Sans when legitimately available; otherwise Arial, Calibri, or equivalent sans serif. Do not bundle fonts without rights. Pink Courier New in the toolkit is instructional markup, not output styling.

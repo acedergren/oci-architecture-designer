@@ -16,7 +16,7 @@
         ],
         "developerName": "Alexander Cedergren",
         "displayName": "OCI Architecture Designer",
-        "longDescription": "Four discoverable skills connect workload requirements to architecture decisions, editable OCI diagrams and architecture images. Selectively loaded OpenAI profiles cover GPT-6 Astra, GPT-6.1 Sol and GPT Image 2.5 workflows without changing host model settings. Technical PNG/SVG export and explicit generated illustrations preserve one architecture model. QA separates source evidence, semantic/visual checks, editability and observed model identity. Toolkit binaries are not bundled; no Oracle endorsement is implied.",
+        "longDescription": "Four discoverable skills connect workload requirements to architecture decisions, editable OCI diagrams and architecture images. Selectively loaded OpenAI profiles cover GPT-6 Astra, GPT-6.1 Sol and GPT Image 2.5 workflows without changing host model settings. Technical PNG/SVG export and explicit generated illustrations preserve one architecture model and inspected Oracle Redwood/OCI styling. QA separates source evidence, semantic/visual checks, editability and observed model identity. Toolkit binaries are not bundled; no Oracle endorsement is implied.",
         "shortDescription": "OCI design and diagrams",
         "websiteURL": "https://github.com/acedergren/oci-architecture-designer"
       }
@@ -32,7 +32,8 @@
     "Well-Architected",
     "architecture-decisions",
     "architecture-images",
-    "OpenAI"
+    "OpenAI",
+    "Redwood"
   ],
   "name": "oci-architecture-designer",
   "version": "0.2.0"

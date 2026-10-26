@@ -28,6 +28,8 @@ Use native text, boundaries and attached connectors. Keep the same stable model 
 
 Attach connectors to actual shape connection sites inside a copied group; a group ID alone can parse correctly without following group movement in PowerPoint. Preserve namespace bindings used in markup-compatibility Requires/Ignorable attributes when copying XML. Keep OPC content-type and relationship roots in their original default namespaces for renderer compatibility.
 
+Inspect custom connection-site definitions: freeform artwork does not necessarily use the standard right/left rectangle indices. Select verified sites or an explicit invisible native attachment shape that moves with the group, then inspect the rendered endpoints. Apply the [Oracle Redwood/OCI style contract](../oci-architecture-core/references/oracle-redwood-style.md), including explicit sans-serif typography; font inheritance must not silently produce a serif export.
+
 ## Verify
 
 Run `python3 validate_pptx.py /path/to/result.pptx`. JSON reports internal package/shape/connector checks, slide order and external relationships separately; exit 0/1 indicates structural pass/failure. External links are not fetched. This is not full OOXML schema validation and does not prove rendering or editability.

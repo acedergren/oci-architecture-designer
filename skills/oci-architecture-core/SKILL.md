@@ -28,7 +28,7 @@ Apply [topology](references/topology.md) to placement/connectivity and [style](r
 
 ## Select the delivery
 
-For an architecture image, PNG, SVG, illustration or “ritning som bild”, read [image delivery](references/image-delivery.md). Use technical export from a checked native source by default for architecture drawings, exact official icons or editable-connector requirements. Direct image generation serves explicit illustration requests. Fix the resource IDs, exact labels, boundaries and directed flows before either route; image generation must not make new architecture decisions. Preserve the requested route and disclose missing tools instead of silently substituting another route.
+For an architecture image, PNG, SVG, illustration or “ritning som bild”, read [image delivery](references/image-delivery.md) and its [Oracle Redwood/OCI style contract](references/oracle-redwood-style.md). New OCI images follow inspected official styling by default, including generated illustrations. Use technical export from a checked native source for architecture drawings, exact official icons or editable-connector requirements. Direct image generation serves explicit illustration requests. Fix the resource IDs, exact labels, boundaries and directed flows before either route; image generation must not make new architecture decisions. Preserve the requested route and disclose missing tools instead of silently substituting another route.
 
 ## Official assets, on demand
 

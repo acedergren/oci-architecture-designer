@@ -9,6 +9,8 @@ Read [Core](../oci-architecture-core/SKILL.md) and use [delivery evidence](../oc
 
 For model-specific review use the relevant [OpenAI profile](../oci-architecture-core/references/openai-model-profiles.md). For PNG/SVG exports or generated illustrations, apply [image delivery](../oci-architecture-core/references/image-delivery.md): compare the actual saved image with the fixed model, including exact resource counts/labels, boundary membership and each arrow's endpoints/direction. Inspect unchanged areas after edits. The generating agent's assurance, a plausible icon or a successful generation call is not evidence of correctness.
 
+For new OCI images, compare visual quality with the recorded [Oracle Redwood/OCI references](../oci-architecture-core/references/oracle-redwood-style.md): typography/fallback, source palette, icon geometry/treatment, grouping and thin open-arrow connectors. A generic cloud illustration can have correct topology and still fail the requested OCI style. A color match or agent assertion alone does not pass this comparison.
+
 Report each dimension separately as PASS, FAIL or NOT_VERIFIED with method and evidence. Use NOT_APPLICABLE only for irrelevant dimensions, never missing tools.
 
 | Dimension | Evidence required |

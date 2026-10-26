@@ -1,6 +1,6 @@
 # Architecture images: export and illustration
 
-Use [Core](../SKILL.md) for architecture and [OpenAI model profiles](openai-model-profiles.md) only for the relevant model/tool guidance. An image is a presentation of the selected architecture, not a source of new service decisions. A small image task needs a compact model and checks, not a new design workshop.
+Use [Core](../SKILL.md) for architecture and [OpenAI model profiles](openai-model-profiles.md) only for the relevant model/tool guidance. Apply the [Oracle Redwood/OCI style contract](oracle-redwood-style.md) before either image route. An image is a presentation of the selected architecture, not a source of new service decisions. A small image task needs a compact model and checks, not a new design workshop.
 
 ## Route from the request
 
@@ -41,12 +41,14 @@ Architecture status: <proposed/current; assumptions and exclusions>
 Resources: <stable ID, exact service and verbatim display label; exact counts>
 Boundaries: <region, regional VCN/subnets and exact membership>
 Directed flows: <ID, source -> target, purpose and verbatim protocol/port label>
-Composition: <requested arrangement/style; preserve existing style for an edit>
+Composition: <Oracle Redwood/OCI source sample, hash and locator; requested layout>
+Style: <source palette, Oracle Sans or allowed sans-serif fallback, source grouping,
+        thin Bark connectors with open arrowheads; no generic cloud/3D/shadow style>
 Text verbatim: <complete required text list>
 Change only: <requested delta for an edit>
 Preserve: <unaffected resources, labels, flows, boundaries and style>
 Avoid: invented components, extra arrows, changed direction, implied HA/DR,
-       claimed official artwork, illegible or truncated text
+       claimed official artwork, illegible/truncated text, style drift from references
 Output: <requested raster image; transparent background only if requested>
 ```
 
@@ -57,5 +59,7 @@ For an edit pass the current image as the target; retain the prior version separ
 Apply all twelve dimensions in [Architecture QA](../../architecture-qa/SKILL.md). For image-only delivery, native graph/connector editability is NOT_APPLICABLE with reason, unless explicitly required, in which case an image-only result fails requirement fit/editability. File integrity uses actual image decoding and observed dimensions; the native format validator applies separately to an export source. Application opening records the saved image opened in a named viewer; it does not mean Draw.io/PowerPoint was opened.
 
 Compare every resource, exact label, count, boundary membership and directed flow against the fixed model, then inspect readability/overlap/cropping at delivery size. For illustration-only symbols, official-artwork identity is NOT_APPLICABLE only when official artwork is not required; generated lookalikes never pass official icon coverage. Cross-format consistency applies when more than one representation is delivered. Parser/model checks do not prove visual correctness or deployed behavior. Missing tools or missing inspection remain NOT_VERIFIED.
+
+Visual quality also requires comparing typography, palette, icon treatment, groupings and connector style with the recorded Oracle references. Correct architecture with a generic teal/server infographic style still fails an Oracle/OCI style requirement. Disclose font substitution and other departures; a palette match alone cannot pass the style review.
 
 Use [delivery evidence](delivery-evidence.md) beside actual files. Include route, native/source file and hash where relevant, image hash/dimensions, tool, observed model or null, retained prompt, reference roles/hashes, executed checks and measured usage/time or explicit unknowns. Keep raw tool output when available. A request or prompt naming Sunburst/Flare is not backend evidence; record only returned identity. Cache/image-token counts and price must not be inferred from absent usage fields.
