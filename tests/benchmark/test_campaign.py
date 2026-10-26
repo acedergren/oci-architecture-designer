@@ -517,6 +517,7 @@ for line in sys.stdin:
                 BENCH.write_json(folder / 'workspace-evidence/outputs/evidence/validator.json',
                                  {'status': 'PASS', 'elapsed_seconds': 2})
                 (folder / 'workspace-evidence/outputs/verification.md').write_text('Executed checks and limitations')
+                (folder / 'operator-evidence/reopened.png').write_bytes(b'synthetic native render bytes')
             BENCH.build_review_pack(out, config)
             key = json.loads((out / 'private/version-key.json').read_text())
             sample = json.loads((out / 'reviews/human-sample.json').read_text())
@@ -547,6 +548,11 @@ for line in sys.stdin:
             validation = next(item for item in sources if item['source_position'].endswith('/validator.json'))
             self.assertNotIn('elapsed_seconds', json.loads((native_folder / validation['review_file']).read_text()))
             self.assertTrue((native_folder / 'A-activation.json').exists())
+            renders = json.loads((native_folder / 'A-renders.json').read_text())
+            self.assertEqual(renders[0]['source_position'], 'operator-evidence/reopened.png')
+            rendered = native_folder / renders[0]['review_file']
+            self.assertEqual(rendered.read_bytes(), b'synthetic native render bytes')
+            self.assertEqual(renders[0]['sha256'], BENCH.sha256(rendered))
             for answer in (out / 'reviews/packs').glob('*/[AB].md'):
                 self.assertNotIn('7af1ba8', answer.read_text())
 

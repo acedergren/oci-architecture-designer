@@ -1524,10 +1524,18 @@ def build_review_pack(output, config):
                                   'transformation': 'Trial paths/candidate identity redacted; execution metrics redacted in QA JSON'})
             write_json(folder / (label + '-sources.json'), snapshots)
             # Native packages contain identifying metadata. Reviewers receive checked renders only.
-            for image in sorted(source.glob('application/*')):
+            renders = []
+            for image in sorted(list(source.glob('application/*')) +
+                                list(source.glob('operator-evidence/*'))):
                 if image.suffix.lower() not in {'.png', '.jpg', '.jpeg'}:
                     continue
-                shutil.copyfile(image, folder / (label + '-' + image.name))
+                if image.is_symlink() or not image.is_file():
+                    raise ValueError('Application renders must be local image files')
+                name = label + f'-render-{len(renders)+1:03}' + image.suffix.lower()
+                shutil.copyfile(image, folder / name)
+                renders.append({'source_position': str(image.relative_to(source)),
+                                'review_file': name, 'sha256': sha256(image)})
+            write_json(folder / (label + '-renders.json'), renders)
             mapping[label] = {'arm': candidate['arm'], 'run_id': candidate['run_id']}
         key.append({'pair_id': pair_id, 'scenario_id': scenario_id,
                     'repetition': repetition, 'mapping': mapping})

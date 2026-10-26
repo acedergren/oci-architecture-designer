@@ -224,6 +224,11 @@ add wall elapsed time and the deadline method. A host suspension cannot be
 interrupted while the host is asleep; an expired process is stopped on resume.
 Controller hashes identify which method each run actually used.
 
+Blind packs include native screenshots from both application and independent
+operator evidence, with an index connecting each original source position to its
+anonymous review filename and byte hash. A screenshot documents rendering at the
+observed time; independent checks do not prove an earlier worker claim.
+
 CI fetches repository history because runtime-export regressions exercise the
 pinned candidate commits. A default shallow checkout does not contain those
 revisions. Local checks do not establish that a hosted CI run has passed.
