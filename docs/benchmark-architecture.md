@@ -129,6 +129,14 @@ copy, save a local file, close/reopen that file and inspect attached connectors.
 Record the unchanged reference view and cross-format resources/flows separately.
 A parser pass cannot promote any application or visual dimension to PASS.
 
+When a native view suggests a rendering failure, independently reopen the same
+original file bytes before classifying it. Preserve the first suspect frame
+outside the blind render selection and record any transient discrepancy. Numeric
+serialization changes such as `512.0` to `512` do not establish changed geometry.
+PowerPoint may add organizational classification banners when saving a test copy;
+leave that policy untouched, compare the initial/edited originals first, and
+record host-added markings separately from candidate changes.
+
 ## Blind assessment and release boundary
 
 After all 48 workflows complete, `review-pack` creates 24 A/B pairs and one human
