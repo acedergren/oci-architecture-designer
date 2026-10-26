@@ -324,18 +324,21 @@ def review_documents(source):
     result = []
     for path in sorted(saved.rglob('*')):
         if (not path.is_file() or path.is_symlink() or path.name == 'response.md' or
-                path.suffix.lower() not in {'.html', '.htm', '.txt', '.md', '.json'} or
+                path.suffix.lower() not in {'.html', '.htm', '.txt', '.md', '.json', '.svg'} or
                 path.name == 'SKILL.md' or sha256(path) in instructions):
             continue
         relative = path.relative_to(saved)
         material = (path.suffix.lower() in {'.html', '.htm'} or
                     bool({'sources', 'references', 'refs'} & set(relative.parts)) or
                     any(word in path.name.lower() for word in ('source', 'provenance')))
-        report = ('outputs' in relative.parts and
-                  (any(part.endswith('evidence') for part in relative.parts) or
-                   'verification' in path.name.lower() or path.name.lower().startswith('qa')))
-        if material or report:
-            result.append((path, relative, 'worker_source_material' if material else 'worker_report'))
+        artifact = 'outputs' in relative.parts
+        report = (artifact and
+                  (any(part.endswith('evidence') or part.lower() == 'qa' for part in relative.parts) or
+                   'evidence' in path.stem.lower() or 'verification' in path.name.lower() or
+                   path.name.lower().startswith('qa')))
+        if material or report or artifact:
+            kind = 'worker_source_material' if material else ('worker_report' if report else 'worker_artifact')
+            result.append((path, relative, kind))
     return result
 
 

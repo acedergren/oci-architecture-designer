@@ -153,7 +153,9 @@ their internal metadata can identify a generator. Preserve service facts, offici
 labels, source positions and meaningful source/version distinctions.
 
 The pack includes saved worker QA reports and source registers, plus independent
-catalog/read observations. It excludes copies matching candidate instruction
+catalog/read observations. Primary text, JSON and SVG design outputs are retained
+even when the final message mainly links to attachments. SVG source is content
+evidence and does not establish native opening or verified rendering. It excludes copies matching candidate instruction
 files. Source facts and access dates remain visible; execution metrics in QA JSON
 are hidden. Operator checks do not prove that the candidate performed or knew
 those checks when making an earlier claim. Useful skill application is judged

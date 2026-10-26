@@ -639,6 +639,27 @@ for line in sys.stdin:
             selected = [relative.name for _, relative, _ in BENCH.review_documents(folder)]
             self.assertEqual(selected, ['architecture-review.md'])
 
+    def test_blind_documents_keep_primary_design_svg_and_qa_attachments(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            outputs = folder / 'workspace-evidence/outputs'
+            (outputs / 'qa').mkdir(parents=True)
+            (outputs / 'order-design.md').write_text('An asynchronous acknowledgement is not business completion.')
+            (outputs / 'model.json').write_text('{"business_completion":"committed"}')
+            (outputs / 'integration.svg').write_text('<svg><text>Durable queue, idempotent consumer</text></svg>')
+            (outputs / 'delivery-evidence.json').write_text('{"visual_quality":"NOT_VERIFIED"}')
+            (outputs / 'qa/validator.json').write_text('{"opening_review":"NOT_VERIFIED"}')
+            (outputs / 'build.py').write_text('synthetic generator implementation')
+            (outputs / 'unverified-preview.png').write_bytes(b'synthetic unverified raster')
+            selected = {str(relative): kind for _, relative, kind in BENCH.review_documents(folder)}
+            self.assertEqual(selected['outputs/order-design.md'], 'worker_artifact')
+            self.assertEqual(selected['outputs/model.json'], 'worker_artifact')
+            self.assertEqual(selected['outputs/integration.svg'], 'worker_artifact')
+            self.assertEqual(selected['outputs/delivery-evidence.json'], 'worker_report')
+            self.assertEqual(selected['outputs/qa/validator.json'], 'worker_report')
+            self.assertNotIn('outputs/build.py', selected)
+            self.assertNotIn('outputs/unverified-preview.png', selected)
+
     def test_failed_provisioning_removes_temporary_auth(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
