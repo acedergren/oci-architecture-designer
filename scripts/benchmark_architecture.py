@@ -1255,6 +1255,23 @@ def build_review_pack(output, config):
             if application.exists():
                 clean = anonymize(application.read_text(), roots, list(config['revisions'].values()))
                 (folder / (label + '-application-checks.json')).write_text(clean)
+            snapshots = []
+            saved = source / 'workspace-evidence'
+            for snapshot in sorted(saved.rglob('*')):
+                relative = snapshot.relative_to(saved)
+                if (not snapshot.is_file() or snapshot.is_symlink() or
+                    snapshot.suffix.lower() not in {'.html', '.htm', '.txt', '.md', '.json'} or
+                    not ('sources' in relative.parts or snapshot.name == 'provenance.json')):
+                    continue
+                name = label + f'-source-{len(snapshots)+1:03}' + snapshot.suffix.lower()
+                clean = anonymize(snapshot.read_text(), roots,
+                                  list(config['revisions'].values()) + ['552dd48', '7af1ba8'])
+                (folder / name).write_text(clean)
+                snapshots.append({'source_position': anonymize(str(relative), roots, []),
+                                  'original_sha256': sha256(snapshot), 'review_file': name,
+                                  'review_copy_sha256': sha256(folder / name),
+                                  'transformation': 'Trial paths and candidate identity redacted'})
+            write_json(folder / (label + '-sources.json'), snapshots)
             # Native packages contain identifying metadata. Reviewers receive checked renders only.
             for image in sorted(source.glob('application/*')):
                 if image.suffix.lower() not in {'.png', '.jpg', '.jpeg'}:
@@ -1329,6 +1346,8 @@ def judge_campaign(args, config):
             confinement_checks(context, output, logs)
             prompt = ('Independently assess this one anonymous architecture pair. Read inputs/request.md, '
                       'inputs/rubric.md and both answers, checks and available images. Use only these inputs. '
+                      'The A/B-sources.json indexes map saved primary snapshots and asset provenance to '
+                      'their neutral review filenames and hashes; inspect relevant sections when supplied. '
                       'No candidate skills, prior reviews or version identities are available. Do not infer a '
                       'version or fetch new sources. Judge decisions and consequences, not headings. '
                       'Distinguish architecture errors from infrastructure and verification gaps. '
