@@ -178,6 +178,14 @@ excludes unknown-cache samples; its metadata explicitly marks reasoning tokens
 unmeasured. A reasoning zero in Plugin Eval is therefore not an observed zero.
 Workflow usage aggregates all actual model calls and phases, while static budgets
 estimate instruction text; their difference does not isolate plugin overhead.
+These token counters cover the isolated working session's initial, edit and QA
+turns. Technical pilots, independent reviewers and controller/operator work are
+separate. Controller model tokens and active application-operator time have not
+been allocated to primary runs and remain null/NOT_VERIFIED. Consequently the
+worker-token cost per accepted task is not a measured total cost for the complete
+human/controller/application workflow. Wall time includes operator delays;
+generation time is reported separately. No end-to-end resource-efficiency claim
+is supported while those measurements remain missing.
 
 Confirmed fixes follow the locked comparison, with reproduction and regression
 evidence. Retain original runs, identify a corrected candidate by commit, and
