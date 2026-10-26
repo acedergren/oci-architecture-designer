@@ -323,6 +323,9 @@ def valid_review(row):
                {'PASS', 'FAIL', 'NOT_VERIFIED', 'NOT_APPLICABLE'} or
                not dimensions.get(k, {}).get('method') for k in QA + DESIGN_QA):
             return False
+        if any(dimensions[k]['status'] in {'PASS', 'FAIL'} and not dimensions[k].get('evidence')
+               for k in QA + DESIGN_QA):
+            return False
     findings = row.get('findings')
     return isinstance(findings, list) and all(
         f.get('severity') in {'Critical', 'Important', 'Minor'} and f.get('candidate') in {'A', 'B'}
@@ -637,13 +640,14 @@ def _capture(command, cwd, environment, folder, timeout=60):
     return (Path(folder) / 'events.jsonl').read_text()
 
 
-def environment_inventory(codex):
+def environment_inventory(codex, environment):
     result = {'python': {'version': sys.version, 'executable': sys.executable},
               'libraries': {}, 'applications': {}, 'tool_paths': {},
               'drawio_web_version': {'value': None, 'status': 'NOT_VERIFIED'},
               'controller_sha256': sha256(Path(__file__))}
     try:
-        result['codex'] = {'version': subprocess.check_output([codex, '--version'], text=True, timeout=10).strip(),
+        result['codex'] = {'version': subprocess.check_output([codex, '--version'], env=environment,
+                                                             text=True, timeout=10, stderr=subprocess.DEVNULL).strip(),
                            'path': shutil.which(codex) or codex}
     except (OSError, subprocess.SubprocessError):
         result['codex'] = {'version': None, 'status': 'NOT_VERIFIED'}
@@ -662,7 +666,7 @@ def environment_inventory(codex):
         except (OSError, ValueError, plistlib.InvalidFileException):
             result['applications'][name] = {'version': None, 'status': 'NOT_VERIFIED'}
     for name in ('node', 'soffice', 'pdftoppm', 'git'):
-        result['tool_paths'][name] = shutil.which(name)
+        result['tool_paths'][name] = shutil.which(name, path=environment.get('PATH', os.defpath))
     return result
 
 
@@ -674,13 +678,13 @@ def provision_trial(args, config, row, logs):
     workspace.mkdir()
     (trial / 'tmp').mkdir()
     (workspace / 'outputs').mkdir()
-    write_json(logs / 'environment.json', environment_inventory(args.codex))
     prepare_profile(profile, getattr(args, 'auth_source', Path.home() / '.codex'))
     environment = dict(os.environ)
     # Child-only standard Codex profile selection; the parent's environment is not changed.
     environment.update(CODEX_HOME=str(profile), TMPDIR=str(trial / 'tmp'),
                        PYTHONDONTWRITEBYTECODE='1')
     environment['PATH'] = str(Path(sys.executable).parent) + os.pathsep + environment.get('PATH', '')
+    write_json(logs / 'environment.json', environment_inventory(args.codex, environment))
     plugin = workspace / 'plugins/oci-architecture-designer'
     manifest = export_runtime(ROOT, row['revision'], plugin)
     write_json(logs / 'runtime-manifest.json', manifest)

@@ -36,6 +36,15 @@ class Campaign(unittest.TestCase):
         self.assertEqual(BENCH.model_status([{'model': 'gpt-6.1-sol', 'effort': 'xhigh'}], config), 'PASS')
         self.assertEqual(BENCH.model_status([{'model': 'other', 'effort': 'xhigh'}], config), 'FAIL')
 
+    def test_cli_inventory_uses_the_isolated_profile_environment(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            command = Path(tmp) / 'codex-probe'
+            command.write_text('#!/bin/sh\nprintf %s "$CODEX_HOME"\n')
+            command.chmod(0o700)
+            env = dict(os.environ, CODEX_HOME=str(Path(tmp) / 'isolated'))
+            result = BENCH.environment_inventory(str(command), env)
+            self.assertEqual(result['codex']['version'], env['CODEX_HOME'])
+
     def test_nested_exit_failure_and_duplicate_events_count_once(self):
         started = {'type': 'item.started', 'item': {'id': 'a', 'type': 'command_execution',
                    'command': 'python validate.py', 'status': 'in_progress'}}
@@ -362,6 +371,12 @@ for line in sys.stdin:
     def test_judge_output_missing_checks_is_rejected(self):
         self.assertFalse(BENCH.valid_review({'preference': 'A', 'findings': [],
                                            'candidates': {'A': {'task_status': 'PASS'}, 'B': {'task_status': 'FAIL'}}}))
+
+    def test_judge_pass_without_dimension_evidence_is_rejected(self):
+        candidate = {'task_status': 'PASS', 'mandatory_checks': [{'status': 'PASS', 'evidence': 'answer'}],
+                     'qa': {k: {'status': 'PASS', 'method': 'claimed check'} for k in BENCH.QA + BENCH.DESIGN_QA}}
+        self.assertFalse(BENCH.valid_review({'preference': 'TIE', 'findings': [],
+                                           'candidates': {'A': candidate, 'B': candidate}}))
 
     def test_critical_finding_and_timeout_cannot_be_hidden_by_a_pass_grade(self):
         row = {'status': 'PASS', 'steps': [{'status': 'TIMEOUT'}]}
