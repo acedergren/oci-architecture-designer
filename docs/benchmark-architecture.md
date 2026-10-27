@@ -388,7 +388,13 @@ audit found no candidate-version, pinned-commit or local-path leaks. The frozen
 review index hash is
 48ee4d703f3ad0eab8f058f4a36933e4c34c057de9ca3e600b28d61407390325.
 
-The independent review sequence is running. The user explicitly replaced the
+The campaign was stopped for replanning on 27 October 2026 after 21 of 24
+independent reviews. The excessive application verification effort did not answer
+the main architecture-quality question proportionately. All completed evidence
+is retained; remaining reviews and post-fix inference are stopped. The version
+key remains sealed, with no quality winner or completed comparison claim.
+
+The user explicitly replaced the
 detailed human sample with blanket approval. No per-pair human grades or
 preferences are inferred. Unblinding still requires all 24 valid agent reviews
 and the hash-bound approval; detailed human spotchecks remain NOT_VERIFIED. No quality winner, complete resource-efficiency result or corrected
@@ -399,3 +405,15 @@ Measurement support at commit 00d5116 passes 88 tests and package checks. It
 retains primary design attachments and actual retrieved source fragments while
 excluding mixed/truncated tool wrappers and local paths from blind inputs.
 No installation, push or publication was performed.
+
+
+### Replanning boundary
+
+Retain the reusable runner, measured usage, 95 passing offline tests and native
+findings. Do not repeat the full application movement matrix. A future bounded
+fix should start from one concrete failure and one relevant countercase, with a
+single native roundtrip for the affected format. Architecture work should focus
+on requirement fit, proportional service choices, failure behavior and applicable
+primary evidence. Parser, visual and native checks remain separate; unavailable
+evidence stays NOT_VERIFIED. This narrower direction is not a claim that the
+original 24-pair protocol or post-fix reruns were completed.
