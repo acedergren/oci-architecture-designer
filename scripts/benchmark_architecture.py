@@ -868,6 +868,37 @@ def read_events(path):
     return events, malformed
 
 
+
+def review_resource_summary(output):
+    """Keep all independent reviewer attempts, including failed provider calls, separate."""
+    folders = []
+    for name in ('reviews/raw', 'reviews/failed-attempts'):
+        folders.extend(p for p in (output / name).glob('*') if p.is_dir() and not p.is_symlink())
+    outcomes = []
+    for folder in folders:
+        path = folder / 'inference/outcome.json'
+        if path.is_file() and not path.is_symlink():
+            outcomes.append(json.loads(path.read_text()))
+    known = [a for a in outcomes if a.get('telemetry', {}).get('usage_status') == 'PASS' and
+             a.get('telemetry', {}).get('usage')]
+    complete = len(known) == len(folders) and bool(folders)
+    return {
+        'scope': 'Independent blind-review CLI attempts; outside primary worker and pilot denominators',
+        'recorded_attempts': len(folders), 'completed_attempts': len(outcomes),
+        'failed_attempts': sum(a.get('status') != 'PASS' for a in outcomes),
+        'attempts_without_outcome': len(folders) - len(outcomes),
+        'known_usage_attempts': len(known),
+        'observed_total_tokens_lower_bound': sum(
+            (a.get('telemetry', {}).get('observed_usage') or
+             a.get('telemetry', {}).get('usage') or {}).get('total_tokens', 0) for a in outcomes),
+        'total_tokens': sum(a['telemetry']['usage']['total_tokens'] for a in known) if complete else None,
+        'observed_tool_calls': sum(a.get('telemetry', {}).get('tool_calls', 0) for a in outcomes),
+        'observed_tool_errors': sum(a.get('telemetry', {}).get('tool_errors', 0) for a in outcomes),
+        'observed_generation_seconds': sum(a.get('elapsed_seconds', 0) for a in outcomes),
+        'status': 'PASS' if complete and len(list((output / 'reviews/agent').glob('*.json'))) == 24
+                  else 'NOT_VERIFIED'}
+
+
 def campaign_report(output, config):
     output = Path(output)
     rows = [json.loads(p.read_text()) for p in sorted((output / 'runs').glob('*/result.json'))]
@@ -916,7 +947,8 @@ def campaign_report(output, config):
         'active_operator_seconds': {'value': None, 'status': 'NOT_VERIFIED'},
         'known_technical_worker_tokens': sum((a.get('observed_usage') or {}).get('total_tokens', 0)
                                            for a in result['technical_attempts']),
-        'total_end_to_end_cost_status': 'NOT_VERIFIED'}
+        'total_end_to_end_cost_status': 'NOT_VERIFIED',
+        'independent_reviewers': review_resource_summary(output)}
     result['usage_complete'] = bool(rows) and all(r.get('telemetry', {}).get('usage') for r in rows)
     if len(rows) == 48 and isolation and unblinded:
         result['comparison'] = comparison_summary(output, rows)

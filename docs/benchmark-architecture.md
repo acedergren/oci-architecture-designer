@@ -234,6 +234,13 @@ human/controller/application workflow. Wall time includes operator delays;
 generation time is reported separately. No end-to-end resource-efficiency claim
 is supported while those measurements remain missing.
 
+
+Independent reviewer consumption is reported under resource_scope.independent_reviewers.
+It includes successful, failed and retried attempts kept under reviews/raw/ and
+reviews/failed-attempts/. Missing final usage stays unknown; observed counters are
+retained as a lower bound. Reviewer overhead is never added to primary worker
+usage or erased by retrying a provider-capacity failure with the same model.
+
 Confirmed fixes follow the locked comparison, with reproduction and regression
 evidence. Retain original runs, identify a corrected candidate by commit, and
 repeat affected pairs three times. Privacy/terms links are added only if relevant

@@ -868,6 +868,34 @@ for line in sys.stdin:
                          {'architecture_accepted': True, 'delivery_accepted': False})
 
 
+
+    def test_failed_blind_review_cost_is_retained_outside_primary_usage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            BENCH.write_json(out / 'reviews/raw/pair-01/inference/outcome.json', {
+                'status': 'PASS', 'elapsed_seconds': 12,
+                'telemetry': {'usage_status': 'PASS', 'usage': {'total_tokens': 105},
+                              'tool_calls': 2, 'tool_errors': 0}})
+            BENCH.write_json(out / 'reviews/failed-attempts/pair-02-attempt-001/inference/outcome.json', {
+                'status': 'FAIL', 'elapsed_seconds': 8,
+                'telemetry': {'usage_status': 'NOT_VERIFIED', 'usage': None,
+                              'observed_usage': {'total_tokens': 55},
+                              'tool_calls': 1, 'tool_errors': 1}})
+            (out / 'reviews/raw/pair-03').mkdir()
+            report = BENCH.campaign_report(out, BENCH.load_config(ROOT / 'tests/benchmark/campaign.json'))
+            cost = report['resource_scope']['independent_reviewers']
+            self.assertEqual(cost['recorded_attempts'], 3)
+            self.assertEqual(cost['failed_attempts'], 1)
+            self.assertEqual(cost['attempts_without_outcome'], 1)
+            self.assertEqual(cost['known_usage_attempts'], 1)
+            self.assertEqual(cost['observed_total_tokens_lower_bound'], 160)
+            self.assertEqual(cost['observed_tool_errors'], 1)
+            self.assertEqual(cost['observed_generation_seconds'], 20)
+            self.assertIsNone(cost['total_tokens'])
+            self.assertEqual(cost['status'], 'NOT_VERIFIED')
+            self.assertEqual(report['resource_scope']['known_technical_worker_tokens'], 0)
+            self.assertEqual(report['primary_completed'], 0)
+
     def test_explicit_blanket_approval_unlocks_without_fabricated_human_grades(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
