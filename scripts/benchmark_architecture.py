@@ -690,7 +690,9 @@ def comparison_summary(output, rows):
             accepted = acceptance(original, candidate, findings, label)
             candidate_findings = [f for f in findings if f['candidate'] == label]
             records.append(dict(original, **accepted, accepted=accepted['delivery_accepted'],
-                                findings=candidate_findings, qa=candidate['qa'], pair_id=pair_id))
+                                findings=candidate_findings, qa=candidate['qa'], pair_id=pair_id,
+                                candidate_label=label, mandatory_checks=candidate['mandatory_checks'],
+                                task_status=candidate['task_status']))
     groups = {}
     for arm in ('before', 'after'):
         selected = [r for r in records if r['arm'] == arm]
@@ -719,7 +721,13 @@ def comparison_summary(output, rows):
         with (output / ('plugin-eval-' + arm + '-usage.jsonl')).open('w') as stream:
             for event in eval_usage(selected):
                 stream.write(json.dumps(event) + '\n')
+    cases = [{k: r[k] for k in ('pair_id', 'candidate_label', 'arm', 'scenario_id', 'repetition',
+              'task_status', 'mandatory_checks', 'qa', 'architecture_accepted', 'delivery_accepted')}
+             for r in records]
+    findings = [dict(f, arm=r['arm'], scenario_id=r['scenario_id'], repetition=r['repetition'],
+                     pair_id=r['pair_id']) for r in records for f in r['findings']]
     return {'versions': groups, 'blind_preferences': dict(preferences), 'human_sample': human,
+            'case_assessments': cases, 'case_findings': findings,
             'human_review_mode': lock.get('human_review_mode', 'detailed_spotchecks'),
             'human_spotcheck_status': 'NOT_VERIFIED' if lock.get('human_review_mode') == 'blanket_approval' else 'PASS',
             'limitations': ['Eight synthetic tasks with three repetitions; no general quality claim.',
@@ -730,6 +738,66 @@ def comparison_summary(output, rows):
                            (['User replaced detailed human spotchecks, including critical follow-ups, with blanket approval. '
                              'Human per-requirement grades and preferences were not measured.']
                             if lock.get('human_review_mode') == 'blanket_approval' else [])}
+
+
+
+def comparison_markdown(comparison):
+    """Expose consequential findings before aggregates and retain per-task variation."""
+    def cell(value):
+        return str(value).replace('|', r'\|').replace('\n', ' ')
+    def spread(value, runs):
+        if value['median'] is None:
+            return 'NOT_VERIFIED'
+        return (f"{value['median']} [{value['min']}–{value['max']}]; "
+                f"{value['measured']}/{runs} known samples")
+    versions = (('before', '0.1.3'), ('after', '0.2.0'))
+    names = dict(versions)
+    text = '\n## Severe findings\n\n'
+    severe = [f for f in comparison['case_findings'] if f['severity'] in {'Critical', 'Important'}]
+    if severe:
+        text += '| Severity | Version | Task / repetition | Consequence | Evidence |\n'
+        text += '| --- | --- | --- | --- | --- |\n'
+        for finding in sorted(severe, key=lambda f: (f['severity'] != 'Critical', f['scenario_id'], f['repetition'])):
+            text += '| ' + ' | '.join(cell(v) for v in (
+                finding['severity'], names[finding['arm']],
+                f"{finding['scenario_id']} / {finding['repetition']}",
+                finding['consequence'], finding['pair_id'] + ': ' + str(finding['evidence']))) + ' |\n'
+    else:
+        text += 'No Critical or Important findings were recorded.\n'
+    text += '\nAll findings, requirement checks and QA methods/evidence are retained in report.json.\n'
+    text += '\n## Per-task results\n\n'
+    text += ('Token and time summaries show median [min–max] and known samples. Failed workflows '
+             'remain in consumption; missing usage prevents a complete cost per accepted task.\n\n')
+    text += '| Task | Version | Critical / Important | Architecture accepted | Within limit | Tokens | Generation seconds | Wall seconds |\n'
+    text += '| --- | --- | ---: | ---: | ---: | --- | --- | --- |\n'
+    scenarios = sorted({s for arm, _ in versions for s in comparison['versions'][arm]['tasks']})
+    for scenario in scenarios:
+        for arm, version in versions:
+            value = comparison['versions'][arm]['tasks'][scenario]
+            text += '| ' + ' | '.join(cell(v) for v in (
+                scenario, version, f"{value['critical_findings']} / {value['important_findings']}",
+                f"{value['architecture_accepted']}/{value['runs']}", f"{value['accepted']}/{value['runs']}",
+                spread(value['total_tokens'], value['runs']),
+                spread(value['generation_seconds'], value['runs']),
+                spread(value['elapsed_seconds'], value['runs']))) + ' |\n'
+    text += '\n## Overall resources\n\n'
+    for arm, version in versions:
+        value = comparison['versions'][arm]['overall']
+        cost = value['tokens_per_accepted_task']
+        text += (f"- {version}: {value['accepted']}/{value['runs']} delivered within limit; "
+                 f"observed worker tokens at least {value['observed_total_tokens']}; "
+                 f"complete worker-token cost per accepted task: {cost if cost is not None else 'NOT_VERIFIED'}.\n")
+    for title, field in (('Shared QA dimensions', 'qa_common'), ('Separate design QA dimensions', 'qa_design_separate')):
+        text += f'\n## {title}\n\n| Dimension | 0.1.3 | 0.2.0 |\n| --- | --- | --- |\n'
+        dimensions = QA if field == 'qa_common' else DESIGN_QA
+        for dimension in dimensions:
+            counts = [json.dumps(comparison['versions'][arm]['overall'][field][dimension], sort_keys=True)
+                      for arm, _ in versions]
+            text += '| ' + ' | '.join(cell(x) for x in [dimension, *counts]) + ' |\n'
+    text += '\nBlind preferences: ' + json.dumps(
+        {names.get(k, k): v for k, v in comparison['blind_preferences'].items()}) + '\n\n'
+    text += '\n'.join('- ' + item for item in comparison['limitations']) + '\n'
+    return text
 
 
 def collect_workspace(workspace, destination):
@@ -969,15 +1037,7 @@ def campaign_report(output, config):
         text += 'Preflight: ' + result['preflight'].get('status', 'NOT_VERIFIED') + '\n\n'
         text += result['preflight'].get('reason', '') + '\n'
     if 'comparison' in result:
-        text += '\n| Version | Critical | Important | Architecture accepted | Delivered within limit | Median tokens | Median seconds |\n'
-        text += '| --- | ---: | ---: | ---: | ---: | ---: | ---: |\n'
-        for arm, version in (('before', '0.1.3'), ('after', '0.2.0')):
-            value = result['comparison']['versions'][arm]['overall']
-            text += (f'| {version} | {value["critical_findings"]} | {value["important_findings"]} | '
-                     f'{value["architecture_accepted"]}/24 | {value["accepted"]}/24 | '
-                     f'{value["total_tokens"]["median"]} | {value["generation_seconds"]["median"]} |\n')
-        text += '\nBlind preferences: ' + json.dumps(result['comparison']['blind_preferences']) + '\n\n'
-        text += '\n'.join('- ' + item for item in result['comparison']['limitations']) + '\n'
+        text += comparison_markdown(result['comparison'])
     (output / 'report.md').write_text(text)
     return result
 

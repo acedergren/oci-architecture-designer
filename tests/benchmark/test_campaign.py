@@ -1058,6 +1058,20 @@ for line in sys.stdin:
                                  report['comparison']['versions'].values()), 1)
             self.assertEqual(sum(v['overall']['architecture_accepted'] for v in
                                  report['comparison']['versions'].values()), 47)
+            cases = report['comparison']['case_assessments']
+            self.assertEqual(len(cases), 48)
+            severe = report['comparison']['case_findings']
+            self.assertEqual(len(severe), 1)
+            self.assertEqual(severe[0]['consequence'], 'Lost reference view')
+            self.assertEqual(severe[0]['evidence'], 'A.md:1')
+            self.assertEqual(severe[0]['reviewers'], ['human'])
+            self.assertTrue(all('qa' in c and 'mandatory_checks' in c for c in cases))
+            markdown = (out / 'report.md').read_text()
+            self.assertIn('Severe findings', markdown)
+            self.assertIn('Lost reference view', markdown)
+            self.assertIn('Per-task results', markdown)
+            self.assertIn('known samples', markdown)
+            self.assertLess(markdown.index('Severe findings'), markdown.index('Per-task results'))
 
     def test_human_critical_findings_and_failed_checks_affect_acceptance(self):
         candidate = {'task_status': 'PASS', 'mandatory_checks': [{'status': 'PASS'}]}

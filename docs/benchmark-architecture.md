@@ -217,6 +217,13 @@ repetitions, severe findings, acceptance, blind preferences and measured medians
 and ranges. Architecture acceptance and timely delivery are separate. Unknown
 usage prevents full token cost per accepted task; known failures still belong in
 the denominator and measured cost. No currency estimate is manufactured.
+
+The locked report exposes consequential findings before aggregates, with task,
+repetition, version, consequence and evidence. Per-task tables show medians and
+ranges with known-sample counts, plus separate generation and wall time. The JSON
+also retains every requirement check and all QA methods/evidence per case, so an
+overall median or acceptance count cannot conceal a serious defect.
+
 Normalized `plugin-eval-before-usage.jsonl` and `plugin-eval-after-usage.jsonl`
 contain only complete measured samples with cache counters. Plugin Eval static
 budgets remain a separate signal and do not establish architectural quality.
