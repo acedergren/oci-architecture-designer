@@ -867,6 +867,73 @@ for line in sys.stdin:
         self.assertEqual(BENCH.acceptance(row, candidate, [], 'A'),
                          {'architecture_accepted': True, 'delivery_accepted': False})
 
+
+    def test_explicit_blanket_approval_unlocks_without_fabricated_human_grades(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            (out / 'reviews').mkdir()
+            (out / 'reviews/rubric.md').write_text('Frozen synthetic rubric')
+            index = []
+            for i in range(24):
+                folder = out / f'reviews/packs/pair-{i:02}'
+                folder.mkdir(parents=True)
+                (folder / 'A.md').write_text('A')
+                (folder / 'B.md').write_text('B')
+                index.append({'pair_id': folder.name, 'scenario_id': 'case-' + str(i % 8),
+                              'input_sha256': BENCH.review_inputs(folder)})
+            BENCH.write_json(out / 'reviews/index.json', {'pairs': index})
+            BENCH.write_json(out / 'reviews/human-sample.json', {'pairs': index[:8]})
+            candidate = {'task_status': 'PASS',
+                         'mandatory_checks': [{'status': 'PASS', 'evidence': 'A.md:1'}],
+                         'qa': {k: {'status': 'NOT_VERIFIED', 'method': 'Not checked here'}
+                                for k in BENCH.QA + BENCH.DESIGN_QA}}
+            artifacts = {}
+            for pair in index:
+                path = out / f'reviews/agent/{pair["pair_id"]}.json'
+                findings = ([{'candidate': 'A', 'severity': 'Critical', 'consequence': 'Broken delivery',
+                              'evidence': 'A.md:1'}] if pair == index[-1] else [])
+                BENCH.write_json(path, dict(pair, reviewer_kind='agent',
+                    candidates={'A': candidate, 'B': candidate}, findings=findings, preference='TIE'))
+                artifacts[str(path.relative_to(out))] = BENCH.sha256(path)
+            BENCH.write_json(out / 'private/conclusion-inputs.json', BENCH.conclusion_inputs(out))
+            lock = {'agent_reviews': 24, 'human_reviews': 0, 'critical_reviews_pending': 0,
+                    'locked': True, 'artifact_sha256': artifacts,
+                    'human_review_mode': 'blanket_approval',
+                    'conclusion_sha256': BENCH.sha256(out / 'private/conclusion-inputs.json')}
+            self.assertFalse(BENCH.verified_review_lock(out, lock))
+            approval = {'approval_kind': 'blanket', 'source': 'direct_user_message',
+                        'statement': 'Approved across the board; proceed without detailed spotchecks.',
+                        'scope': 'all_required_human_reviews',
+                        'detailed_human_assessment': 'NOT_VERIFIED', 'human_preference': None,
+                        'review_index_sha256': BENCH.sha256(out / 'reviews/index.json'),
+                        'pair_input_sha256': {p['pair_id']: p['input_sha256'] for p in index}}
+            path = out / 'reviews/human-approval.json'
+            BENCH.write_json(path, approval)
+            lock['human_approval_sha256'] = BENCH.sha256(path)
+            self.assertTrue(BENCH.verified_review_lock(out, lock))
+            BENCH.lock_reviews(out)
+            stored = json.loads((out / 'reviews/lock.json').read_text())
+            self.assertEqual(stored['human_review_mode'], 'blanket_approval')
+            self.assertEqual(stored['human_reviews'], 0)
+            self.assertEqual(list((out / 'reviews/human').glob('*.json')), [])
+            report = BENCH.campaign_report(out, BENCH.load_config(ROOT / 'tests/benchmark/campaign.json'))
+            self.assertTrue(report['unblinded'])
+            self.assertEqual(report['human_spotcheck_status'], 'NOT_VERIFIED')
+            self.assertEqual(report['conclusion_status'], 'NOT_VERIFIED')
+            original = path.read_bytes()
+            approval['statement'] = ''
+            BENCH.write_json(path, approval)
+            self.assertFalse(BENCH.verified_review_lock(out, lock))
+            lock['human_approval_sha256'] = BENCH.sha256(path)
+            self.assertFalse(BENCH.verified_review_lock(out, lock))
+            path.write_bytes(original)
+            approval['statement'] = 'Proceed'
+            approval['pair_input_sha256'].pop(index[-1]['pair_id'])
+            BENCH.write_json(path, approval)
+            lock['human_approval_sha256'] = BENCH.sha256(path)
+            self.assertFalse(BENCH.verified_review_lock(out, lock))
+            self.assertFalse(BENCH.review_gate(dict(lock, agent_reviews=23)))
+
     def test_successful_review_lock_is_bound_to_all_evidence_and_critical_human_checks(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)

@@ -463,8 +463,30 @@ def file_review(evidence):
 
 
 def review_gate(value):
-    return (value.get('agent_reviews') == 24 and value.get('human_reviews', 0) >= 8 and
+    human = (value.get('human_reviews', 0) >= 8 or
+             (value.get('human_review_mode') == 'blanket_approval' and value.get('human_reviews') == 0))
+    return (value.get('agent_reviews') == 24 and human and
             value.get('critical_reviews_pending') == 0 and value.get('locked') is True)
+
+
+def approved_human_waiver(output, lock, index):
+    """Bind an explicit blanket approval without inventing human grades or preferences."""
+    path = output / 'reviews/human-approval.json'
+    if path.is_symlink() or not path.is_file() or lock.get('human_approval_sha256') != sha256(path):
+        return False
+    try:
+        approval = json.loads(path.read_text())
+        return (approval.get('approval_kind') == 'blanket' and
+                approval.get('source') == 'direct_user_message' and
+                isinstance(approval.get('statement'), str) and bool(approval['statement'].strip()) and
+                approval.get('scope') == 'all_required_human_reviews' and
+                approval.get('detailed_human_assessment') == 'NOT_VERIFIED' and
+                approval.get('human_preference') is None and
+                approval.get('review_index_sha256') == sha256(output / 'reviews/index.json') and
+                approval.get('pair_input_sha256') ==
+                {pair: row['input_sha256'] for pair, row in index.items()})
+    except (ValueError, OSError, KeyError, TypeError):
+        return False
 
 
 def verified_review_lock(output, lock):
@@ -512,7 +534,10 @@ def verified_review_lock(output, lock):
         seen[kind].add(pair)
         if kind == 'agent' and any(f['severity'] == 'Critical' for f in row['findings']):
             required_human.add(pair)
-    return (seen['agent'] == set(index) and required_human <= seen['human'] and
+    human_complete = required_human <= seen['human']
+    if lock.get('human_review_mode') == 'blanket_approval':
+        human_complete = not seen['human'] and approved_human_waiver(output, lock, index)
+    return (seen['agent'] == set(index) and human_complete and
             len(seen['human']) == lock['human_reviews'])
 
 
@@ -695,11 +720,16 @@ def comparison_summary(output, rows):
             for event in eval_usage(selected):
                 stream.write(json.dumps(event) + '\n')
     return {'versions': groups, 'blind_preferences': dict(preferences), 'human_sample': human,
+            'human_review_mode': lock.get('human_review_mode', 'detailed_spotchecks'),
+            'human_spotcheck_status': 'NOT_VERIFIED' if lock.get('human_review_mode') == 'blanket_approval' else 'PASS',
             'limitations': ['Eight synthetic tasks with three repetitions; no general quality claim.',
                             'Reviewer uses the same pinned model family in independent contexts.',
                             'Unknown usage excludes full cost claims; known-sample medians are labeled.',
                             'Cached search alone does not establish current primary-source verification.',
-                            'Post-deadline application checks do not reverse workflow timeouts.']}
+                            'Post-deadline application checks do not reverse workflow timeouts.'] +
+                           (['User replaced detailed human spotchecks, including critical follow-ups, with blanket approval. '
+                             'Human per-requirement grades and preferences were not measured.']
+                            if lock.get('human_review_mode') == 'blanket_approval' else [])}
 
 
 def collect_workspace(workspace, destination):
@@ -849,7 +879,10 @@ def campaign_report(output, config):
     result = {'campaign_id': config['campaign_id'], 'planned_primary': 48,
               'primary_completed': sum(r.get('workflow_state') == 'COMPLETE' for r in rows),
               'unblinded': unblinded,
-              'conclusion_status': 'PASS' if len(rows) == 48 and isolation and unblinded else 'NOT_VERIFIED',
+              'conclusion_status': 'PASS' if len(rows) == 48 and isolation and unblinded and
+                  review.get('human_review_mode') != 'blanket_approval' else 'NOT_VERIFIED',
+              'human_spotcheck_status': 'PASS' if unblinded and
+                  review.get('human_review_mode') != 'blanket_approval' else 'NOT_VERIFIED',
               'isolation_status': 'PASS' if isolation else 'NOT_VERIFIED',
               'review_status': review, 'preflight': None,
               'note': 'No architecture-quality or resource improvement conclusion before review lock.'}
@@ -885,14 +918,17 @@ def campaign_report(output, config):
                                            for a in result['technical_attempts']),
         'total_end_to_end_cost_status': 'NOT_VERIFIED'}
     result['usage_complete'] = bool(rows) and all(r.get('telemetry', {}).get('usage') for r in rows)
-    if result['conclusion_status'] == 'PASS':
+    if len(rows) == 48 and isolation and unblinded:
         result['comparison'] = comparison_summary(output, rows)
     write_json(output / 'report.json', result)
     text = ('# Architecture comparison campaign\n\n'
             f'Primary runs recorded: {len(rows)}/48.\n\n'
             f'Comparison conclusion: **{result["conclusion_status"]}**. '
-            'Version key remains sealed until 24 agent reviews and eight human sample reviews '
-            'are locked and all critical findings are reviewed.\n\n')
+            + ('Version key opened after locked agent reviews and explicit blanket human approval. '
+               'Detailed human spotchecks remain NOT_VERIFIED.\n\n' if unblinded and
+               review.get('human_review_mode') == 'blanket_approval' else
+               'Reviews locked; version key opened.\n\n' if unblinded else
+               'Version key remains sealed until the required reviews are locked.\n\n'))
     text += f'Technical attempts outside primary runs: {len(result["technical_attempts"])}. Details are retained in report.json.\n\n'
     text += ('Known technical worker tokens (may be a lower bound): ' +
              str(result['resource_scope']['known_technical_worker_tokens']) + '\n\n')
@@ -1904,6 +1940,9 @@ def lock_reviews(output):
     lock = {'agent_reviews': counts['agent'], 'human_reviews': counts['human'],
             'critical_reviews_pending': 0, 'locked': True, 'artifact_sha256': artifacts,
             'conclusion_sha256': sha256(output / 'private/conclusion-inputs.json')}
+    approval = output / 'reviews/human-approval.json'
+    if approval.exists() and counts['human'] == 0:
+        lock.update(human_review_mode='blanket_approval', human_approval_sha256=sha256(approval))
     if not verified_review_lock(output, lock):
         raise ValueError('Review lock refused: incomplete, duplicated, changed or invalid review evidence')
     write_json(output / 'reviews/lock.json', lock)
@@ -1921,7 +1960,7 @@ def main(argv=None):
     parser.add_argument('--reprocess-pilots', action='store_true',
                         help='Reinterpret existing pilot logs without new model calls')
     parser.add_argument('--judge', action='store_true', help='Run one isolated blind reviewer per frozen pair')
-    parser.add_argument('--lock-reviews', action='store_true', help='Lock completed agent and actual human review evidence')
+    parser.add_argument('--lock-reviews', action='store_true', help='Lock completed agent reviews and detailed human evidence or explicit blanket approval')
     args = parser.parse_args(argv)
     if (args.judge or args.lock_reviews) and args.command != 'review-pack':
         parser.error('--judge and --lock-reviews only apply to review-pack')

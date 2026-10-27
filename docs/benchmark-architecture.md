@@ -194,6 +194,24 @@ preference. Human templates are deliberately incomplete. They cannot count as
 reviews until the person supplies an actual assessment; any critical pair outside
 the original eight becomes an additional required human check.
 
+
+### Explicit replacement of human spotchecks
+
+A user can explicitly replace the requested detailed human reviews with blanket
+approval. Record the direct statement in external reviews/human-approval.json;
+bind it to the frozen review index and every pair's input hashes. This record
+must state that detailed human assessment is NOT_VERIFIED and contain no
+invented preference. Do not create human review files from a blanket approval.
+
+The lock still requires all 24 valid independent agent reviews and unchanged
+primary/review inputs. Critical agent findings remain in the comparison. The
+approval covers the human follow-ups; it does not establish that they were
+independently examined. Unblinding may proceed after the adjusted lock, while
+the overall original-protocol conclusion and human spotcheck status remain
+NOT_VERIFIED. Reports label the comparison as agent reviewed with blanket human
+approval, including this protocol deviation. The default detailed-review gate
+remains unchanged when no explicit approval record exists.
+
 After locking, the report joins the private version key and reports per-task
 repetitions, severe findings, acceptance, blind preferences and measured medians
 and ranges. Architecture acceptance and timely delivery are separate. Unknown
