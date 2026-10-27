@@ -277,6 +277,8 @@ def run_process(command, cwd, environment, logs, timeout):
 def anonymize(text, roots, revisions):
     for root in sorted(roots, key=len, reverse=True):
         text = text.replace(str(root), '[trial]')
+    text = re.sub(r'/(?:Users|private|tmp)/[^\s"\'<>;)]+', '[local-file]', text)
+    text = re.sub(r'(runs/|benchmark-v3-)[a-f0-9]{16}', r'\1[run]', text)
     for revision in revisions:
         text = text.replace(revision, '[revision]')
     text = re.sub(r'(?i)(oci[- ]architecture[- ]designer[/\s]*(?:v|version\s*)?)0\.(?:1\.3|2\.0)',
@@ -313,6 +315,84 @@ def blind_check_json(text, operator=False):
         value['review_provenance_note'] = ('Independent operator evidence does not establish that the '
             'candidate performed or knew these checks when making an earlier claim. Timeliness is assessed separately.')
     return json.dumps(value, indent=2, ensure_ascii=False)
+
+
+def _retrieved_web_fragments(value):
+    """Keep contiguous web page headers/numbered lines; exclude mixed/truncated wrappers."""
+    header = r'(?m)^[^\n]{1,300} \(https://[^\n)]+\)\n[^\n]*Source:[^\n]*\n'
+    for match in re.finditer(header, value):
+        end = match.end()
+        lines = value[end:].splitlines(keepends=True)
+        count = 0
+        for line in lines:
+            if not re.match(r'^L\d+:', line) or re.search(r'…\d+ tokens truncated…', line):
+                break
+            end += len(line)
+            count += 1
+        if count:
+            yield value[match.start():end].rstrip('\n')
+
+
+def archived_web_sources(source):
+    """Extract retrieved page text from immutable private traces, without another fetch."""
+    manifest = source / 'private-session-manifest.json'
+    captures, seen = [], set()
+    if manifest.exists():
+        for snapshot in json.loads(manifest.read_text()).get('snapshots', []):
+            path = source / snapshot['file']
+            if (path.is_symlink() or not path.is_file() or
+                    not path.resolve().is_relative_to((source / 'private-sessions').resolve()) or
+                    sha256(path) != snapshot['sha256']):
+                raise ValueError('Private source-capture checksum or path changed')
+            events, _ = read_events(path)
+            web_calls = {e.get('payload', {}).get('call_id') for e in events
+                         if e.get('payload', {}).get('type') == 'custom_tool_call' and
+                         ('web__run' in e['payload'].get('input', '') or
+                          e['payload'].get('name', '') in {'web.run', 'web__run'})}
+            for event in events:
+                payload = event.get('payload', {})
+                if (payload.get('type') != 'custom_tool_call_output' or
+                        payload.get('call_id') not in web_calls):
+                    continue
+                pending = [payload.get('output', [])]
+                while pending:
+                    value = pending.pop()
+                    if isinstance(value, dict):
+                        pending.extend(value.values())
+                    elif isinstance(value, list):
+                        pending.extend(value)
+                    elif isinstance(value, str):
+                        try:
+                            parsed = json.loads(value)
+                        except (ValueError, TypeError):
+                            parsed = None
+                        if isinstance(parsed, (dict, list)):
+                            pending.append(parsed)
+                        else:
+                            # Code-mode truncation can merge several outputs. Only complete
+                            # JSON lines are decoded; raw wrapper text is never copied.
+                            for line in value.splitlines():
+                                try:
+                                    nested = json.loads(line)
+                                except ValueError:
+                                    continue
+                                if isinstance(nested, (dict, list)):
+                                    pending.append(nested)
+                            for fragment in _retrieved_web_fragments(value):
+                                digest = hashlib.sha256(fragment.encode()).hexdigest()
+                                identity = (payload.get('call_id'), digest)
+                                if identity in seen:
+                                    continue
+                                seen.add(identity)
+                                captures.append({'content': fragment, 'content_sha256': digest,
+                                    'observed_at': event.get('timestamp'),
+                                    'source_session_sha256': snapshot['sha256'],
+                                    'source_call_id': payload.get('call_id')})
+    return {'status': 'PASS' if captures else 'NOT_VERIFIED', 'captures': captures,
+            'method': 'Actual retrieved line-numbered web page fragments extracted from checksum-verified private session snapshots. '
+                      'This preserves what the worker received, including cached/truncated retrieval; it is not '
+                      'a fresh fetch, a complete HTML mirror or proof that a claim is supported. Other tool output '
+                      'and authentication/configuration files are excluded.'}
 
 
 def review_documents(source):
@@ -1618,6 +1698,7 @@ def build_review_pack(output, config):
         inputs = [source / name for name in ('answer.md', 'file-evidence.json', 'application-evidence.json')]
         inputs += sorted((source / 'operator-evidence').glob('*.json'))
         inputs += [path for path, _, _ in review_documents(source)]
+        verify_blind_text(anonymize(json.dumps(archived_web_sources(source)), roots, revisions), revisions)
         for path in inputs:
             if path.exists():
                 verify_blind_text(anonymize(path.read_text(), roots, revisions), revisions)
@@ -1661,6 +1742,8 @@ def build_review_pack(output, config):
                     raise ValueError('Operator evidence must be a local JSON file')
                 clean = anonymize(blind_check_json(check.read_text(), operator=True), roots, list(config['revisions'].values()))
                 (folder / (label + '-operator-' + check.name)).write_text(clean)
+            retrieved = anonymize(json.dumps(archived_web_sources(source), indent=2), roots, revisions)
+            (folder / (label + '-retrieved-sources.json')).write_text(retrieved)
             snapshots = []
             for snapshot, relative, kind in review_documents(source):
                 name = label + f'-source-{len(snapshots)+1:03}' + snapshot.suffix.lower()

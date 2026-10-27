@@ -25,6 +25,53 @@ class Campaign(unittest.TestCase):
     def setUp(self):
         self.assertIsNotNone(BENCH, 'Architecture campaign runner is not implemented')
 
+
+    def test_blind_native_evidence_hides_local_files_and_cross_run_paths(self):
+        local_root = '/' + 'Users/'
+        raw = (f'Saved {local_root}example/Downloads/benchmark-v3-602e6fc7f0db5f23-move.drawio; '
+               'compare runs/602e6fc7f0db5f23/application/reopened.png. '
+               'Official source https://docs.oracle.com/iaas/toolkit and Icons/source-cell stay visible.')
+        clean = BENCH.anonymize(raw, [], [])
+        self.assertNotIn(local_root, clean)
+        self.assertNotIn('602e6fc7f0db5f23', clean)
+        self.assertIn('https://docs.oracle.com/iaas/toolkit', clean)
+        self.assertIn('Icons/source-cell', clean)
+
+    def test_blind_source_capture_uses_actual_web_output_without_private_tool_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            session = root / 'profile/sessions/trace.jsonl'
+            session.parent.mkdir(parents=True)
+            body = ('Networking (https://docs.oracle.com/network)\n'
+                    '[wordlim: 200] Content type: text/html; Source: open(...); Total lines: 2\n'
+                    'L0: Regional subnets\nL1: Workload placement is a separate decision.')
+            payload = {'type': 'custom_tool_call_output', 'call_id': 'web-call',
+                       'output': [{'type': 'input_text', 'text': json.dumps({'i': 0, 'value': body})},
+                                  {'type': 'input_text', 'text': json.dumps({'value': {
+                                      'output': 'synthetic private tool output must not reach reviewer'}})}]}
+            payload['output'].append({'type': 'input_text',
+                'text': 'Warning: truncated output\n\n' +
+                        json.dumps({'private': 'synthetic private tool output must not reach reviewer'}) +
+                        '\n' + body + '\nL2: partial …34 tokens truncated… synthetic private tool output must not reach reviewer\n' +
+                        json.dumps({'private': 'synthetic private tool output must not reach reviewer'})})
+            session.write_text(json.dumps({'payload': {'type': 'custom_tool_call', 'call_id': 'web-call', 'name': 'exec', 'input': 'tools.web__run(...)'}}) + '\n' + json.dumps({'timestamp': '2026-10-26T10:00:00Z', 'payload': payload}) + '\n')
+            BENCH.archive_profile_sessions(root / 'profile', root / 'run')
+            session.write_text(session.read_text() + '{"type":"follow-up"}\n')
+            BENCH.archive_profile_sessions(root / 'profile', root / 'run')
+            result = BENCH.archived_web_sources(root / 'run')
+            self.assertEqual(result['status'], 'PASS')
+            self.assertEqual(len(result['captures']), 1)
+            self.assertEqual(result['captures'][0]['content'], body)
+            self.assertEqual(result['captures'][0]['observed_at'], '2026-10-26T10:00:00Z')
+            self.assertEqual(result['captures'][0]['content_sha256'],
+                             BENCH.hashlib.sha256(body.encode()).hexdigest())
+            self.assertNotIn('synthetic private tool output', json.dumps(result))
+            self.assertEqual(BENCH.archived_web_sources(root / 'missing')['status'], 'NOT_VERIFIED')
+            manifest = json.loads((root / 'run/private-session-manifest.json').read_text())
+            (root / 'run' / manifest['snapshots'][0]['file']).write_text('changed')
+            with self.assertRaisesRegex(ValueError, 'checksum'):
+                BENCH.archived_web_sources(root / 'run')
+
     def test_private_session_archive_excludes_auth_config_and_symlinks(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -156,7 +156,13 @@ The pack includes saved worker QA reports and source registers, plus independent
 catalog/read observations. Primary text, JSON and SVG design outputs are retained
 even when the final message mainly links to attachments. SVG source is content
 evidence and does not establish native opening or verified rendering. It excludes copies matching candidate instruction
-files. Source facts and access dates remain visible; execution metrics in QA JSON
+files. The pack also extracts actual line-numbered web results from checksum-verified
+private session snapshots, deduplicated across appended snapshots. These captures
+retain retrieval time and content hashes while excluding other tool output. They
+represent the cached or partial text the worker received, not a new fetch, full
+HTML mirror or automatic confirmation of a service claim. Missing captures remain
+NOT_VERIFIED; a worker source register alone is not independent source verification.
+Source facts and access dates remain visible; execution metrics in QA JSON
 are hidden. Operator checks do not prove that the candidate performed or knew
 those checks when making an earlier claim. Useful skill application is judged
 from the decisions and artifact, separately from observed reading.
