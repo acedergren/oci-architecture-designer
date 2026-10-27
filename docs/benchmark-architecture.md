@@ -287,3 +287,50 @@ requires the code-mode host and binds both executable and helper hashes to the
 pilot gate. Main execution rejects another engine, and a missing code-mode host
 stops the campaign as an infrastructure failure even when the model returns a
 normal final answer. A copied runtime must pass its own functional pilots.
+
+### Recorded execution milestone — 27 October 2026
+
+The replacement campaign using the complete frozen vendor CLI has recorded all
+48 primary workflows after two functional protocol-2 pilots. All 48 runs have
+matching model/effort observations. Execution status is 36 PASS and 12 TIMEOUT;
+these are process/workflow outcomes, not architecture acceptance grades.
+
+Independent computer-use checks cover both original and edited deliveries:
+
+| Native check | PASS | FAIL | NOT_VERIFIED |
+| --- | ---: | ---: | ---: |
+| Original file opening/rendering | 12 | 0 | 0 |
+| Original move/save/close/reopen | 11 | 1 | 0 |
+| Edited file opening/rendering | 8 | 1 | 3 |
+| Edited move/save/close/reopen | 7 | 1 | 4 |
+
+All twelve Draw.io move tests passed. PowerPoint movement passed for five
+originals and one edited delivery; one original and its edited counterpart failed
+actual connector endpoint translation despite retaining shape references. A
+corrupt edited PowerPoint file was rejected by the application, and three edited
+presentations were absent. The twenty native-saved test copies all pass their
+pinned format validators, illustrating why parser success cannot establish
+interactive editability. Visual collisions remain recorded independently.
+
+These operator checks occurred after the workflow deadlines. They do not replace
+or promote the twelve original TIMEOUT outcomes. Host UI interruptions, operator
+waiting and worker generation are recorded separately. No human diagram
+corrections were applied to the frozen deliverables.
+
+Fifty private contexts (48 main runs and two pilots) have checksum-verified raw
+session archives outside Git, with no remaining temporary authentication copies.
+The blind pack has 24 pairs, 785 text files and 103 native screenshots. A text
+audit found no candidate-version, pinned-commit or local-path leaks. The frozen
+review index hash is
+48ee4d703f3ad0eab8f058f4a36933e4c34c057de9ca3e600b28d61407390325.
+
+The independent review sequence is running, and the eight actual human sample
+reviews remain pending. The generated report still says NOT_VERIFIED and refuses
+unblinding. No quality winner, complete resource-efficiency result or corrected
+candidate is claimed. Original attempts and earlier infrastructure failures
+remain separate evidence.
+
+Measurement support at commit 00d5116 passes 88 tests and package checks. It
+retains primary design attachments and actual retrieved source fragments while
+excluding mixed/truncated tool wrappers and local paths from blind inputs.
+No installation, push or publication was performed.
