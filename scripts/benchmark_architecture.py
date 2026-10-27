@@ -61,6 +61,8 @@ def cli_runtime_identity(codex):
 def load_config(path):
     path = Path(path).resolve()
     config = json.loads(path.read_text())
+    if config.get('schema_version') == 2:
+        return load_followup_config(path, config)
     if config.get('schema_version') != 1:
         raise ValueError('Unsupported campaign schema')
     requests = json.loads((path.parent / config['requests']).read_text())
@@ -70,6 +72,49 @@ def load_config(path):
         raise ValueError('Campaign must contain eight distinct tasks and three repetitions')
     if set(config['revisions']) != {'before', 'after'}:
         raise ValueError('Campaign requires before and after revisions')
+    return config
+
+
+def load_followup_config(path, settings):
+    """A bounded rerun inherits unchanged tasks and the parent candidate as baseline."""
+    allowed = {'schema_version', 'campaign_id', 'seed', 'primary_config', 'parent_output',
+               'parent_lock_sha256', 'candidate_revision', 'scenario_ids'}
+    if set(settings) != allowed:
+        raise ValueError('Follow-up configuration requires the documented fields only')
+    parent = (path.parent / settings['parent_output']).resolve()
+    lock_path = parent / 'reviews/lock.json'
+    if (not lock_path.is_file() or lock_path.is_symlink() or
+            sha256(lock_path) != settings['parent_lock_sha256'] or
+            not verified_review_lock(parent, json.loads(lock_path.read_text()))):
+        raise ValueError('Follow-up requires an unchanged locked parent comparison')
+    primary_path = (path.parent / settings['primary_config']).resolve()
+    raw = json.loads(primary_path.read_text())
+    if raw.get('schema_version') != 1:
+        raise ValueError('Follow-up must refer directly to a primary configuration')
+    config = load_config(primary_path)
+    gate = parent / 'pilot-gate.json'
+    if not gate.is_file() or json.loads(gate.read_text()).get('config_sha256') != config_digest(config):
+        raise ValueError('Follow-up primary configuration differs from the measured parent')
+    selected = settings['scenario_ids']
+    known = {s['id'] for s in config['scenarios']}
+    if (not isinstance(selected, list) or not selected or
+            any(not isinstance(s, str) for s in selected) or
+            len(selected) != len(set(selected)) or not set(selected) <= known):
+        raise ValueError('Follow-up requires distinct known affected tasks')
+    revision = settings['candidate_revision']
+    if not isinstance(revision, str) or not re.fullmatch(r'[0-9a-f]{40}', revision):
+        raise ValueError('Follow-up candidate must be a full pinned commit')
+    if revision == config['revisions']['after']:
+        raise ValueError('Follow-up candidate must differ from the parent candidate')
+    if not settings['campaign_id'] or settings['campaign_id'] == config['campaign_id']:
+        raise ValueError('Follow-up requires a distinct campaign identity')
+    config['followup'] = {'parent_output': str(parent), 'parent_lock_sha256': sha256(lock_path),
+                          'primary_config_sha256': sha256(primary_path),
+                          'parent_cli_runtime_identity': json.loads(gate.read_text()).get('cli_runtime_identity'),
+                          'scope': 'Affected-task execution rerun; independent of the frozen primary comparison'}
+    config['revisions'] = {'before': config['revisions']['after'], 'after': revision}
+    config['campaign_id'], config['seed'] = settings['campaign_id'], settings['seed']
+    config['scenarios'] = [s for s in config['scenarios'] if s['id'] in selected]
     return config
 
 
@@ -967,7 +1012,40 @@ def review_resource_summary(output):
                   else 'NOT_VERIFIED'}
 
 
+def followup_report(output, config):
+    """Execution outcomes never substitute for architecture or native acceptance."""
+    output = Path(output)
+    rows = [json.loads(p.read_text()) for p in sorted((output / 'runs').glob('*/result.json'))]
+    result = {'campaign_id': config['campaign_id'], 'followup': config['followup'],
+              'revisions': config['revisions'], 'planned_workflows': len(make_schedule(config)),
+              'workflows_completed': sum(r.get('workflow_state') == 'COMPLETE' for r in rows),
+              'unblinded': False, 'architecture_comparison_status': 'NOT_VERIFIED',
+              'versions': {}, 'native_evidence': {}}
+    for arm in ('before', 'after'):
+        selected = [r for r in rows if r['arm'] == arm]
+        resources = resource_summary(selected)
+        # No delivery grades have been established in this execution-only summary.
+        resources['accepted'] = None
+        resources['tokens_per_accepted_task'] = None
+        resources['generation_seconds_per_accepted_task'] = None
+        result['versions'][arm] = {'resources': resources,
+            'execution_status_counts': dict(Counter(r.get('status', 'NOT_VERIFIED') for r in selected))}
+    for path in sorted((output / 'runs').glob('*/application-evidence.json')):
+        result['native_evidence'][path.parent.name] = {'file': str(path.relative_to(output)),
+                                                       'sha256': sha256(path)}
+    result['resource_scope'] = {'controller_tokens': None, 'active_operator_seconds': None,
+                                'end_to_end_cost_status': 'NOT_VERIFIED'}
+    write_json(output / 'report.json', result)
+    (output / 'report.md').write_text('# Follow-up execution\n\n' +
+        f'Workflows recorded: {result["workflows_completed"]}/{result["planned_workflows"]}.\n\n' +
+        'Architecture comparison: NOT_VERIFIED. Review the saved artifacts and separate native checks. '
+        'Execution PASS does not establish task acceptance. The primary comparison is unchanged.\n')
+    return result
+
+
 def campaign_report(output, config):
+    if config.get('followup'):
+        return followup_report(output, config)
     output = Path(output)
     rows = [json.loads(p.read_text()) for p in sorted((output / 'runs').glob('*/result.json'))]
     lock = output / 'reviews/lock.json'
@@ -1399,6 +1477,8 @@ def _pilot(args, config, arm, root):
 
 def execute_command(args, config):
     output = args.output.resolve()
+    if config.get('followup') and cli_runtime_identity(args.codex) != config['followup']['parent_cli_runtime_identity']:
+        raise ValueError('Follow-up must use the same parent CLI runtime; no automatic replacement')
     freeze_rubric(output)
     if args.command == 'preflight':
         if args.reprocess_pilots:
@@ -2060,12 +2140,19 @@ def main(argv=None):
         parser.error('Judge and lock are separate steps')
     config = load_config(args.config)
     output = args.output.resolve()
+    if config.get('followup'):
+        parent = Path(config['followup']['parent_output'])
+        if output.is_relative_to(parent) or parent.is_relative_to(output):
+            raise ValueError('Follow-up results must be separate from the primary evidence')
+        if args.command == 'review-pack':
+            raise ValueError('Follow-up execution uses separate scenario/native acceptance; the primary 24-pair review gate is unchanged')
     if output.is_relative_to(ROOT.resolve()):
         raise ValueError('Evidence must be outside the distributed plugin')
     output.mkdir(parents=True, exist_ok=True)
     if args.command == 'report':
         result = campaign_report(output, config)
-        print(json.dumps({k: result[k] for k in ('primary_completed', 'conclusion_status', 'unblinded')}))
+        keys = ('workflows_completed', 'architecture_comparison_status', 'unblinded') if config.get('followup') else ('primary_completed', 'conclusion_status', 'unblinded')
+        print(json.dumps({k: result[k] for k in keys}))
         return 0
     return execute_command(args, config)
 

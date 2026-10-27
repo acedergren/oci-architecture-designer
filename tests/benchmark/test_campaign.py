@@ -26,6 +26,122 @@ class Campaign(unittest.TestCase):
         self.assertIsNotNone(BENCH, 'Architecture campaign runner is not implemented')
 
 
+    def followup_fixture(self, root):
+        config_file = root / 'primary-config.json'
+        source = json.loads((ROOT / 'tests/benchmark/campaign.json').read_text())
+        source['requests'] = str(ROOT / 'tests/fixtures/architecture-requests.json')
+        BENCH.write_json(config_file, source)
+        primary = BENCH.load_config(config_file)
+        parent = root / 'primary'
+        index = []
+        (parent / 'reviews').mkdir(parents=True)
+        (parent / 'reviews/rubric.md').write_text('Synthetic fixed rubric')
+        candidate = {'task_status': 'PASS', 'mandatory_checks': [{'status': 'PASS', 'evidence': 'Fixture'}],
+                     'qa': {k: {'status': 'NOT_VERIFIED', 'method': 'Synthetic lock fixture'}
+                            for k in BENCH.QA + BENCH.DESIGN_QA}}
+        for i in range(24):
+            folder = parent / f'reviews/packs/pair-{i:02}'
+            folder.mkdir(parents=True)
+            (folder / 'A.md').write_text('Synthetic A')
+            (folder / 'B.md').write_text('Synthetic B')
+            row = {'pair_id': folder.name, 'scenario_id': primary['scenarios'][i % 8]['id'],
+                   'input_sha256': BENCH.review_inputs(folder)}
+            index.append(row)
+            for kind in (('agent', 'human') if i < 8 else ('agent',)):
+                BENCH.write_json(parent / f'reviews/{kind}/{folder.name}.json',
+                    dict(row, reviewer_kind=kind, candidates={'A': candidate, 'B': candidate},
+                         findings=[], preference='TIE'))
+        BENCH.write_json(parent / 'reviews/index.json', {'pairs': index})
+        BENCH.write_json(parent / 'reviews/human-sample.json', {'pairs': index[:8]})
+        (parent / 'reviews/rubric.md').write_text('Synthetic fixed rubric')
+        BENCH.write_json(parent / 'private/conclusion-inputs.json', BENCH.conclusion_inputs(parent))
+        BENCH.lock_reviews(parent)
+        BENCH.write_json(parent / 'pilot-gate.json', {'config_sha256': BENCH.config_digest(primary),
+            'cli_runtime_identity': {'executable_sha256': 'frozen-cli', 'code_mode_host_sha256': 'frozen-helper'}})
+        settings = {'schema_version': 2, 'campaign_id': 'confirmed-pptx-fix', 'seed': 2701026,
+                    'primary_config': str(config_file), 'parent_output': str(parent),
+                    'parent_lock_sha256': BENCH.sha256(parent / 'reviews/lock.json'),
+                    'candidate_revision': 'f' * 40, 'scenario_ids': ['native-pptx']}
+        path = root / 'followup.json'
+        BENCH.write_json(path, settings)
+        return path, settings, primary
+
+    def test_followup_repeats_only_affected_unchanged_requests_against_parent_candidate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path, settings, primary = self.followup_fixture(Path(tmp))
+            config = BENCH.load_config(path)
+            schedule = BENCH.make_schedule(config)
+            self.assertEqual(len(schedule), 6)
+            self.assertEqual({r['repetition'] for r in schedule}, {1, 2, 3})
+            self.assertEqual({r['scenario_id'] for r in schedule}, {'native-pptx'})
+            self.assertEqual(config['revisions'], {'before': primary['revisions']['after'], 'after': 'f' * 40})
+            self.assertEqual(config['scenarios'], [primary['scenarios'][-1]])
+            self.assertEqual((config['model'], config['reasoning_effort'], config['timeout_seconds']),
+                             ('gpt-6.1-sol', 'xhigh', 1200))
+            self.assertEqual(len(BENCH.make_schedule(primary)), 48)
+
+    def test_followup_requires_unchanged_locked_parent_and_known_affected_tasks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path, settings, _ = self.followup_fixture(root)
+            lock_path = root / 'primary/reviews/lock.json'
+            original = lock_path.read_bytes()
+            BENCH.write_json(lock_path, {'locked': False})
+            with self.assertRaisesRegex(ValueError, 'locked parent'):
+                BENCH.load_config(path)
+            lock_path.write_bytes(original)
+            for invalid in [dict(settings, parent_lock_sha256='0' * 64),
+                            dict(settings, scenario_ids=['invented-task']),
+                            dict(settings, scenario_ids=[]),
+                            dict(settings, candidate_revision='HEAD')]:
+                BENCH.write_json(path, invalid)
+                with self.assertRaises(ValueError):
+                    BENCH.load_config(path)
+            BENCH.write_json(path, settings)
+            BENCH.write_json(root / 'primary/pilot-gate.json', {'config_sha256': 'changed-prompt'})
+            with self.assertRaisesRegex(ValueError, 'primary configuration'):
+                BENCH.load_config(path)
+
+    def test_followup_refuses_other_cli_runtime_before_inference(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path, _, _ = self.followup_fixture(Path(tmp))
+            config = BENCH.load_config(path)
+            args = SimpleNamespace(output=Path(tmp) / 'followup-results', command='preflight',
+                                   reprocess_pilots=False, toolkits=Path(tmp), codex='fake-external-cli')
+            with patch.object(BENCH, 'cli_runtime_identity', return_value={'changed': True}), \
+                 patch.object(BENCH, '_pilot', side_effect=AssertionError('Do not infer with another runtime')):
+                with self.assertRaisesRegex(ValueError, 'parent CLI runtime'):
+                    BENCH.execute_command(args, config)
+
+    def test_followup_cannot_write_into_parent_or_reinterpret_its_blind_gate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path, settings, _ = self.followup_fixture(root)
+            for out in [root, Path(settings['parent_output']), Path(settings['parent_output']) / 'child']:
+                with self.assertRaisesRegex(ValueError, 'separate from the primary evidence'):
+                    BENCH.main(['report', '--config', str(path), '--output', str(out)])
+            with self.assertRaisesRegex(ValueError, 'primary 24-pair review gate is unchanged'):
+                BENCH.main(['review-pack', '--config', str(path), '--output', str(root / 'followup')])
+
+    def test_followup_report_keeps_execution_and_unchecked_architecture_separate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path, _, _ = self.followup_fixture(root)
+            config = BENCH.load_config(path)
+            out = root / 'followup-results'
+            BENCH.write_json(out / 'runs/example/result.json', {'run_id': 'example', 'arm': 'before',
+                'scenario_id': 'native-pptx', 'repetition': 1, 'workflow_state': 'COMPLETE',
+                'status': 'TIMEOUT', 'steps': [], 'telemetry': {'usage': None, 'usage_status': 'NOT_VERIFIED'}})
+            report = BENCH.campaign_report(out, config)
+            self.assertEqual(report['planned_workflows'], 6)
+            self.assertEqual(report['workflows_completed'], 1)
+            self.assertEqual(report['architecture_comparison_status'], 'NOT_VERIFIED')
+            self.assertFalse(report['unblinded'])
+            self.assertEqual(report['versions']['before']['execution_status_counts'], {'TIMEOUT': 1})
+            self.assertEqual(report['versions']['before']['resources']['usage_status'], 'NOT_VERIFIED')
+            self.assertIsNone(report['versions']['before']['resources']['tokens_per_accepted_task'])
+            self.assertIn('Follow-up execution', (out / 'report.md').read_text())
+
     def test_blind_native_evidence_hides_local_files_and_cross_run_paths(self):
         local_root = '/' + 'Users/'
         raw = (f'Saved {local_root}example/Downloads/benchmark-v3-602e6fc7f0db5f23-move.drawio; '

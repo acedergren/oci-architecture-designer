@@ -254,6 +254,38 @@ repeat affected pairs three times. Privacy/terms links are added only if relevan
 documents actually exist. No general diagram engine, OCI mutation or license
 change belongs to this campaign.
 
+## Bounded post-fix reruns
+
+After the comparison is locked, a schema-2 configuration can select affected
+original tasks for exactly three fresh matched repetitions. It must contain only:
+
+| Field | Value |
+| --- | --- |
+| `schema_version` | `2` |
+| `campaign_id` | A new, distinct identity |
+| `seed` | Recorded integer for the new randomized paired order |
+| `primary_config` | Path to the unchanged schema-1 campaign configuration |
+| `parent_output` | External directory containing the locked primary comparison |
+| `parent_lock_sha256` | SHA-256 of its `reviews/lock.json` |
+| `candidate_revision` | Full commit of the corrected candidate |
+| `scenario_ids` | Nonempty list of affected original task IDs |
+
+Use the same `preflight`, `run` and `report` commands with this configuration and
+a separate external result directory. The baseline is the parent's candidate
+revision; the new arm is the corrected commit. Questions, follow-up requests,
+model, effort, timeout and repetition count are inherited unchanged. The same
+complete CLI runtime and verified toolkits are required, with fresh pilots.
+Selecting only `native-pptx` schedules six workflows rather than another 48.
+
+This execution report retains raw evidence and native-check references, and
+leaves architecture comparison NOT_VERIFIED. Confirm the reproduced defect,
+requested model and unchanged reference view through separate scenario and native
+checks; process PASS cannot establish acceptance. The primary 24-pair blind gate
+is unchanged and is not reused for a smaller sample. Report the full runtime
+composition of the new commit, including other committed features; a current
+source candidate is not automatically an isolated patch to the measured version.
+Do not overwrite the parent report or discard failed rerun consumption.
+
 ## Current execution status
 
 The offline check includes the inherited 17 regressions and the new measurement
@@ -356,9 +388,10 @@ audit found no candidate-version, pinned-commit or local-path leaks. The frozen
 review index hash is
 48ee4d703f3ad0eab8f058f4a36933e4c34c057de9ca3e600b28d61407390325.
 
-The independent review sequence is running, and the eight actual human sample
-reviews remain pending. The generated report still says NOT_VERIFIED and refuses
-unblinding. No quality winner, complete resource-efficiency result or corrected
+The independent review sequence is running. The user explicitly replaced the
+detailed human sample with blanket approval. No per-pair human grades or
+preferences are inferred. Unblinding still requires all 24 valid agent reviews
+and the hash-bound approval; detailed human spotchecks remain NOT_VERIFIED. No quality winner, complete resource-efficiency result or corrected
 candidate is claimed. Original attempts and earlier infrastructure failures
 remain separate evidence.
 
