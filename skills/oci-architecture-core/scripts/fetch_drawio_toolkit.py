@@ -37,7 +37,19 @@ class OracleRedirects(urllib.request.HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
+def check_toolkit_response(data):
+    """An HTML error page is a retrieval failure, not a changed toolkit release."""
+    head = data[:8192].lstrip(b'\xef\xbb\xbf \t\r\n').lower()
+    if head.startswith((b'<!doctype html', b'<html', b'<head', b'<body', b'<title')):
+        detail = ' (Site Unavailable)' if b'site unavailable' in head else ''
+        raise ValueError(
+            f'DOWNLOAD_UNAVAILABLE: Received an HTML page{detail} instead of toolkit bytes. '
+            'Do not accept its hash or reindex it as a new toolkit. Retry the binary download '
+            'once, use an already verified local file, or request the official toolkit attachment.')
+
+
 def unpack(data, expected_hash):
+    check_toolkit_response(data)
     actual = hashlib.sha256(data).hexdigest()
     if actual != expected_hash:
         raise ValueError(f'Toolkit SHA-256 changed: {actual}. Verify the official source, reindex and review before accepting a new hash.')

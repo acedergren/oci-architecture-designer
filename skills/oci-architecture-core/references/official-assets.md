@@ -17,7 +17,9 @@ For draw.io output, use legitimately obtained official files from task inputs, a
 
 ## Runtime procedure
 
-For either format, reuse a verified local toolkit or run `python3 ../scripts/fetch_drawio_toolkit.py --cache-dir /path/to/task/cache/official-oci` relative to this references directory. The helper downloads only from Oracle over HTTPS, checks the archive hash, extracts only the three expected data files, and writes `toolkit-provenance.json`. It checks cached bytes again on reuse; use `--refresh` to retrieve again. Keep toolkit binaries out of plugin update/export ZIPs.
+Reuse a verified local toolkit. For Draw.io, run `python3 ../scripts/fetch_drawio_toolkit.py --cache-dir /path/to/task/cache/official-oci` relative to this references directory. For PowerPoint, use `fetch_pptx_toolkit.py` with the same arguments. The Draw.io helper downloads only from Oracle over HTTPS, checks the archive hash, extracts only the three expected data files, and writes `toolkit-provenance.json`. It checks cached bytes again on reuse; use `--refresh` to retrieve again. Keep toolkit binaries out of plugin update/export ZIPs.
+
+Fetch toolkit bytes with the format's binary download helper before asking for an attachment. A web-page reader's `Unsupported content-type` error for ZIP/PPTX does not establish that the Oracle download is unavailable. An HTML `Site Unavailable` page or `DOWNLOAD_UNAVAILABLE` means retrieval failed; it is not a new toolkit version and its hash must never be accepted. If execution is available, retry the binary helper once or reuse an already verified local file; then report the blocker and request the relevant official attachment. Keep TLS and checksum checks enabled. Filename, retrieval date and Last-Modified changes alone do not establish changed artwork.
 
 A checksum mismatch stops extraction: inspect the new official download, reindex and review its labels and geometry, then explicitly supply its reviewed SHA-256 with `--expected-sha256`. Do not silently retain stale cell IDs or disable verification. Record URL, retrieval time, hash, original labels, and selected source cells.
 

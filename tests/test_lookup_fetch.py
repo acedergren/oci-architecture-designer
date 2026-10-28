@@ -77,5 +77,50 @@ class FetchPptx(unittest.TestCase):
                 module.fetch(CORE / 'cache')
 
 
+class DownloadFailures(unittest.TestCase):
+    def test_html_site_unavailable_is_not_a_changed_toolkit_and_preserves_cache(self):
+        import fetch_drawio_toolkit as drawio
+        import fetch_pptx_toolkit as pptx
+        html = b'\xef\xbb\xbf \n<!DOCTYPE HTML><html><title>Site Unavailable</title></html>'
+        for module, filename in [(drawio, 'OCI-Style-Guide-for-Drawio.zip'),
+                                 (pptx, 'OCI_Icons.pptx')]:
+            class Response(io.BytesIO):
+                headers = {'Content-Type': 'text/html; charset=UTF-8'}
+                def geturl(self):
+                    return module.URL
+            class Opener:
+                def open(self, request, timeout):
+                    return Response(html)
+            for existing in (False, True):
+                with self.subTest(format=filename, existing=existing), tempfile.TemporaryDirectory() as tmp:
+                    target = Path(tmp) / filename
+                    if existing:
+                        target.write_bytes(b'previous cache bytes must survive failed refresh')
+                    with patch('urllib.request.build_opener', return_value=Opener()):
+                        with self.assertRaisesRegex(ValueError, 'DOWNLOAD_UNAVAILABLE') as caught:
+                            module.fetch(tmp, refresh=True)
+                    self.assertNotIn('SHA-256 changed', str(caught.exception))
+                    if existing:
+                        self.assertEqual(target.read_bytes(), b'previous cache bytes must survive failed refresh')
+                    else:
+                        self.assertFalse(target.exists())
+                    self.assertEqual(list(Path(tmp).glob('*provenance.json')), [])
+
+    def test_cached_html_is_rejected_even_if_its_hash_was_supplied(self):
+        import fetch_drawio_toolkit as drawio
+        import fetch_pptx_toolkit as pptx
+        html = b'<html><title>Site Unavailable</title></html>'
+        for module, filename in [(drawio, 'OCI-Style-Guide-for-Drawio.zip'),
+                                 (pptx, 'OCI_Icons.pptx')]:
+            with self.subTest(format=filename), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / filename
+                target.write_bytes(html)
+                with patch('urllib.request.build_opener', side_effect=AssertionError('No network for cached input')):
+                    with self.assertRaisesRegex(ValueError, 'DOWNLOAD_UNAVAILABLE'):
+                        module.fetch(tmp, expected_hash=hashlib.sha256(html).hexdigest())
+                self.assertEqual(target.read_bytes(), html)
+                self.assertEqual(list(Path(tmp).glob('*provenance.json')), [])
+
+
 if __name__ == '__main__':
     unittest.main()
