@@ -57,8 +57,9 @@ python3 -m unittest tests.test_lookup_fetch.DownloadFailures tests.test_lookup_f
 python3 scripts/check.py
 ```
 
-The complete offline check passed 97 tests and package checks with four skills
-and zero errors. This verifies response classification and preserved integrity
+The development-branch offline check passed 97 tests and package checks with
+four skills and zero errors. The bounded 0.2.1 release is tested separately; see
+[release verification](../release-0.2.1.md). This verifies response classification and preserved integrity
 checks, not availability from the reporter's environment or an improved
 architecture benchmark result. The published plugin is unchanged by this local
 source correction.
