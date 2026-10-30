@@ -14,7 +14,7 @@
     "websiteURL": "https://github.com/acedergren/oci-architecture-designer"
   },
   "name": "oci-architecture-designer",
-  "version": "0.2.1",
+  "version": "0.2.5",
   "description": "Design and review OCI workload architectures with requirement-based decisions, scoped primary references and editable Draw.io/PowerPoint output. Official toolkit binaries are not bundled.",
   "author": {
     "name": "Alexander Cedergren"
