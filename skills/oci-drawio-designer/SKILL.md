@@ -27,3 +27,5 @@ Use named mxfile pages, native containers/text and attached mxCell edges. Preser
 Run `python3 validate_drawio.py /path/to/result.drawio`. Exit 0 means structural checks passed; 1 means failure. Intentional annotation lines flagged as unattached require separate manual review and must not be mistaken for proven traffic paths.
 
 Open in draw.io, inspect every changed page and labels, export a preview and inspect it. Move a node, save and reopen: confirm its connector remains attached and follows the node. Retain the original deliverable separately from this test copy. Record opening, visual and editability checks independently; absent tools mean NOT_VERIFIED. Apply [QA](../architecture-qa/SKILL.md), deliver the native file and evidence.
+
+For independently hidden/locked detail or multiple exports, use [layered views](../oci-architecture-core/references/layered-views.md). Preserve complete container/icon ancestry, declare named views and saved visibility, and validate with optional `--views PATH`. Locks do not prove scoped preservation. Check actual Oracle Sans resolution and each exported view separately.
