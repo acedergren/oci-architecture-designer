@@ -54,7 +54,7 @@ def xml_bytes(element):
     return text.encode()
 
 
-def drawio(source, output, model):
+def drawio(source, output, model, layered_views=False):
     source_hash = digest(source)
     src_models = catalog.models(source)
     icons = dict(src_models)['Icons'].find('root')
@@ -130,10 +130,17 @@ def drawio(source, output, model):
     target.set('y', str(float(target.get('y', '0')) + 25))
     assert E.tostring(reference) == E.tostring(edited.findall('diagram')[1])
     edited_path = output.with_name('architecture-edited.drawio'); edited_path.write_bytes(xml_bytes(edited))
+    if layered_views:
+        layer_drawio(output, model)
+        edited_path.write_bytes(output.read_bytes())
+        tree = E.parse(edited_path)
+        tree.getroot().find(".//mxCell[@id='assumptions']").set('value', 'Operational note revised in scoped test')
+        edited_path.write_bytes(xml_bytes(tree.getroot()))
+        assert_drawio_preserved(output, edited_path, {'assumptions'})
     return assets, edited_path
 
 
-def pptx(source, output, model):
+def pptx(source, output, model, layered_views=False):
     source_hash = digest(source)
     with zipfile.ZipFile(source) as z:
         package = {name: z.read(name) for name in z.namelist() if not name.endswith('/')}
@@ -302,26 +309,145 @@ def pptx(source, output, model):
     edited['ppt/slides/slide24.xml'] = xml_bytes(moved)
     assert edited['ppt/slides/slide25.xml'] == package['ppt/slides/slide25.xml']
     edited_path = output.with_name('architecture-edited.pptx'); save(edited_path, edited)
+    if layered_views:
+        layer_pptx(output)
+        with zipfile.ZipFile(output) as archive:
+            base = {n: archive.read(n) for n in archive.namelist()}
+        edited = dict(base)
+        detail = E.fromstring(edited['ppt/slides/slide26.xml'])
+        note = next(t for t in detail.findall('.//a:t', NS) if (t.text or '').startswith('Proposed example'))
+        note.text = 'Operational note revised in scoped test'
+        edited['ppt/slides/slide26.xml'] = xml_bytes(detail)
+        with zipfile.ZipFile(edited_path, 'w', zipfile.ZIP_DEFLATED) as archive:
+            for name, data in edited.items(): archive.writestr(name,data)
+        assert all(edited[n] == base[n] for n in base if n != 'ppt/slides/slide26.xml')
     return assets, edited_path
+
+
+def layer_drawio(path, model):
+    tree = E.parse(path); root = tree.getroot().find('diagram/mxGraphModel/root')
+    def cell(node):
+        return node if node.tag == 'mxCell' else node.find('mxCell')
+    cells = {n.get('id'): cell(n) for n in root if cell(n) is not None}
+    cells['1'].set('value', 'Infrastructure'); cells['1'].set('style', 'locked=1;')
+    for identity, name, hidden in [('layer-flows','Flows',False), ('layer-notes','Annotations',True)]:
+        layer = E.Element('mxCell', id=identity, value=name, parent='0')
+        if hidden: layer.set('visible', '0')
+        root.insert(2 if identity == 'layer-flows' else 3, layer)
+    for flow in model['flows']:
+        cells[flow['id']].set('parent', 'layer-flows')
+    cells['assumptions'].set('parent', 'layer-notes')
+    cells['title'].set('value', 'Proposed synthetic — routes/security not deployed')
+    for node in root:
+        c = cell(node)
+        if c is None: continue
+        key = 'value' if node.tag == 'mxCell' else 'label'
+        if node.get(key):
+            style = re.sub(r'(?:^|;)fontFamily=[^;]*', '', c.get('style','')).strip(';')
+            c.set('style', style + ';fontFamily=Oracle Sans;')
+            value = re.sub(r'font-family\s*:[^;"\']+', 'font-family:Oracle Sans', node.get(key), flags=re.I)
+            value = re.sub(r'(<font\b[^>]*\bface=)(["\'])[^"\']*\2', r'\1"Oracle Sans"', value, flags=re.I)
+            node.set(key, value)
+    path.write_bytes(xml_bytes(tree.getroot()))
+    required = ['title','vcn'] + [n['id'] for n in model['nodes']] + [f['id'] for f in model['flows']]
+    views = []
+    for name, shown, hidden in [('overview',['1','layer-flows'],['layer-notes']), ('detail',['1','layer-flows','layer-notes'],[])]:
+        views.append(dict(id=name, purpose='Synthetic deployment '+name, status='proposed',
+                          visible_layer_ids=shown, hidden_layer_ids=hidden,
+                          required_cell_ids=required, omissions=[] if name=='detail' else [dict(model_id='operational-note',reason='Optional detail note')]))
+    manifest = dict(schema_version=1, pages=[dict(page_name='Architecture',
+        layers=[dict(id='1', name='Infrastructure', locked=True), dict(id='layer-flows', name='Flows', locked=False), dict(id='layer-notes', name='Annotations', locked=False)],
+        saved_view_id='overview', views=views)])
+    path.with_suffix('.views.json').write_text(json.dumps(manifest, indent=2)+'\n')
+    return manifest
+
+
+def assert_drawio_preserved(before, after, allowed_ids):
+    def protected(path):
+        doc = E.parse(path).getroot()
+        for root in doc.findall('diagram/mxGraphModel/root'):
+            for node in list(root):
+                if node.get('id') in allowed_ids:
+                    root.remove(node)
+        return E.canonicalize(E.tostring(doc, encoding='unicode'))
+    if protected(before) != protected(after):
+        raise AssertionError('Protected Draw.io content or ancestry changed')
+
+
+def layer_pptx(path):
+    with zipfile.ZipFile(path) as archive:
+        parts = {n: archive.read(n) for n in archive.namelist()}
+    detail = E.fromstring(parts['ppt/slides/slide24.xml'])
+    for tag in ('rPr','defRPr','endParaRPr'):
+        for properties in detail.findall('.//a:'+tag, NS):
+            latin = properties.find('a:latin', NS)
+            if latin is None: latin = E.SubElement(properties, '{'+A+'}latin')
+            latin.set('typeface', 'Oracle Sans')
+    for run in detail.findall('.//a:r', NS):
+        properties = run.find('a:rPr', NS)
+        if properties is None: properties = E.SubElement(run, '{'+A+'}rPr')
+        latin = properties.find('a:latin', NS)
+        if latin is None: latin = E.SubElement(properties, '{'+A+'}latin')
+        latin.set('typeface','Oracle Sans')
+    overview = copy.deepcopy(detail)
+    for view, slide in [('overview',overview),('detail',detail)]:
+        for text in slide.findall('.//a:t', NS):
+            if (text.text or '').startswith('Synthetic OCI architecture'):
+                text.text = 'Proposed synthetic — '+view+' — routes/security not deployed'
+    for shape in list(overview.find('p:cSld/p:spTree', NS)):
+        texts = ' '.join(n.text or '' for n in shape.findall('.//a:t', NS))
+        if texts.startswith('Proposed example'):
+            overview.find('p:cSld/p:spTree', NS).remove(shape)
+    parts['ppt/slides/slide24.xml'] = xml_bytes(overview)
+    parts['ppt/slides/slide26.xml'] = xml_bytes(detail)
+    original_rels = 'ppt/slides/_rels/slide24.xml.rels'
+    if original_rels in parts:
+        parts['ppt/slides/_rels/slide26.xml.rels'] = parts[original_rels]
+    presentation = E.fromstring(parts['ppt/presentation.xml'])
+    rels = E.fromstring(parts['ppt/_rels/presentation.xml.rels'])
+    ids = presentation.find('p:sldIdLst', NS)
+    new_rid = 'layerViewDetail'
+    while any(r.get('Id') == new_rid for r in rels): new_rid += 'X'
+    E.SubElement(rels, '{'+PKG+'}Relationship', Id=new_rid, Type=R+'/slide', Target='slides/slide26.xml')
+    new_id = str(max(int(n.get('id')) for n in ids)+1)
+    ids.insert(1, E.Element('{'+P+'}sldId', {'id':new_id, '{'+R+'}id':new_rid}))
+    types = E.fromstring(parts['[Content_Types].xml'])
+    E.SubElement(types, '{'+validate_pptx.CT+'}Override', PartName='/ppt/slides/slide26.xml',
+                 ContentType='application/vnd.openxmlformats-officedocument.presentationml.slide+xml')
+    parts['ppt/presentation.xml'] = xml_bytes(presentation)
+    parts['ppt/_rels/presentation.xml.rels'] = xml_bytes(rels)
+    parts['[Content_Types].xml'] = xml_bytes(types)
+    with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as archive:
+        for name, data in parts.items(): archive.writestr(name,data)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--toolkits', type=Path, required=True)
+    parser.add_argument('--toolkits', type=Path)
+    parser.add_argument('--drawio-source', type=Path)
+    parser.add_argument('--pptx-source', type=Path)
+    parser.add_argument('--layered-views', action='store_true')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
+    sources = {'drawio': args.drawio_source or (args.toolkits / 'OCI Architecture Diagram Toolkit v24.2.drawio' if args.toolkits else None),
+               'pptx': args.pptx_source or (args.toolkits / 'OCI_Icons.pptx' if args.toolkits else None)}
+    if not all(p and p.is_file() for p in sources.values()):
+        parser.error('Both verified sources are required via --toolkits or explicit source paths')
+    for kind, source in sources.items():
+        lookup(ROOT / 'skills/oci-architecture-core/references', 'Compute virtual machine', kind, digest(source))
     args.output.mkdir(parents=True, exist_ok=True)
     model = json.loads((ROOT / 'tests/fixtures/architecture.json').read_text())
     started = time.perf_counter()
     results = []
     for kind, source, build, validate in [
-        ('drawio', args.toolkits / 'OCI Architecture Diagram Toolkit v24.2.drawio', drawio, validate_drawio.check),
-        ('pptx', args.toolkits / 'OCI_Icons.pptx', pptx, validate_pptx.check)]:
+        ('drawio', sources['drawio'], drawio, validate_drawio.check),
+        ('pptx', sources['pptx'], pptx, validate_pptx.check)]:
         output = args.output / ('architecture.' + kind)
-        assets, edited = build(source, output, model)
+        assets, edited = build(source, output, model, layered_views=args.layered_views)
         reports = []
         for path in (output, edited):
-            report = validate(path)
+            sidecar = output.with_suffix('.views.json')
+            report = validate(path, sidecar) if kind == 'drawio' and args.layered_views else validate(path)
             report['file'] = path.name
             reports.append(report)
         evidence = {'schema_version': 1, 'file': output.name, 'model_id': model['model_id'],
@@ -331,9 +457,18 @@ def main():
                     'assumptions': model['assumptions'], 'icon_gaps': [],
                     'application_opening': 'NOT_VERIFIED', 'visual_review': 'NOT_VERIFIED',
                     'editability_review': 'NOT_VERIFIED', 'scoped_edit_preservation': 'PASS'}
+        if args.layered_views:
+            views_file = args.output / 'architecture.views.json'
+            evidence['presentation'] = dict(views_file=views_file.name, views_sha256=digest(views_file), exports=[],
+                slide_views=[dict(view_id='overview',slide_number=1),dict(view_id='detail',slide_number=2)] if kind=='pptx' else [])
+            for dimension in ('layer_view_integrity','scoped_edit_preservation','view_exports','typography'):
+                status = 'PASS' if dimension=='scoped_edit_preservation' else (
+                    reports[0]['layer_view_integrity'] if dimension=='layer_view_integrity' and kind=='drawio' else 'NOT_VERIFIED')
+                evidence['checks'].append(dict(dimension=dimension, method='fixed layered fixture', status=status,
+                    evidence='Structural checks/declarations only; application/export/font resolution checked separately'))
         (args.output / (kind + '-evidence.json')).write_text(json.dumps(evidence, indent=2) + '\n')
-        results.append({'format': kind, 'status': 'PASS' if all(r['file_integrity']=='PASS' for r in reports) else 'FAIL',
-                        'errors': [e for r in reports for e in r['errors']]})
+        results.append({'format': kind, 'status': 'PASS' if all(r['file_integrity']=='PASS' and r.get('layer_view_integrity') != 'FAIL' for r in reports) else 'FAIL',
+                        'errors': [e for r in reports for e in r['errors'] + r.get('layer_view_errors', [])]})
     summary = {'scenario': model['model_id'], 'results': results,
                'elapsed_seconds': round(time.perf_counter()-started, 3),
                'observed_tokens': None, 'usage_status': 'NOT_VERIFIED',

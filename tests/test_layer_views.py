@@ -137,6 +137,27 @@ class LayerViews(unittest.TestCase):
         extra = '<diagram name="Legacy"><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram>'
         self.assertEqual(self.run_graph(declaration(), extra=extra)['layer_view_integrity'], 'PASS')
 
+    def test_current_proposed_variants_switch_complete_nodes_and_flows(self):
+        layers = ('<mxCell id="current" value="Current" parent="0"/>'
+                  '<mxCell id="proposed" value="Proposed" parent="0" visible="0"/>')
+        nodes = ('<mxCell id="current-app" parent="current" vertex="1"/>'
+                 '<mxCell id="current-flow" parent="current" edge="1" source="current-app" target="db"/>'
+                 '<mxCell id="proposed-app" parent="proposed" vertex="1"/>'
+                 '<mxCell id="proposed-flow" parent="proposed" edge="1" source="proposed-app" target="db"/>')
+        body = BODY.replace('<mxCell id="vcn"', layers + '<mxCell id="vcn"') + nodes
+        m = declaration(); page = m['pages'][0]
+        page['layers'] += [dict(id='current', name='Current', locked=False),
+                           dict(id='proposed', name='Proposed', locked=False)]
+        current, proposed = page['views']
+        current['status'] = 'current'; current['visible_layer_ids'].append('current')
+        current['hidden_layer_ids'].append('proposed')
+        current['required_cell_ids'] = current['required_cell_ids'] + ['current-app','current-flow']
+        proposed['visible_layer_ids'].append('proposed'); proposed['hidden_layer_ids'].append('current')
+        proposed['required_cell_ids'] = proposed['required_cell_ids'] + ['proposed-app','proposed-flow']
+        self.assertEqual(self.run_graph(m, body)['layer_view_integrity'], 'PASS')
+        current['required_cell_ids'].append('proposed-app')
+        self.assertEqual(self.run_graph(m, body)['layer_view_integrity'], 'FAIL')
+
     def test_cli_sidecar_failure_emits_json_and_nonzero(self):
         self.run_graph()
         for content in ('{bad', 'null', '[]'):
