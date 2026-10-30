@@ -16,6 +16,7 @@
 
 A skills-only plugin for creating and reviewing editable Oracle Cloud Infrastructure architecture diagrams (`.drawio`) and PowerPoint slides (`.pptx`). No MCP server is required.
 
+[![CI](https://github.com/acedergren/oci-architecture-designer/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/acedergren/oci-architecture-designer/actions/workflows/ci.yml)
 ![version](https://img.shields.io/badge/version-0.1.1-blue)
 ![Agent Plugins](https://img.shields.io/badge/Agent%20Plugins-1.0-informational)
 ![Python](https://img.shields.io/badge/helpers-Python%203%20stdlib-3776AB)
@@ -112,13 +113,11 @@ The graph check covers IDs, parent cycles, references, and attached edge endpoin
 
 ## Development
 
-There is no build step, test suite or CI. These manual checks pass:
+There is no build step. An offline test suite lives in `tests/` and runs in CI (`.github/workflows/ci.yml`) on pull requests and pushes to `main`. Run it locally:
 
 ```sh
-python3 -m json.tool plugin.json >/dev/null
-python3 -m json.tool .codex-plugin/plugin.json >/dev/null
-python3 -m py_compile skills/oci-drawio-designer/validate_drawio.py \
-  skills/oci-architecture-core/scripts/catalog_assets.py
+python3 -m compileall -q skills tests
+python3 -m unittest discover -s tests -v
 ```
 
 ## Project structure
@@ -127,6 +126,10 @@ python3 -m py_compile skills/oci-drawio-designer/validate_drawio.py \
 oci-architecture-designer/
 ├── plugin.json                  # Agent Plugins 1.0 manifest, v0.1.1
 ├── .codex-plugin/plugin.json    # compatibility manifest
+├── .github/workflows/
+│   ├── ci.yml                   # syntax, unit tests, source ZIP artifact
+│   └── docs-webhook.yml         # notifies the docs bot on push/PR
+├── tests/test_ci.py             # offline package checks and helper smoke tests
 └── skills/
     ├── oci-architecture-core/   # SKILL.md, agents/, scripts/catalog_assets.py
     │   └── references/          # icon-map.json (47), toolkit-index.json, provenance.json, ...
