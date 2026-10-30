@@ -58,6 +58,18 @@ The graph check covers IDs, parent cycles, references, and attached edge endpoin
 
 ## Verification and limits
 
+GitHub Actions runs one offline validation job on pull requests, pushes to `main`,
+and manual dispatch. It checks Python syntax, JSON files, matching manifests,
+skill entrypoints, and helper smoke tests, then builds a downloadable source ZIP
+retained for seven days in the workflow run. No secrets,
+Oracle downloads, deployment, or plugin publication are required. Run the same
+checks locally with:
+
+```sh
+python3 -m compileall -q skills tests
+python3 -m unittest discover -s tests -v
+```
+
 The originating package passed manifest/schema checks, skill metadata validation, internal reference checks, source checksum and icon-locator checks, deterministic indexing against the official downloads, and positive/negative graph-integrity cases. The public export is additionally checked for matching manifests, valid references, and exclusion of private workspace identifiers and artwork.
 
 Full diagram generation, host automatic selection, PowerPoint opening, and rendered layout quality have not been verified end to end. The skills require those checks when the necessary source files and tools are available. A diagram is not evidence of deployment, production readiness, compliance, or Oracle certification.
