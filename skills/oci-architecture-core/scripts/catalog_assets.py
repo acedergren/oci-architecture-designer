@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Index user-provided Oracle toolkits as metadata; never download or emit artwork."""
+"""Index local official Oracle toolkits as metadata; never emit artwork."""
 import argparse
 import base64
 import hashlib
@@ -72,7 +72,11 @@ def drawio_index(path):
             return out
 
         for cell in cells:
-            if 'group' not in cell.get('style', '').split(';'):
+            # Visio-imported official groups often have no literal group style,
+            # and some top-level groups are UserObject wrappers.
+            explicit_group = 'group' in cell.get('style', '').split(';')
+            top_level_parent = cell.get('parent') == '1' and bool(children.get(cell.get('id')))
+            if not (explicit_group or top_level_parent):
                 continue
             nested = descendants(cell, set())
             label = clean(' '.join(x.get('value', '') for x in [cell, *nested]))

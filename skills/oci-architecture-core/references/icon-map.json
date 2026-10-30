@@ -1282,6 +1282,71 @@
         }
       ],
       "selection": "Inspect complete group and source color variant; keep label and geometry. Multiple candidates are not interchangeable without inspection."
+    },
+    {
+      "service_meaning": "Oracle Base Database",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1178",
+          "label": "Oracle Base Database"
+        }
+      ],
+      "powerpoint_candidates": [],
+      "selection": "Verified original group label and full descendant hierarchy against pinned drawio hash. Inspect source color variant. No exact AIDP or Autonomous AI Lakehouse icon established by this mapping."
+    },
+    {
+      "service_meaning": "Oracle Autonomous Database",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-1193",
+          "label": "Oracle Autonomous Database"
+        }
+      ],
+      "powerpoint_candidates": [],
+      "selection": "Verified original group label and full descendant hierarchy against pinned drawio hash. Inspect source color variant. No exact AIDP or Autonomous AI Lakehouse icon established by this mapping."
+    },
+    {
+      "service_meaning": "Oracle Integration",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2877",
+          "label": "Integration"
+        }
+      ],
+      "powerpoint_candidates": [],
+      "selection": "Verified original group label and full descendant hierarchy against pinned drawio hash. Inspect source color variant. No exact AIDP or Autonomous AI Lakehouse icon established by this mapping."
+    },
+    {
+      "service_meaning": "OCI Generative AI",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2338",
+          "label": "OCI Generative AI"
+        },
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-2370",
+          "label": "OCI Generative AI"
+        }
+      ],
+      "powerpoint_candidates": [],
+      "selection": "Verified original group label and full descendant hierarchy against pinned drawio hash. Inspect source color variant. No exact AIDP or Autonomous AI Lakehouse icon established by this mapping."
+    },
+    {
+      "service_meaning": "Oracle E-Business Suite",
+      "drawio_candidates": [
+        {
+          "page": "Icons",
+          "cell_id": "mREtu-c0wOV9HSzNNSta-3897",
+          "label": "E-Business Suite"
+        }
+      ],
+      "powerpoint_candidates": [],
+      "selection": "Verified original group label and full descendant hierarchy against pinned drawio hash. Inspect source color variant. No exact AIDP or Autonomous AI Lakehouse icon established by this mapping."
     }
   ]
 }

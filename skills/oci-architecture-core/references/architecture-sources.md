@@ -1,0 +1,17 @@
+# Architecture source index
+
+Links and scope checked on **2026-10-23**. This is a curated entrypoint, not a frozen copy of the external material. Follow service/version-specific primary documentation for the target design. Local notes are author-written decision aids, not Oracle certification or complete framework reproductions.
+
+| Source | Load for | Boundary |
+| --- | --- | --- |
+| [OCI Well-Architected](https://docs.oracle.com/en/solutions/oci-best-practices/) | Cross-domain design/review; [local review questions](architecture-review.md) | Current overview identifies five areas including distributed cloud. Recheck framework changes; a review does not certify compliance. |
+| [Oracle Architecture Center](https://docs.oracle.com/solutions/) | Find a workload-specific reference architecture; [pattern selection](workload-patterns.md) | The center is an index. Open the selected article and verify its assumptions/version before using it as evidence. |
+| [OCI Cloud Adoption Framework](https://docs.oracle.com/en-us/iaas/Content/cloud-adoption-framework/home.htm) | Governance, responsibilities and platform fit; [foundation decisions](cloud-foundation.md) | Adapt to the organization's existing foundation and business constraints. |
+| [OCI Core Landing Zone](https://docs.oracle.com/en-us/iaas/Content/cloud-adoption-framework/oci-core-landing-zone.htm) | Compare a needed new foundation with reusable capabilities | A reference implementation is not a requirement to add all its services to every workload. |
+| [MAA overview](https://www.oracle.com/database/maximum-availability-architecture/) and [MAA on OCI](https://docs.oracle.com/en-us/iaas/Content/Database/Concepts/maxavailarch.htm) | Oracle database/application resilience; [recovery decisions](resilience.md) | Verify database release, platform, supported configuration and entitlement; a tier name is not measured workload recovery. |
+| [OCI service limits](https://docs.oracle.com/en-us/iaas/Content/General/service-limits/overview.htm) | [Capability/limit verification](service-verification.md) | Defaults do not establish the customer's effective limits, quota headroom or physical capacity. |
+| [OCI regions and availability domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm) | Region/realm and failure-scope decisions | Verify the specific region and service; commercial-region documentation does not establish sovereign-realm availability. |
+| [C4 model](https://c4model.com/) | Context, application boundaries and deployment views | Attribute the method to Simon Brown. Views clarify architecture; they do not choose OCI services. |
+| [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) | Record motivation, status and consequences of material choices | Michael Nygard, 2011. Stable method; the recorded decision must still match current requirements. |
+
+Use a customer's authorized standards, contracts and actual IaC as project-specific inputs. Keep those inputs and internal-only Oracle material outside this public plugin. Record conflicts rather than treating either a generic blueprint or local shorthand as universal truth. For volatile product claims, a link checked on this date is not a substitute for verification during the task. If a source cannot be accessed, mark the claim NOT_VERIFIED and retain useful bounded work.

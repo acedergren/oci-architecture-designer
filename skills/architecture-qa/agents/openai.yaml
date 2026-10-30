@@ -1,6 +1,6 @@
 interface:
   display_name: "Architecture QA"
-  short_description: "Separate OCI topology, asset, and visual quality checks"
-  default_prompt: "Use $architecture-qa to help create or review an OCI architecture deliverable using official assets."
+  short_description: "Review requirement fit, decisions and artifact quality"
+  default_prompt: "Use $architecture-qa to review an OCI architecture against workload requirements, evidence and delivery checks."
 policy:
   allow_implicit_invocation: true

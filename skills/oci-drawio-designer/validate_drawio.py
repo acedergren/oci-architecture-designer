@@ -42,7 +42,9 @@ def check(path):
                 current = by_id[current].get('parent')
     return {'file': str(path), 'pages': len(pages), 'errors': errors,
             'graph_integrity': 'PASS' if not errors else 'FAIL',
-            'visual_review': 'NOT_RUN', 'architecture_review': 'NOT_RUN'}
+            'file_integrity': 'PASS' if not errors else 'FAIL',
+            'visual_review': 'NOT_VERIFIED', 'architecture_review': 'NOT_VERIFIED',
+            'opening_review': 'NOT_VERIFIED', 'editability_review': 'NOT_VERIFIED'}
 
 
 def main():
@@ -52,7 +54,10 @@ def main():
     try:
         result = check(args.file)
     except Exception as error:
-        result = {'file': str(args.file), 'graph_integrity': 'FAIL', 'errors': [str(error)]}
+        result = {'file': str(args.file), 'graph_integrity': 'FAIL', 'file_integrity': 'FAIL',
+                  'errors': [str(error)], 'visual_review': 'NOT_VERIFIED',
+                  'architecture_review': 'NOT_VERIFIED', 'opening_review': 'NOT_VERIFIED',
+                  'editability_review': 'NOT_VERIFIED'}
     print(json.dumps(result, indent=2))
     sys.exit(0 if result['graph_integrity'] == 'PASS' else 1)
 
