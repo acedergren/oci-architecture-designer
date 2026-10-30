@@ -16,6 +16,7 @@
 
 A skills-only plugin for creating and reviewing editable Oracle Cloud Infrastructure architecture diagrams (`.drawio`) and PowerPoint slides (`.pptx`). No MCP server is required.
 
+[![CI](https://github.com/acedergren/oci-architecture-designer/actions/workflows/ci.yml/badge.svg)](https://github.com/acedergren/oci-architecture-designer/actions/workflows/ci.yml)
 ![version](https://img.shields.io/badge/version-0.2.5-blue)
 ![Agent Plugins](https://img.shields.io/badge/Agent%20Plugins-1.0-informational)
 ![Python](https://img.shields.io/badge/helpers-Python%203.11%2B%20stdlib-3776AB)
@@ -158,11 +159,15 @@ The existing CI and documentation-webhook workflows are retained. Neither publis
 oci-architecture-designer/
 ├── plugin.json                  # Agent Plugins 1.0 manifest, v0.2.5
 ├── .codex-plugin/plugin.json    # compatibility manifest
+├── .github/workflows/           # ci.yml (offline checks + source ZIP), docs-webhook.yml
+├── scripts/check.py             # package checks + full offline test suite
+├── docs/                        # release notes, verification, Plugin Eval
+├── tests/                       # regression tests and fixtures
 └── skills/
-    ├── oci-architecture-core/   # SKILL.md, agents/, scripts/catalog_assets.py
-    │   └── references/          # icon-map.json (47), toolkit-index.json, provenance.json, ...
+    ├── oci-architecture-core/   # SKILL.md, agents/, scripts/ (catalog, lookup, fetch helpers)
+    │   └── references/          # decision aids, layered-views, icon-map.json (47), provenance.json, ...
     ├── oci-drawio-designer/     # SKILL.md, agents/, validate_drawio.py
-    ├── oci-powerpoint-designer/ # SKILL.md, agents/
+    ├── oci-powerpoint-designer/ # SKILL.md, agents/, validate_pptx.py
     └── architecture-qa/         # SKILL.md, agents/
 ```
 
@@ -172,18 +177,13 @@ oci-architecture-designer/
 
 Current checks: 36 public, 41 internal and 31 shared-source tests pass. Native application, exported-view, connector-movement and actual typography acceptance remain open; the local font resolver substitutes Helvetica for Oracle Sans. This release does not claim those checks passed.
 
-
 GitHub Actions runs one offline validation job on pull requests, pushes to `main`,
-and manual dispatch. It checks Python syntax, JSON files, matching manifests,
-skill entrypoints, and helper smoke tests, then builds a downloadable source ZIP
-retained for seven days in the workflow run. No secrets,
-Oracle downloads, deployment, or plugin publication are required. Run the same
-checks locally with:
-
-```sh
-python3 -m compileall -q skills tests
-python3 -m unittest discover -s tests -v
-```
+and manual dispatch. It checks Python syntax, then runs `scripts/check.py`
+(matching manifests, skill entrypoints, links, no bundled artwork or private
+identifiers, and the full regression suite), then builds a source ZIP with
+`docs/`, `scripts/` and `tests/` included, retained for seven days. No secrets,
+Oracle downloads, deployment, or plugin publication are required. The same
+command is under Development above.
 
 The originating package passed manifest/schema checks, skill metadata validation, internal reference checks, source checksum and icon-locator checks, deterministic indexing against the official downloads, and positive/negative graph-integrity cases. The public export is additionally checked for matching manifests, valid references, and exclusion of private workspace identifiers and artwork.
 
