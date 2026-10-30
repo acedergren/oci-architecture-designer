@@ -1,0 +1,40 @@
+name: docs-webhook
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send docs webhook
+        env:
+          DOCS_WEBHOOK_URL: ${{ secrets.DOCS_WEBHOOK_URL }}
+          DOCS_WEBHOOK_AUTH: ${{ secrets.DOCS_WEBHOOK_AUTH }}
+          REPO: ${{ github.repository }}
+          REF: ${{ github.ref }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          EVENT: ${{ github.event_name }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ -z "$DOCS_WEBHOOK_URL" ]; then
+            echo "::notice::DOCS_WEBHOOK_URL is not set; skipping docs webhook."
+            exit 0
+          fi
+          body=$(jq -n \
+            --arg repo "$REPO" --arg ref "$REF" --arg sha "$SHA" \
+            --arg event "$EVENT" --arg pr "$PR" \
+            '{repo: $repo, ref: $ref, sha: $sha, event: $event, pr: (if $pr == "" then null else ($pr | tonumber) end)}')
+          status=$(curl -fsS --retry 3 -X POST \
+            -H "Authorization: $DOCS_WEBHOOK_AUTH" \
+            -H "Content-Type: application/json" \
+            -d "$body" \
+            -o /dev/null -w '%{http_code}' \
+            "$DOCS_WEBHOOK_URL")
+          echo "HTTP status: $status"
