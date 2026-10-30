@@ -1,0 +1,147 @@
+{
+  "before": {
+    "score": 13,
+    "grade": "F",
+    "budgets": {
+      "trigger_cost_tokens": 309,
+      "invoke_cost_tokens": 4143,
+      "deferred_cost_tokens": 51435,
+      "explicit_only_invoke_cost_tokens": 0,
+      "total_tokens": 55887
+    },
+    "checks": [
+      {
+        "id": "interface-missing-websiteURL",
+        "status": "fail",
+        "message": "plugin.json interface is missing `websiteURL`."
+      },
+      {
+        "id": "interface-missing-privacyPolicyURL",
+        "status": "fail",
+        "message": "plugin.json interface is missing `privacyPolicyURL`."
+      },
+      {
+        "id": "interface-missing-termsOfServiceURL",
+        "status": "fail",
+        "message": "plugin.json interface is missing `termsOfServiceURL`."
+      },
+      {
+        "id": "skill:architecture-qa:description-trigger-weak",
+        "status": "warn",
+        "message": "The description does not clearly advertise when the skill should trigger."
+      },
+      {
+        "id": "skill:oci-architecture-core:description-trigger-weak",
+        "status": "warn",
+        "message": "The description does not clearly advertise when the skill should trigger."
+      },
+      {
+        "id": "skill:oci-drawio-designer:description-trigger-weak",
+        "status": "warn",
+        "message": "The description does not clearly advertise when the skill should trigger."
+      },
+      {
+        "id": "skill:oci-powerpoint-designer:description-trigger-weak",
+        "status": "warn",
+        "message": "The description does not clearly advertise when the skill should trigger."
+      },
+      {
+        "id": "trigger_cost_tokens-budget-high",
+        "status": "warn",
+        "message": "trigger_cost_tokens is heavy relative to the current Codex baseline."
+      },
+      {
+        "id": "invoke_cost_tokens-budget-high",
+        "status": "warn",
+        "message": "invoke_cost_tokens is heavy relative to the current Codex baseline."
+      },
+      {
+        "id": "deferred_cost_tokens-budget-high",
+        "status": "warn",
+        "message": "deferred_cost_tokens is heavy relative to the current Codex baseline."
+      },
+      {
+        "id": "py-complexity-high",
+        "status": "warn",
+        "message": "At least one Python function has high cyclomatic complexity."
+      },
+      {
+        "id": "py-long-lines",
+        "status": "warn",
+        "message": "Some Python lines exceed 120 characters."
+      },
+      {
+        "id": "py-tests-missing",
+        "status": "warn",
+        "message": "Python source files were found without matching test files."
+      },
+      {
+        "id": "coverage-artifacts-unavailable",
+        "status": "info",
+        "message": "No coverage artifacts were found for this target."
+      }
+    ],
+    "source_commit": "8c80a04"
+  },
+  "after": {
+    "source_commit": "4646c6a",
+    "score": 35,
+    "grade": "F",
+    "budgets": {
+      "trigger_cost_tokens": 247,
+      "invoke_cost_tokens": 3187,
+      "deferred_cost_tokens": 80540,
+      "explicit_only_invoke_cost_tokens": 0,
+      "total_tokens": 83974
+    },
+    "checks": [
+      {
+        "id": "interface-missing-privacyPolicyURL",
+        "status": "fail",
+        "message": "plugin.json interface is missing `privacyPolicyURL`."
+      },
+      {
+        "id": "interface-missing-termsOfServiceURL",
+        "status": "fail",
+        "message": "plugin.json interface is missing `termsOfServiceURL`."
+      },
+      {
+        "id": "trigger_cost_tokens-budget-high",
+        "status": "warn",
+        "message": "trigger_cost_tokens is heavy relative to the current Codex baseline."
+      },
+      {
+        "id": "invoke_cost_tokens-budget-high",
+        "status": "warn",
+        "message": "invoke_cost_tokens is heavy relative to the current Codex baseline."
+      },
+      {
+        "id": "deferred_cost_tokens-budget-high",
+        "status": "fail",
+        "message": "deferred_cost_tokens is excessive relative to the current Codex baseline."
+      },
+      {
+        "id": "py-complexity-high",
+        "status": "warn",
+        "message": "At least one Python function has high cyclomatic complexity."
+      },
+      {
+        "id": "py-function-length-high",
+        "status": "warn",
+        "message": "At least one Python function is long enough to hurt readability."
+      },
+      {
+        "id": "py-long-lines",
+        "status": "warn",
+        "message": "Some Python lines exceed 120 characters."
+      },
+      {
+        "id": "coverage-artifacts-unavailable",
+        "status": "info",
+        "message": "No coverage artifacts were found for this target."
+      }
+    ]
+  },
+  "comparison_note": "Before is public source 8c80a04 (0.1.1); after is committed source 4646c6a (0.1.3). This report records that evaluation and was written afterward. Installed cache 3/100 is a different 0.1.2 target, not the controlled baseline.",
+  "observed_tokens": null
+}

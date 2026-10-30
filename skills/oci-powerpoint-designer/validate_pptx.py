@@ -1,0 +1,216 @@
+#!/usr/bin/env python3
+"""Check OOXML package/graph integrity, never visual quality or application behavior."""
+import argparse
+import io
+import json
+from pathlib import Path, PurePosixPath
+import posixpath
+import sys
+import urllib.parse
+import xml.etree.ElementTree as ET
+import zipfile
+
+P = 'http://schemas.openxmlformats.org/presentationml/2006/main'
+A = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+PKG = 'http://schemas.openxmlformats.org/package/2006/relationships'
+CT = 'http://schemas.openxmlformats.org/package/2006/content-types'
+NS = {'p': P, 'a': A}
+MAX_EXPANDED = 256 * 1024 * 1024
+
+
+def compatibility_errors(data, part):
+    """QName strings in MC attributes are not checked by XML parsers."""
+    errors, stack, pending = [], [], {}
+    mc = 'http://schemas.openxmlformats.org/markup-compatibility/2006'
+    for event, item in ET.iterparse(io.BytesIO(data), events=('start-ns', 'start', 'end')):
+        if event == 'start-ns':
+            pending[item[0]] = item[1]
+        elif event == 'start':
+            bindings = dict(stack[-1]) if stack else {}
+            bindings.update(pending); pending = {}
+            stack.append(bindings)
+            values = item.get('{' + mc + '}Ignorable', '').split()
+            if item.tag == '{' + mc + '}Choice':
+                values += item.get('Requires', '').split()
+            for prefix in values:
+                if prefix not in bindings:
+                    errors.append(f'Undeclared compatibility prefix: {part}: {prefix}')
+        else:
+            stack.pop()
+    return errors
+
+
+def relationship_source(part):
+    if part == '_rels/.rels':
+        return ''
+    path = PurePosixPath(part)
+    if path.parent.name != '_rels':
+        raise ValueError(f'Invalid relationships part: {part}')
+    return str(path.parent.parent / path.name[:-5])
+
+
+def resolve_target(source, target):
+    parsed = urllib.parse.urlsplit(target)
+    if parsed.scheme or parsed.netloc or '\\' in target:
+        raise ValueError(f'Invalid internal target: {target}')
+    path = urllib.parse.unquote(parsed.path)
+    resolved = posixpath.normpath(path.lstrip('/') if path.startswith('/') else
+                                 posixpath.join(posixpath.dirname(source), path))
+    if resolved in {'.', '..'} or resolved.startswith('../'):
+        raise ValueError(f'Internal target escapes package: {target}')
+    return resolved
+
+
+def check_content_types(tree, names, errors):
+    if tree is None or tree.tag != '{' + CT + '}Types':
+        errors.append('Missing/invalid content-types root')
+        return
+    defaults, overrides = {}, {}
+    for element in tree:
+        if element.tag == '{' + CT + '}Default':
+            table, key = defaults, element.get('Extension')
+        elif element.tag == '{' + CT + '}Override':
+            table, key = overrides, element.get('PartName', '').lstrip('/')
+            if not element.get('PartName', '').startswith('/') or key not in names:
+                errors.append(f'Invalid content-type override: {key}')
+        else:
+            errors.append('Invalid content-types child')
+            continue
+        content_type = element.get('ContentType')
+        if not key or key in table or not content_type:
+            errors.append(f'Missing/duplicate content-type declaration: {key}')
+        table[key] = content_type
+    for part in names:
+        if part.endswith('/') or part == '[Content_Types].xml':
+            continue
+        extension = PurePosixPath(part).name.rpartition('.')[2]
+        content_type = overrides.get(part, defaults.get(extension))
+        if not content_type:
+            errors.append(f'No content type for part: {part}')
+        if part.endswith('.rels') and content_type != 'application/vnd.openxmlformats-package.relationships+xml':
+            errors.append(f'Invalid relationships content type: {part}')
+        if part == 'ppt/presentation.xml' and content_type != (
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml'):
+            errors.append('Invalid presentation content type')
+
+
+def inspect_package(archive, result):
+    errors = result['errors']
+    names = archive.namelist()
+    entries = archive.infolist()
+    if len(names) > 10000 or sum(i.file_size for i in entries) > MAX_EXPANDED:
+        raise ValueError('Package exceeds verification size limit')
+    if len(names) != len(set(names)):
+        errors.append('Duplicate ZIP part names')
+    if any(n.startswith('/') or '..' in PurePosixPath(n).parts or '\\' in n for n in names):
+        raise ValueError('Unsafe package member name')
+    for required in ('[Content_Types].xml', '_rels/.rels', 'ppt/presentation.xml', 'ppt/_rels/presentation.xml.rels'):
+        if required not in names:
+            errors.append(f'Missing required part: {required}')
+    bad = archive.testzip()
+    if bad:
+        errors.append(f'CRC failure: {bad}')
+    trees = {}
+    for name in names:
+        if name.endswith(('.xml', '.rels')):
+            try:
+                trees[name] = ET.fromstring(archive.read(name))
+                errors.extend(compatibility_errors(archive.read(name), name))
+            except ET.ParseError as error:
+                errors.append(f'Malformed XML: {name}: {error}')
+    check_content_types(trees.get('[Content_Types].xml'), names, errors)
+    relations = {}
+    for part, tree in trees.items():
+        if not part.endswith('.rels'):
+            continue
+        if tree.tag != '{' + PKG + '}Relationships':
+            errors.append(f'Invalid relationships root: {part}')
+        source = relationship_source(part)
+        if source and source not in names:
+            errors.append(f'Orphan relationships part: {part}')
+        by_id = {}
+        for rel in tree:
+            if rel.tag != '{' + PKG + '}Relationship' or not rel.get('Type'):
+                errors.append(f'Invalid relationship element/type: {part}')
+            identity, target = rel.get('Id'), rel.get('Target', '')
+            if not identity or identity in by_id or not target:
+                errors.append(f'Invalid/duplicate relationship ID or empty target: {part}: {identity}')
+            by_id[identity] = rel
+            if rel.get('TargetMode') == 'External':
+                result['external_relationships'].append({'source': source, 'id': identity, 'target': target})
+            else:
+                resolved = resolve_target(source, target)
+                if resolved not in names:
+                    errors.append(f'Missing relationship target: {source}: {resolved}')
+        relations[source] = by_id
+    entrypoints = [rel for rel in relations.get('', {}).values() if rel.get('Type') == R + '/officeDocument']
+    if (len(entrypoints) != 1 or entrypoints[0].get('TargetMode') == 'External' or
+            resolve_target('', entrypoints[0].get('Target', '')) != 'ppt/presentation.xml'):
+        errors.append('Missing/invalid package officeDocument entrypoint')
+    for part, tree in trees.items():
+        if part.endswith('.rels'):
+            continue
+        for element in tree.iter():
+            for attribute, value in element.attrib.items():
+                if attribute.startswith('{' + R + '}') and value not in relations.get(part, {}):
+                    errors.append(f'Unresolved relationship reference: {part}: {value}')
+    presentation = trees.get('ppt/presentation.xml')
+    if presentation is None or presentation.tag != '{' + P + '}presentation':
+        errors.append('Missing/invalid presentation root')
+    else:
+        seen = set()
+        for slide in presentation.findall('p:sldIdLst/p:sldId', NS):
+            identity = slide.get('id')
+            if not identity or identity in seen:
+                errors.append(f'Missing/duplicate slide ID: {identity}')
+            seen.add(identity)
+            rel = relations.get('ppt/presentation.xml', {}).get(slide.get('{' + R + '}id'))
+            if rel is None or rel.get('TargetMode') == 'External' or rel.get('Type') != R + '/slide':
+                errors.append(f'Invalid slide relationship: {identity}')
+                continue
+            target = resolve_target('ppt/presentation.xml', rel.get('Target', ''))
+            if target in result['slide_order']:
+                errors.append(f'Duplicate slide target: {target}')
+            result['slide_order'].append(target)
+            if target not in trees or trees[target].tag != '{' + P + '}sld':
+                errors.append(f'Invalid slide XML: {target}')
+        if not result['slide_order']:
+            errors.append('No slides in presentation order')
+    for part, tree in trees.items():
+        if not part.startswith('ppt/slides/') or tree.tag != '{' + P + '}sld':
+            continue
+        identities = [node.get('id') for node in tree.findall('.//p:cNvPr', NS)]
+        if any(not i or not i.isdigit() for i in identities) or len(identities) != len(set(identities)):
+            errors.append(f'Invalid/duplicate shape IDs: {part}')
+        for connector in tree.findall('.//p:cxnSp', NS):
+            for connection in connector.findall('.//a:stCxn', NS) + connector.findall('.//a:endCxn', NS):
+                if connection.get('id') not in identities:
+                    errors.append(f'Dangling connector shape: {part}: {connection.get("id")}')
+
+
+def check(path):
+    result = {'file': str(path), 'file_integrity': 'FAIL', 'slide_order': [], 'external_relationships': [],
+              'errors': [], 'visual_review': 'NOT_VERIFIED', 'architecture_review': 'NOT_VERIFIED',
+              'opening_review': 'NOT_VERIFIED', 'editability_review': 'NOT_VERIFIED'}
+    try:
+        with zipfile.ZipFile(path) as archive:
+            inspect_package(archive, result)
+    except (OSError, ValueError, KeyError, zipfile.BadZipFile, RuntimeError) as error:
+        result['errors'].append(str(error))
+    if not result['errors']:
+        result['file_integrity'] = 'PASS'
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('file', type=Path)
+    args = parser.parse_args()
+    result = check(args.file)
+    print(json.dumps(result, indent=2))
+    sys.exit(0 if result['file_integrity'] == 'PASS' else 1)
+
+
+if __name__ == '__main__':
+    main()

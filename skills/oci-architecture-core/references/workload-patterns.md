@@ -1,0 +1,14 @@
+# Workload pattern selection
+
+Use [Oracle Architecture Center](https://docs.oracle.com/solutions/) to find primary workload references. The cards below are local decision prompts, not copied Oracle reference architectures or assertions of product availability. Open and cite the particular article selected for a recommendation; record its assumptions and departures in the decision log. Use current service docs to verify its deployability in the target environment.
+
+| Workload | Start by comparing | Evidence needed before adding complexity |
+| --- | --- | --- |
+| Small internal application | Existing supported application/runtime platform; a bounded VM deployment when suitable; a container platform when its lifecycle/scale requirements justify it | Demand, release cadence, team skills, application state, identity and existing data service. Kubernetes, a new VCN or a second region is not a default consequence of an internal app request. |
+| Enterprise integration | Direct bounded request/response; an integration platform for required adapters/orchestration; asynchronous delivery when decoupling or buffering is needed | Delivery guarantees, idempotency, ordering, replay, error ownership, timeouts and backpressure. Identify the system of record and distinguish message receipt from confirmed business completion. |
+| AI knowledge/retrieval application | Managed capabilities versus a custom retrieval/agent pipeline | Source authorization, document freshness, isolation, data movement, model/tool access, evaluation and human decision boundaries. Retrieval and a visually private endpoint do not prove access control, answer quality or private service support. |
+| Oracle database workload | Existing supported database service/configuration versus a change justified by demand or protection requirements | Version/feature compatibility, workload behavior, licensing/support, backup/restore and [failure-specific recovery requirements](resilience.md). A familiar service name alone does not settle placement or resilience. |
+
+For the selected pattern, map requirements to components, access paths, data ownership, operations and costs. Show reused platform capabilities explicitly. Prefer a small design that satisfies the evidence; retain a growth trigger for later scale/reliability features. Do not invent a workload benchmark or assume a managed service removes all customer responsibilities.
+
+For an AI/integration example, [Oracle's modular LLM application using Oracle Integration](https://docs.oracle.com/en/solutions/oci-generative-ai-integration/index.html) is a candidate reference, not a minimum service inventory. Select only the relevant mechanisms and verify service/realm/endpoint behavior. No component in that example is automatically mandatory for a simpler retrieval workload.

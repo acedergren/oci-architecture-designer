@@ -1,0 +1,26 @@
+[
+  {
+    "id": "internal-existing-platform",
+    "request": "Design an OCI architecture for an internal administrative web application used by 40 staff, with about 10 concurrent users and no demonstrated high-throughput requirement. An existing supported VM runtime, managed database, shared private VCN, private DNS and Bastion administration path are owned by our platform team. The application team has two people and no Kubernetes operating experience. Access is internal through established corporate connectivity. The business accepts up to four hours of outage and 24 hours of data loss for application-owned state; existing platform recovery evidence has not been supplied. Describe a proportionate recommendation, key decisions and the views we need for an application owner and a platform engineer. Do not change infrastructure."
+  },
+  {
+    "id": "region-loss-constraint-conflict",
+    "request": "Review our proposed Oracle database architecture: two database nodes in the same OCI availability domain, a single application instance, and daily backups. Our business requires RTO five minutes and RPO zero after loss of the entire region. Policy currently forbids storing any recovery copy outside that region, and the team asks us to label the diagram MAA Gold to show compliance. Identify whether we can approve the proposal and what decisions and evidence are needed. Database version, service entitlement and measured recovery evidence are not supplied. Review only; no redesign or deployment is authorized."
+  },
+  {
+    "id": "sovereign-ai-current-evidence-missing",
+    "request": "Propose a small document-question-answering service for a sovereign OCI realm. Use official references where they help, but current service availability, model availability and private-endpoint documentation are inaccessible in this exercise. Documents have per-team authorization and must remain within the customer's approved processing boundary. A colleague proposes copying every service from the Oracle Integration LLM reference architecture and drawing a generic private endpoint to guarantee the requirement. We have no requirement for cross-system orchestration. Deliver a useful bounded proposal, assumptions, decisions and a short review; do not claim that service availability or answer quality has been verified."
+  },
+  {
+    "id": "layout-only-preserve-accepted-model",
+    "request": "For our existing two-page OCI diagram, align the three icons on page one and enlarge the labels. The architecture and service choices are already accepted; do not alter them or page two. We are only discussing the scope before file editing, and no diagram file is attached yet. Explain what you would do and what you need to verify."
+  },
+  {
+    "id": "async-integration-business-completion",
+    "request": "Design an OCI integration view for an order-submission API. The receiving ERP may be unavailable for 30 minutes; the API should return quickly after safe acceptance, and a customer must not be charged twice when requests are retried. Order processing can complete later. Existing integration middleware and an operator-owned queue are available; ordering is required per customer, not globally. Provide key decisions, a normal interaction and a failure/replay scenario. A queue acknowledgment must not be presented as proof that the ERP completed the business operation. No target-system delivery guarantees or throughput measurements have been provided."
+  },
+  {
+    "id": "c4-context-versus-deployment",
+    "request": "We need architecture material for a business sponsor and an OCI infrastructure engineer. Our system has a browser frontend, one application API, a database and an external payroll integration. A C4 container diagram has been requested, but application deployment on a container runtime has not been decided. Recommend the minimum useful views and decisions before choosing a runtime. Do not infer Kubernetes from the requested diagram type."
+  }
+]

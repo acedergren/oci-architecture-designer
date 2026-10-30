@@ -3,21 +3,22 @@
   "author": {
     "name": "Alexander Cedergren"
   },
-  "description": "Create and review editable OCI draw.io diagrams and PowerPoint architecture slides using verified official Oracle assets supplied by the user. Official stencil binaries are not bundled because redistribution permission was not verified.",
+  "description": "Design and review OCI workload architectures with requirement-based decisions, scoped primary references and editable Draw.io/PowerPoint output. Official toolkit binaries are not bundled.",
   "extensions": {
     "com.openai": {
       "interface": {
         "capabilities": [],
         "category": "Productivity",
         "defaultPrompt": [
-          "Create an editable OCI architecture diagram using official Oracle toolkits I provide.",
+          "Create an editable OCI architecture diagram using verified official Oracle toolkits.",
           "Create a PowerPoint OCI architecture slide and validate its topology and layout.",
           "Review this OCI diagram for service icon, boundary, routing, and readability errors."
         ],
         "developerName": "Alexander Cedergren",
         "displayName": "OCI Architecture Designer",
-        "longDescription": "Four automatically discoverable skills provide shared OCI semantics, native editable draw.io diagrams, editable PowerPoint architecture slides, and separate topology and visual QA. Includes official download provenance, checksums, and verified icon locators. Oracle stencil and template binaries are not bundled; provide the official toolkits for icon-based output. No MCP server or Oracle endorsement is implied.",
-        "shortDescription": "Editable OCI architecture"
+        "longDescription": "Four discoverable skills connect workload requirements to architecture decisions and native editable OCI diagrams. Conditional references cover Well-Architected reviews, workload patterns, CAF foundations, MAA resilience, current service evidence, C4 views and decision records. QA distinguishes design reasoning, source evidence and actual artifact checks. Verified official toolkit downloads and structural validators remain available. Oracle toolkit binaries are not bundled; no Oracle endorsement is implied.",
+        "shortDescription": "OCI design and diagrams",
+        "websiteURL": "https://github.com/acedergren/oci-architecture-designer"
       }
     }
   },
@@ -27,8 +28,10 @@
     "architecture",
     "draw.io",
     "PowerPoint",
-    "official-icons"
+    "official-icons",
+    "Well-Architected",
+    "architecture-decisions"
   ],
   "name": "oci-architecture-designer",
-  "version": "0.1.1"
+  "version": "0.2.5"
 }
