@@ -76,6 +76,35 @@ class LayerFixture(unittest.TestCase):
         self.assertEqual(report['file_integrity'], 'PASS', report)
         self.assertEqual(report['slide_order'][:2], ['ppt/slides/slide24.xml', 'ppt/slides/slide26.xml'])
 
+    def test_pptx_scoped_annotation_check_rejects_protected_changes_on_same_slide(self):
+        original = self.path.with_suffix('.pptx')
+        edited = original.with_name('edited.pptx')
+        shapes = ('<p:grpSp><p:nvGrpSpPr><p:cNvPr id="2" name="compute"/></p:nvGrpSpPr>'
+                  '<p:grpSpPr><a:xfrm><a:off x="100" y="200"/></a:xfrm></p:grpSpPr></p:grpSp>'
+                  '<p:sp><p:nvSpPr><p:cNvPr id="3" name="annotation"/></p:nvSpPr>'
+                  '<p:txBody><a:p><a:r><a:t>Note</a:t></a:r></a:p></p:txBody></p:sp>'
+                  '<p:cxnSp><p:nvCxnSpPr><p:cNvPr id="4" name="flow"/>'
+                  '<p:cNvCxnSpPr><a:stCxn id="2" idx="0"/></p:cNvCxnSpPr></p:nvCxnSpPr></p:cxnSp>')
+        parts = presentation_parts(shapes); part = 'ppt/slides/slide1.xml'
+        write_package(original, parts)
+        updated = dict(parts)
+        updated[part] = updated[part].replace('>Note<', '>Revised note<')
+        write_package(edited, updated)
+        fixture.assert_pptx_preserved(original, edited, {(part, 'annotation')})
+        for damage in ('geometry', 'group', 'connector'):
+            tree = E.fromstring(updated[part])
+            if damage == 'geometry':
+                tree.find('.//{' + A + '}off').set('x','999')
+            elif damage == 'group':
+                parent = tree.find('.//{' + P + '}spTree')
+                parent.remove(parent.find('{' + P + '}grpSp'))
+            else:
+                tree.find('.//{' + A + '}stCxn').set('id','3')
+            damaged = dict(updated); damaged[part] = E.tostring(tree)
+            write_package(edited, damaged)
+            with self.subTest(damage=damage), self.assertRaises(AssertionError):
+                fixture.assert_pptx_preserved(original, edited, {(part, 'annotation')})
+
 
 if __name__ == '__main__':
     unittest.main()

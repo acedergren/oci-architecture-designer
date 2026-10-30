@@ -127,3 +127,5 @@ python3 -m unittest discover -s tests -v
 ## Optional layers, selected views and corporate fonts
 
 Use [layered views](skills/oci-architecture-core/references/layered-views.md) only when independent visibility, edit protection or multiple exports serve a purpose. Preserve native VCN/subnet/container ancestry and original groups. Validate an optional sidecar with `validate_drawio.py result.drawio --views architecture.views.json`; inspect actual exports separately. PowerPoint uses one native editable slide per selected view. Native diagram text requires Oracle Sans and application/export resolution evidence, with no silent fallback or bundled fonts. Structural checks do not establish that typography or architecture is correct.
+
+See [layered-view implementation verification](docs/verification-layered-views.md) for the opt-in representative fixture and the remaining application/font acceptance gates.

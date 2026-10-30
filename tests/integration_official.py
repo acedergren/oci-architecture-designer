@@ -316,11 +316,13 @@ def pptx(source, output, model, layered_views=False):
         edited = dict(base)
         detail = E.fromstring(edited['ppt/slides/slide26.xml'])
         note = next(t for t in detail.findall('.//a:t', NS) if (t.text or '').startswith('Proposed example'))
+        annotation = next(shape for shape in detail.find('p:cSld/p:spTree', NS) if note in list(shape.iter()))
+        annotation_name = annotation.find('p:nvSpPr/p:cNvPr', NS).get('name')
         note.text = 'Operational note revised in scoped test'
         edited['ppt/slides/slide26.xml'] = xml_bytes(detail)
         with zipfile.ZipFile(edited_path, 'w', zipfile.ZIP_DEFLATED) as archive:
             for name, data in edited.items(): archive.writestr(name,data)
-        assert all(edited[n] == base[n] for n in base if n != 'ppt/slides/slide26.xml')
+        assert_pptx_preserved(output, edited_path, {('ppt/slides/slide26.xml', annotation_name)})
     return assets, edited_path
 
 
@@ -372,6 +374,36 @@ def assert_drawio_preserved(before, after, allowed_ids):
         return E.canonicalize(E.tostring(doc, encoding='unicode'))
     if protected(before) != protected(after):
         raise AssertionError('Protected Draw.io content or ancestry changed')
+
+
+def assert_pptx_preserved(before, after, allowed_annotations):
+    """Permit only named annotation shapes; protect the rest of their slides too."""
+    with zipfile.ZipFile(before) as archive:
+        original = {name: archive.read(name) for name in archive.namelist()}
+    with zipfile.ZipFile(after) as archive:
+        edited = {name: archive.read(name) for name in archive.namelist()}
+    if original.keys() != edited.keys():
+        raise AssertionError('Protected PowerPoint parts changed')
+    for part in original:
+        names = {name for allowed_part, name in allowed_annotations if allowed_part == part}
+        if not names:
+            if original[part] != edited[part]:
+                raise AssertionError('Protected PowerPoint part changed: ' + part)
+            continue
+        normalized = []
+        for data in (original[part], edited[part]):
+            tree = E.fromstring(data)
+            shapes = tree.find('p:cSld/p:spTree', NS)
+            for name in names:
+                matches = [shape for shape in shapes if shape.tag == '{'+P+'}sp'
+                           and shape.find('p:nvSpPr/p:cNvPr', NS) is not None
+                           and shape.find('p:nvSpPr/p:cNvPr', NS).get('name') == name]
+                if len(matches) != 1:
+                    raise AssertionError('Missing/ambiguous permitted annotation: ' + name)
+                shapes.remove(matches[0])
+            normalized.append(E.canonicalize(E.tostring(tree, encoding='unicode')))
+        if normalized[0] != normalized[1]:
+            raise AssertionError('Protected native slide content changed: ' + part)
 
 
 def layer_pptx(path):
