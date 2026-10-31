@@ -138,6 +138,7 @@ Structural PASS does not prove rendering, font resolution, architectural complet
 **Reference**
 - [Software Architecture](https://github.com/acedergren/oci-architecture-designer/wiki/Software-Architecture): skills, data flow, checksum pinning, decisions, risks
 - [Asset provenance notes](skills/oci-architecture-core/references/official-assets.md)
+- [Privacy notice](docs/privacy.md) and [usage terms](docs/terms.md): what the helpers process, and what the project does and does not permit
 
 **Contributing**
 - [Developer Handbook](https://github.com/acedergren/oci-architecture-designer/wiki/Developer-Handbook): setup, checks, layout, conventions, how changes flow
